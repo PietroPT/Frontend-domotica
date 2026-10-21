@@ -11,7 +11,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La d
 | Codice, copia principale con la cronologia | GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31` (fase 3 chiusa al commit `006b57b`) |
 | Copia sul PC di Pietro, da cui gira | `C:\HA-Dashboard` (si aggiorna da sola a ogni avvio con `avvia.cmd`) |
 | Versione pubblicata (fase 4) | CT 203 `ha-dashboard` su pve1, `http://10.10.50.21`, nginx; si aggiorna con `C:\HA-Dashboard\pubblica.cmd` |
-| Copia dei sorgenti su Drive | questa cartella (`HA-Dashboard\`), **aggiornata alla chiusura del 21/10 sera** (stessa versione del branch su GitHub a quell'ora): stessa struttura del repository, senza `node_modules`, senza le skill `.claude\` e senza `package-lock.json` (lo rigenera `npm install`); questo file è `docs\LEGGIMI.md` del repository, la bozza di nota per Obsidian è in `vault\`. I file `.cmd` da usare sono quelli nella copia sul PC. Versioni sostituite in `ARCHIVIO_FILE_VECCHI\2026-10-21\ha-dashboard-fase-3\` e `…\ha-dashboard-fase-4\` |
+| Copia dei sorgenti su Drive | questa cartella (`HA-Dashboard\`), **aggiornata alla chiusura del 21/10 sera** (stessa versione del branch su GitHub a quell'ora): stessa struttura del repository, senza `node_modules`, senza le skill `.claude\` e senza `package-lock.json` (lo rigenera `npm install`); questo file è `docs\LEGGIMI.md` del repository, la bozza di nota per Obsidian è in `vault\`. I file `.cmd` da usare sono quelli nella copia sul PC. Versioni sostituite in `ARCHIVIO_FILE_VECCHI\2026-10-21\ha-dashboard-fase-3\`, `…\ha-dashboard-fase-4\` e `…\chiusura-fase-4-parte-1\HA-Dashboard\` |
 | Profilo del prodotto (utenti, vincoli, regole) | `HA-Dashboard\PRODUCT.md` |
 | Sistema grafico (colori, caratteri, componenti) | `HA-Dashboard\DESIGN.md` (scritto alla fase 1) |
 | Mockup da aprire sul telefono, senza installare nulla | https://claude.ai/artifact/Svq8v6PsfBhMorj3WG1y6o (privato, dati finti della fase 1) |
@@ -137,7 +137,7 @@ Effetto collaterale, prudente: una presa rinominata con «rack», «friggitrice�
 ## Cosa NON è dimostrato
 
 - **Telecamere Frigate attraverso HA:** viste funzionare, ma non misurati il carico del video continuo su Frigate e HA né la resa dal tunnel WireGuard.
-- **Dispositivi:** provata solo sul PC (Windows) e in Chromium. Non provati iPhone/Safari, il tablet, il Pi 4 del pannello (fluidità, leggibilità a 2–3 m).
+- **Dispositivi:** provata a fondo solo sul PC (Windows, Chromium). Sull'iPhone (Safari) la dashboard si apre, anche dal tunnel (riferito da Pietro il 21/10), ma non è stata provata funzione per funzione. Non provati il tablet e il Pi 4 del pannello (fluidità, leggibilità a 2–3 m).
 - **`avvia.cmd`:** scritto e controllato nel formato, usato da Pietro, ma non provato da me su Windows.
 - **`pubblica.cmd`:** usato da Pietro con successo il 21/10. La versione con il blocco unico dopo `git pull` e il controllo di `.git` non è stata provata da me su Windows.
 - **CT 203:** inclusione nel backup notturno non verificata.
