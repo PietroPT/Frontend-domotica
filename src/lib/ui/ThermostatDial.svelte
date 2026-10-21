@@ -97,7 +97,8 @@
       <span class="num">Ora {temp(current)}</span>
     {:else}
       <b class="num">{temp(current)}</b>
-      {#if !off}<span class="num tgt"><Icon name="bersaglio" size={17} />{temp(shown)}</span>{/if}
+      <!-- Obiettivo: solo il numero, nel colore del termostato (scelta di Pietro). -->
+      {#if !off}<span class="num tgt">{temp(shown)}</span>{/if}
     {/if}
   </div>
 </div>
@@ -118,7 +119,6 @@
   .mode { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 15px; color: var(--c); }
   b { font-size: calc(var(--size) * 0.2); font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
   b.set { color: var(--c); }
-  .tgt { display: inline-flex; align-items: center; gap: 5px; }
-  .tgt :global(.d) { fill-opacity: 0.2; }
   .read > span:last-child { color: var(--ink-2); font-size: 15px; }
+  .read > span.tgt { color: var(--c); font-weight: 600; font-size: 17px; }
 </style>
