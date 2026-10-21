@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Standard — schizzo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F2F7;--tile:rgba(255,255,255,.72);--tile-on:#FFFFFF;--ink:#1C1C1E;--ink-2:#6C6C70;--chip:rgba(255,255,255,.8);--sep:rgba(60,60,67,.12);
+  --y:#FF9F0A;--g:#30B45A;--b:#0A84FF;--p:#BF5AF2;--wall:radial-gradient(120% 70% at 20% 0%,#d9e3f5 0,#f2f2f7 60%)}
+[data-theme=dark]{--bg:#0B0B0F;--tile:rgba(255,255,255,.09);--tile-on:rgba(255,255,255,.92);--ink:#F5F5F7;--ink-2:#9A9AA0;--chip:rgba(255,255,255,.1);--sep:rgba(255,255,255,.1);
+  --wall:radial-gradient(120% 70% at 15% 0%,#2b2440 0,#0b0b0f 60%)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
+body{background:var(--wall);min-height:100vh}
+.ico{width:24px;height:24px}.ico .d{fill:currentColor;fill-opacity:.16}
+main{padding:18px 16px 110px}
+.top{display:flex;justify-content:space-between;align-items:center}
+h1{font-size:34px;font-weight:700;margin:6px 0 14px;letter-spacing:-.02em}
+.round{width:40px;height:40px;border-radius:50%;background:var(--chip);display:grid;place-items:center;color:var(--ink)}
+.chips{display:flex;gap:8px;overflow:hidden;margin-bottom:22px}
+.chip{flex:none;display:flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:14px;background:var(--chip);backdrop-filter:blur(20px);font-size:14px;font-weight:600}
+.chip .c{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.chip .c .ico{width:18px;height:18px}
+.chip small{display:block;font-weight:500;color:var(--ink-2);font-size:12px}
+h2{font-size:20px;font-weight:700;margin:0 0 10px;letter-spacing:-.01em}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.t{display:flex;align-items:center;gap:10px;padding:12px;border-radius:18px;background:var(--tile);backdrop-filter:blur(24px);min-height:68px}
+.t .c{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(127,127,135,.25);color:var(--ink-2);flex:none}
+.t b{display:block;font-size:14.5px;font-weight:600;line-height:1.2}
+.t em{font-style:normal;font-size:13px;color:var(--ink-2)}
+.t.on{background:var(--tile-on);color:#1C1C1E}.t.on em{color:#6C6C70}
+.t.on .c{color:#fff}
+.cams{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cam{border-radius:18px;overflow:hidden;position:relative;aspect-ratio:4/3;background:#222}
+.cam svg{width:100%;height:100%;display:block}
+.cam span{position:absolute;left:10px;bottom:8px;color:#fff;font-weight:600;font-size:14px}
+nav{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 0 22px;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(20px);border-top:1px solid var(--sep)}
+nav a{display:grid;justify-items:center;gap:2px;font-size:11px;color:var(--ink-2);text-decoration:none}
+nav a.on{color:var(--b)}
+@media(min-width:1000px){
+  main{padding:30px 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 26px;align-content:start}
+  .top,.chips{grid-column:1/-1}
+  nav{display:none}
+  h1{font-size:40px}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><h1>Casa</h1><span class="round"><i data-i="avanzate"></i></span></div>
+  <div class="chips">
+    <div class="chip"><span class="c" style="background:var(--g)"><i data-i="termometro"></i></span><div>Clima<small>20,5–21°</small></div></div>
+    <div class="chip"><span class="c" style="background:var(--y)"><i data-i="luce"></i></span><div>Luci<small>4 accese</small></div></div>
+    <div class="chip"><span class="c" style="background:var(--b)"><i data-i="energia"></i></span><div>Energia<small>2,14 kW</small></div></div>
+    <div class="chip"><span class="c" style="background:var(--p)"><i data-i="telecamera"></i></span><div>Sicurezza<small>1 evento</small></div></div>
+  </div>
+  <section>
+    <h2>Soggiorno</h2>
+    <div class="grid">
+      <div class="t on"><span class="c" style="background:var(--y)"><i data-i="luce"></i></span><div><b>Soffitto</b><em>70%</em></div></div>
+      <div class="t"><span class="c"><i data-i="lampada"></i></span><div><b>Lampada</b><em>Spenta</em></div></div>
+      <div class="t on"><span class="c" style="background:var(--y)"><i data-i="striscia"></i></span><div><b>Striscia TV</b><em>30%</em></div></div>
+      <div class="t on"><span class="c" style="background:var(--g)"><i data-i="termostato"></i></span><div><b>Termostato</b><em>Riscalda a 21°</em></div></div>
+    </div>
+  </section>
+  <section>
+    <h2>Energia</h2>
+    <div class="grid">
+      <div class="t on"><span class="c" style="background:var(--b)"><i data-i="lavatrice"></i></span><div><b>Lavatrice</b><em>1.842 W</em></div></div>
+      <div class="t on"><span class="c" style="background:var(--b)"><i data-i="stampante3d"></i></span><div><b>Stampante 3D</b><em>64% · 158 W</em></div></div>
+      <div class="t"><span class="c"><i data-i="rack"></i></span><div><b>Rack</b><em>142 W</em></div></div>
+      <div class="t"><span class="c"><i data-i="friggitrice"></i></span><div><b>Friggitrice</b><em>0 W</em></div></div>
+    </div>
+  </section>
+  <section>
+    <h2>Telecamere</h2>
+    <div class="cams">
+      <div class="cam"><svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice"><rect width="400" height="300" fill="#2c2b33"/><rect x="60" y="40" width="120" height="120" fill="#6a6f82" opacity=".5"/><rect x="40" y="200" width="300" height="70" rx="16" fill="#47404a"/></svg><span>Soggiorno</span></div>
+      <div class="cam"><svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice"><rect width="400" height="300" fill="#232326"/><rect x="60" y="160" width="280" height="14" fill="#6b5a4a"/><rect x="150" y="80" width="110" height="70" rx="5" fill="#111" stroke="#5f5f66" stroke-width="5"/></svg><span>Ufficio</span></div>
+    </div>
+  </section>
+</main>
+<nav><a class="on" href="#"><i data-i="casa"></i>Casa</a><a href="#"><i data-i="automazione"></i>Automazioni</a><a href="#"><i data-i="energia"></i>Energia</a><a href="#"><i data-i="avanzate"></i>Avanzate</a></nav>
+<script src="icons.js"></script>
+<script>if(new URLSearchParams(location.search).get('t')==='dark')document.body.dataset.theme='dark';paintIcons();</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+// Set di icone su misura: griglia 24, tratto 1.75, terminali arrotondati.
+// Le forme con class="d" ricevono il riempimento tenue (duotono).
+window.ICONS = {
+  casa: '<path class="d" d="M4 10.4 12 4l8 6.4V19a1.5 1.5 0 0 1-1.5 1.5H15v-5.2a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5.2H5.5A1.5 1.5 0 0 1 4 19z"/>',
+  luce: '<path class="d" d="M12 3a6 6 0 0 0-3.7 10.7c.75.6 1.2 1.4 1.2 2.3v.5h5V16c0-.9.45-1.7 1.2-2.3A6 6 0 0 0 12 3z"/><path d="M9.7 19h4.6M10.6 21.3h2.8"/><path d="M12 6.6a3 3 0 0 1 2.8 2" opacity=".55"/>',
+  lampada: '<path class="d" d="M8.2 3.5h7.6l2.4 6.3H5.8z"/><path d="M12 9.8v10.7M8.5 20.5h7"/><path d="M15.4 9.8v2.4"/>',
+  striscia: '<rect class="d" x="2.6" y="9.2" width="18.8" height="5.6" rx="2.8"/><circle cx="7" cy="12" r=".95" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r=".95" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r=".95" fill="currentColor" stroke="none"/><path d="M7 6.2v1.2M12 5.6v1.6M17 6.2v1.2M7 16.6v1.2M12 16.8v1.6M17 16.6v1.2" opacity=".6"/>',
+  termostato: '<circle class="d" cx="12" cy="12" r="8.5"/><path d="M7.3 16.2a6 6 0 1 1 9.4 0"/><path d="M12 12l3.1-2.6"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/>',
+  termometro: '<path class="d" d="M9.8 13.6V5.3a2.2 2.2 0 0 1 4.4 0v8.3a4.2 4.2 0 1 1-4.4 0z"/><path d="M12 9.2v7"/>',
+  fiamma: '<path class="d" d="M12 21c-3.6 0-6.3-2.6-6.3-6 0-2.7 1.7-4.6 3.2-6.2.2 1.5.9 2.6 2 3.1.2-3.4 1.8-6.4 4.4-8.4.4 3 2.1 4.9 3 6.8.5 1 .8 2.1.8 3.3C19.1 17.8 16 21 12 21z"/><path d="M12 21c-1.5 0-2.6-1.1-2.6-2.6 0-1.6 1.3-2.6 2.6-4 1.3 1.4 2.6 2.4 2.6 4 0 1.5-1.1 2.6-2.6 2.6z"/>',
+  goccia: '<path class="d" d="M12 3.5c3.1 3.7 5.6 6.7 5.6 10.1a5.6 5.6 0 0 1-11.2 0c0-3.4 2.5-6.4 5.6-10.1z"/><path d="M9.3 14.2a2.8 2.8 0 0 0 2.4 2.6" opacity=".6"/>',
+  energia: '<path class="d" d="M13.4 2.8 5 13.6h6l-1 7.6 8.4-10.8h-6z"/>',
+  presa: '<rect class="d" x="3.8" y="3.8" width="16.4" height="16.4" rx="4.2"/><circle cx="12" cy="12" r="5.2"/><circle cx="9.9" cy="12" r=".9" fill="currentColor" stroke="none"/><circle cx="14.1" cy="12" r=".9" fill="currentColor" stroke="none"/>',
+  lavatrice: '<rect class="d" x="4" y="2.8" width="16" height="18.4" rx="2.6"/><path d="M4 7.3h16"/><circle cx="7.2" cy="5.1" r=".55" fill="currentColor"/><circle cx="9.5" cy="5.1" r=".55" fill="currentColor"/><circle cx="12" cy="14" r="4.4"/><path d="M9.3 14.6c.9-.8 1.8-.8 2.7 0s1.8.8 2.7 0"/>',
+  stampante3d: '<path class="d" d="M4.5 20.5V5.5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v15z"/><path d="M4.5 8h15M10.2 8v2.4h3.6V8M12 10.4v1.4M8.4 16.2h7.2v4.3H8.4zM3 20.5h18"/>',
+  rack: '<rect class="d" x="4" y="3" width="16" height="7.4" rx="1.6"/><rect class="d" x="4" y="13.6" width="16" height="7.4" rx="1.6"/><path d="M11 6.7h5.5M11 17.3h5.5"/><circle cx="7.5" cy="6.7" r=".9" fill="currentColor" stroke="none"/><circle cx="7.5" cy="17.3" r=".9" fill="currentColor" stroke="none"/>',
+  ups: '<rect class="d" x="2.8" y="6.8" width="16.4" height="10.4" rx="2.6"/><path d="M21.2 10.3v3.4"/><path d="M11.8 8.9 9.3 12.3h3.4l-2.5 3.4"/>',
+  telecamera: '<path class="d" d="M3.6 8.1 16.4 4.7a1.2 1.2 0 0 1 1.5.85l1.3 4.9a1.2 1.2 0 0 1-.85 1.5L5.6 15.3a1.2 1.2 0 0 1-1.5-.85L2.8 9.6a1.2 1.2 0 0 1 .8-1.5z"/><circle cx="15.2" cy="8.6" r="1.25"/><path d="M8.6 14.4 9.6 18M4 18h6M4 15.6v4.8"/>',
+  automazione: '<circle class="d" cx="6" cy="6" r="2.6"/><rect class="d" x="15.4" y="15.4" width="5.2" height="5.2" rx="1.4"/><path d="M8.6 6h5.4a4 4 0 0 1 4 4v2.3"/><path d="M15.6 10.6 18 13l2.4-2.4"/><path d="M6 8.6v5.4a4 4 0 0 0 4 4h2.4"/>',
+  zigbee: '<circle class="d" cx="12" cy="5" r="2.2"/><circle class="d" cx="5" cy="18" r="2.2"/><circle class="d" cx="19" cy="18" r="2.2"/><path d="M10.9 6.9 6.1 16.1M13.1 6.9l4.8 9.2M7.2 18h9.6"/>',
+  friggitrice: '<path class="d" d="M6 5.2A2.2 2.2 0 0 1 8.2 3h7.6A2.2 2.2 0 0 1 18 5.2v13.6a2.2 2.2 0 0 1-2.2 2.2H8.2A2.2 2.2 0 0 1 6 18.8z"/><path d="M6 11.6h12M10 15.4h4"/><circle cx="12" cy="7.3" r="1.6"/>',
+  crocchette: '<path class="d" d="M3 11.2h18l-1.3 5a3 3 0 0 1-2.9 2.3H7.2a3 3 0 0 1-2.9-2.3z"/><circle cx="8.6" cy="7.9" r="1.35"/><circle cx="12.2" cy="6.6" r="1.35"/><circle cx="15.7" cy="8.1" r="1.35"/>',
+  soggiorno: '<path d="M5 11V8.6A2.6 2.6 0 0 1 7.6 6h8.8A2.6 2.6 0 0 1 19 8.6V11"/><path class="d" d="M3 13.2a2 2 0 0 1 4 0v1.6h10v-1.6a2 2 0 0 1 4 0v4.6H3z"/><path d="M5.4 17.8v1.7M18.6 17.8v1.7"/>',
+  ufficio: '<rect class="d" x="6" y="3.8" width="12" height="8.4" rx="1.6"/><path d="M12 12.2v2.8M3 15h18M5 15v5.2M19 15v5.2"/>',
+  cucina: '<path class="d" d="M5 10.4h14v6.2A3.6 3.6 0 0 1 15.4 20.2H8.6A3.6 3.6 0 0 1 5 16.6z"/><path d="M3.4 10.4h17.2M10 7.6h4M9.5 3.8c-.6.8.6 1.4 0 2.2M14.5 3.8c-.6.8.6 1.4 0 2.2"/>',
+  letto: '<path d="M3 18.5V6.5M3 14h18v4.5"/><path class="d" d="M21 14v-2.4A2.6 2.6 0 0 0 18.4 9H11v5z"/><circle cx="7" cy="11.4" r="1.8"/>',
+  bagno: '<path class="d" d="M3.2 11.5h17.6v1.8a5.2 5.2 0 0 1-5.2 5.2H8.4a5.2 5.2 0 0 1-5.2-5.2z"/><path d="M6 11.5V5.8A2.3 2.3 0 0 1 8.3 3.5a2.3 2.3 0 0 1 2.2 1.6M7.5 18.5l-1 2M16.5 18.5l1 2"/>',
+  aggiungi: '<rect class="d" x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M12 8.2v7.6M8.2 12h7.6"/>',
+  avanzate: '<path d="M4 7h8.6M17.4 7H20M4 17h2.6M11.4 17H20"/><circle class="d" cx="15" cy="7" r="2.4"/><circle class="d" cx="9" cy="17" r="2.4"/>',
+  lucchetto: '<rect class="d" x="5" y="10.4" width="14" height="10.2" rx="2.6"/><path d="M8.2 10.4V8a3.8 3.8 0 0 1 7.6 0v2.4M12 14.4v2.2"/>',
+  sole: '<circle class="d" cx="12" cy="12" r="4.2"/><path d="M12 2.8v1.8M12 19.4v1.8M2.8 12h1.8M19.4 12h1.8M5.5 5.5l1.3 1.3M17.2 17.2l1.3 1.3M5.5 18.5l1.3-1.3M17.2 6.8l1.3-1.3"/>',
+  luna: '<path class="d" d="M19.6 14.6A8 8 0 0 1 9.4 4.4a8 8 0 1 0 10.2 10.2z"/>',
+  avviso: '<path class="d" d="M10.3 4.4a2 2 0 0 1 3.4 0l7.4 12.8a2 2 0 0 1-1.7 3H4.6a2 2 0 0 1-1.7-3z"/><path d="M12 9.4v4.2"/><circle cx="12" cy="16.8" r=".95" fill="currentColor" stroke="none"/>',
+  ok: '<circle class="d" cx="12" cy="12" r="8.6"/><path d="M8.2 12.3l2.6 2.6 5-5.4"/>',
+  power: '<path d="M12 3.4v8"/><path d="M7.1 6.4a7.2 7.2 0 1 0 9.8 0"/>',
+  pi: '<rect class="d" x="3.5" y="6" width="17" height="12" rx="2.2"/><rect x="9" y="9.6" width="6" height="4.8" rx="1"/><path d="M7 6V3.8M10 6V3.8M13 6V3.8M16 6V3.8M20.5 10.4h-2M20.5 13.6h-2"/>',
+  rete: '<path d="M2.8 9.2a13 13 0 0 1 18.4 0M5.9 12.5a8.6 8.6 0 0 1 12.2 0M9 15.7a4.2 4.2 0 0 1 6 0"/><circle cx="12" cy="18.8" r="1.3" fill="currentColor" stroke="none"/>',
+  ha: '<path class="d" d="M12 3.2 20.4 10v9.3a1.5 1.5 0 0 1-1.5 1.5H5.1a1.5 1.5 0 0 1-1.5-1.5V10z"/><circle cx="12" cy="13.4" r="2.3"/><path d="M12 15.7v5.1"/>',
+  calendario: '<rect class="d" x="3.8" y="5" width="16.4" height="15.4" rx="2.6"/><path d="M3.8 9.6h16.4M8.2 3v3.8M15.8 3v3.8M8 13.4h2M12 13.4h2M8 16.8h2"/>',
+  freccia: '<path d="M9 5.5 15.5 12 9 18.5"/>',
+  frecciasu: '<path d="M6.5 15 12 9.5l5.5 5.5"/>',
+  frecciagiu: '<path d="M6.5 9 12 14.5 17.5 9"/>',
+  piu: '<path d="M12 5.5v13M5.5 12h13"/>',
+  meno: '<path d="M5.5 12h13"/>',
+  cerca: '<circle class="d" cx="10.6" cy="10.6" r="6.2"/><path d="M15.2 15.2l5 5"/>',
+  orologio: '<circle class="d" cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3.2 2"/>',
+  stella: '<path class="d" d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.5l-5.1 2.7 1-5.6-4.1-4 5.7-.8z"/>'
+};
+
+// Sostituisce <i data-i="nome"> con l'SVG inline.
+window.paintIcons = function (root) {
+  (root || document).querySelectorAll('i[data-i]').forEach(function (el) {
+    var body = window.ICONS[el.dataset.i];
+    if (!body) { el.style.outline = '2px solid red'; return; }
+    el.outerHTML = '<svg class="ico ' + (el.className || '') + '" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">' + body + '</svg>';
+  });
+};

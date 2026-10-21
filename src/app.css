@@ -1,0 +1,97 @@
+@import '@fontsource-variable/inter';
+
+/* Colori: chiaro di default, scuro con data-theme="scuro" o col sistema in automatico */
+:root {
+  --bg: #eef0f6;
+  --wall: radial-gradient(130% 80% at 12% -10%, #d6e2f7 0%, rgba(214, 226, 247, 0) 55%),
+    radial-gradient(90% 60% at 100% 0%, #efe3f3 0%, rgba(239, 227, 243, 0) 50%), #eef0f6;
+  --tile: rgba(255, 255, 255, 0.62);
+  --tile-hover: rgba(255, 255, 255, 0.8);
+  --tile-on: #ffffff;
+  --tile-on-ink: #1c1c1e;
+  --tile-on-ink-2: #6e6e73;
+  --raised: #ffffff;
+  --ink: #1c1c1e;
+  --ink-2: #636369;
+  --ink-3: #8e8e93;
+  --sep: rgba(60, 60, 67, 0.13);
+  --track: rgba(120, 120, 128, 0.18);
+  --chrome: rgba(246, 247, 251, 0.92);
+  --scrim: rgba(20, 20, 30, 0.28);
+
+  --luci: #f59f0a;
+  --clima: #2fb35a;
+  --caldo: #ff7a2e;
+  --energia: #0a7cff;
+  --sicurezza: #a64fe0;
+  --rack: #1ba3b8;
+  --pericolo: #ff3b30;
+  --ok: #2fb35a;
+
+  --r-tile: 18px;
+  --r-card: 22px;
+  --shadow: 0 1px 1px rgba(20, 20, 40, 0.04), 0 6px 20px -10px rgba(20, 20, 40, 0.25);
+  --shadow-lift: 0 2px 4px rgba(20, 20, 40, 0.06), 0 18px 40px -16px rgba(20, 20, 40, 0.35);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: light;
+}
+
+:root[data-theme='scuro'] {
+  --bg: #100d1f;
+  --wall: radial-gradient(140% 110% at 0% 0%, #2d2350 0%, rgba(45, 35, 80, 0) 70%),
+    radial-gradient(120% 90% at 100% 100%, #10243f 0%, rgba(16, 36, 63, 0) 65%), #100d1f;
+  --tile: rgba(255, 255, 255, 0.085);
+  --tile-hover: rgba(255, 255, 255, 0.13);
+  --tile-on: rgba(255, 255, 255, 0.94);
+  --raised: #1d1a2c;
+  --ink: #f5f5f7;
+  --ink-2: #a1a1a8;
+  --ink-3: #75757c;
+  --sep: rgba(255, 255, 255, 0.1);
+  --track: rgba(255, 255, 255, 0.14);
+  --chrome: rgba(18, 15, 32, 0.92);
+  --scrim: rgba(0, 0, 0, 0.55);
+  --luci: #ffaa1f;
+  --clima: #38c766;
+  --energia: #2e8fff;
+  --sicurezza: #bf6cf5;
+  --rack: #2cc0d6;
+  --shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 10px 24px -12px rgba(0, 0, 0, 0.7);
+  --shadow-lift: 0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 50px -18px rgba(0, 0, 0, 0.8);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter Variable', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+body { background: var(--wall); background-attachment: fixed; }
+
+button { font: inherit; color: inherit; }
+h1, h2, h3, p { margin: 0; }
+
+.num { font-variant-numeric: tabular-nums; }
+
+::selection { background: color-mix(in srgb, var(--energia) 30%, transparent); }
+
+:focus-visible { outline: 3px solid var(--energia); outline-offset: 2px; border-radius: 10px; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--track); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
+
+.ico .d { fill: currentColor; fill-opacity: 0.16; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
