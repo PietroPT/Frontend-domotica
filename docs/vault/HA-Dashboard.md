@@ -35,5 +35,5 @@ Ricontrollate prima di ogni comando, riconosciute da entity_id, nome e dispositi
 ## Aperto
 
 - Fase 4, parte 1 fatta il 21/10: CT 203 `ha-dashboard` su pve1 con solo nginx (`http://10.10.50.21`, SERVERS), build fatta sul PC e copiata via SSH con chiave (`pubblica.cmd`), aperta anche da fuori casa col tunnel. Da fare: utente HA «Pannello» non amministratore e solo locale (il suo token starà solo sul Pi), utente non amministratore per l'altra persona, poi il pannello sul Pi.
-- Non provati: iPhone/Safari, tablet, Pi 4 (fluidità, leggibilità a 2–3 m); carico del video delle telecamere su Frigate e HA e resa dal tunnel WireGuard.
+- Non provati: tablet, Pi 4 (fluidità, leggibilità a 2–3 m); carico del video delle telecamere su Frigate e HA e resa dal tunnel WireGuard. Sull'iPhone la dashboard si apre, anche dal tunnel (riferito da Pietro), ma non è stata provata funzione per funzione.
 - Allarme da progettare.
