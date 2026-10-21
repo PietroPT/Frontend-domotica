@@ -2,10 +2,10 @@
   import { hass } from '../lib/ha/hass.svelte';
   import { app } from '../lib/app.svelte';
   import { ago } from '../lib/format';
+  import { cameraSrc, isPortrait, motionOf } from '../lib/view';
   import CameraView from '../lib/ui/CameraView.svelte';
 
   const cams = $derived(hass.entities('camera'));
-  const motionOf = (id: string) => hass.states[id.replace('camera.', 'binary_sensor.') + '_motion'];
 </script>
 
 <header class="top">
@@ -16,8 +16,9 @@
 <div class="grid">
   {#each cams as c (c.entity_id)}
     {@const m = motionOf(c.entity_id)}
-    <button class="cam" class:portrait={c.attributes.orientation === 'portrait'} onclick={() => app.open({ kind: 'telecamera', id: c.entity_id })} aria-label="Apri {c.attributes.friendly_name} a schermo intero">
-      <CameraView name={c.attributes.friendly_name} portrait={c.attributes.orientation === 'portrait'} motion={m?.state === 'on'} />
+    <button class="cam" class:portrait={isPortrait(c)} onclick={() => app.open({ kind: 'telecamera', id: c.entity_id })} aria-label="Apri {c.attributes.friendly_name} a schermo intero">
+      <CameraView name={c.attributes.friendly_name} portrait={isPortrait(c)} motion={m?.state === 'on'}
+        src={cameraSrc(c)} refresh={10} onshape={(p) => (hass.portrait[c.entity_id] = p)} />
       <span class="meta">{m?.state === 'on' ? 'Movimento in corso' : m ? `Ultimo movimento ${ago(m.last_changed)}` : ''}</span>
     </button>
   {/each}

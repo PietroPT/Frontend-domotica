@@ -2,7 +2,7 @@
   import { hass } from '../lib/ha/hass.svelte';
   import { app } from '../lib/app.svelte';
   import { layout } from '../lib/layout.svelte';
-  import { tileOf } from '../lib/view';
+  import { cameraSrc, isPortrait, motionOf, thermostat, tileOf } from '../lib/view';
   import { kw, temp, today, clock } from '../lib/format';
   import Tile from '../lib/ui/Tile.svelte';
   import Icon from '../lib/ui/Icon.svelte';
@@ -14,7 +14,7 @@
   let now = $state(new Date());
   $effect(() => { const i = setInterval(() => (now = new Date()), 30_000); return () => clearInterval(i); });
 
-  const term = $derived(hass.states['climate.termostato']);
+  const term = $derived(thermostat());
   const lightsOn = $derived(hass.entities('light').filter((l) => l.state === 'on').length);
   const totalW = $derived(Object.values(hass.states).filter((s) => s.attributes.device_class === 'power').reduce((a, s) => a + (+s.state || 0), 0));
   const motion = $derived(hass.entities('binary_sensor').filter((s) => s.attributes.device_class === 'motion' && s.state === 'on'));
@@ -38,6 +38,8 @@
     return parts.join(' · ');
   }
   const cams = $derived(layout.pinned.filter((id) => id.startsWith('camera.') && hass.states[id]));
+  // Somma dei rapporti larghezza/altezza: con un'altezza comune le telecamere riempiono la riga.
+  const camRatio = $derived(cams.reduce((a, id) => a + (isPortrait(hass.states[id]) ? 3 / 4 : 4 / 3), 0));
 </script>
 
 <div class="casa">
@@ -53,6 +55,7 @@
   </header>
 
   {#if hass.demo}<p class="demo">Mockup con dati di esempio: nessun collegamento a Home Assistant.</p>{/if}
+  {#if !rooms.length && !hass.demo}<p class="demo">Nessun dispositivo nella Casa: aggiungili con il pulsante +.</p>{/if}
 
   <nav class="chips" aria-label="Riepilogo">
     <button class="chip" onclick={() => app.go('clima')}>
@@ -101,11 +104,12 @@
       {#if cams.length}
         <section>
           <h2>Telecamere</h2>
-          <div class="cams">
+          <div class="cams" style:--n={cams.length} style:--ratio={camRatio}>
             {#each cams as id (id)}
-              <button class="cambtn" onclick={() => app.open({ kind: 'telecamera', id })} aria-label="Apri {hass.states[id].attributes.friendly_name}">
-                <CameraView name={hass.states[id].attributes.friendly_name} portrait={hass.states[id].attributes.orientation === 'portrait'}
-                  motion={hass.states[id.replace('camera.', 'binary_sensor.') + '_motion']?.state === 'on'} />
+              {@const c = hass.states[id]}
+              <button class="cambtn" onclick={() => app.open({ kind: 'telecamera', id })} aria-label="Apri {c.attributes.friendly_name}">
+                <CameraView name={c.attributes.friendly_name} portrait={isPortrait(c)} motion={motionOf(id)?.state === 'on'}
+                  src={cameraSrc(c)} refresh={10} onshape={(p) => (hass.portrait[id] = p)} />
               </button>
             {/each}
           </div>
@@ -145,8 +149,8 @@
   .side { display: grid; gap: 22px; align-content: start; }
   .clima { display: none; }
   .cams { display: flex; gap: 10px; container-type: inline-size; }
-  /* altezza comune: una verticale (3:4) e una orizzontale (4:3) riempiono la riga */
-  .cambtn { border: 0; padding: 0; background: none; cursor: pointer; border-radius: var(--r-tile); height: calc((100cqw - 10px) / 2.0834); display: block; }
+  /* altezza comune: verticali (3:4) e orizzontali (4:3) riempiono insieme la riga */
+  .cambtn { border: 0; padding: 0; background: none; cursor: pointer; border-radius: var(--r-tile); height: calc((100cqw - (var(--n) - 1) * 10px) / var(--ratio)); display: block; }
   .cambtn :global(.cam) { height: 100%; }
   .card { background: var(--tile); border-radius: var(--r-card); padding: 16px 18px 18px; display: grid; justify-items: center; }
   .card h2 { justify-self: start; }

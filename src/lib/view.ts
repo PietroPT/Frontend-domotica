@@ -82,7 +82,7 @@ export function tileOf(id: string): TileView | null {
 
   if (domain === 'switch') {
     const on = e.state === 'on';
-    const w = hass.num(id.replace('switch.', 'sensor.') + '_power');
+    const w = hass.num(powerOf(id)?.entity_id ?? '');
     const p = policyOf(id);
     const canToggle = !p.readOnly && !(p.noRemoteOn && !on);
     return {
@@ -108,4 +108,39 @@ export function tileOf(id: string): TileView | null {
   }
 
   return { ...base, on: e.state === 'on', color: 'var(--ink-3)', detail: `${e.state} · ${since(e.last_changed)}` };
+}
+
+/** Si può mettere nella Casa: luci, prese, termostato, telecamere, sensori di potenza.
+ *  L'infrastruttura (rack, UPS) sta solo in Avanzate; le entità nascoste o tecniche di HA restano fuori. */
+export function canPin(id: string): boolean {
+  const s = hass.states[id];
+  if (!s || hass.isBackground(id) || policyOf(id).readOnly) return false;
+  if (/(^|[._ ])ups([._ ]|$)/i.test(`${id} ${hass.deviceName(id)}`)) return false;
+  const d = id.split('.')[0];
+  return ['light', 'switch', 'climate', 'camera'].includes(d) || (d === 'sensor' && s.attributes.device_class === 'power');
+}
+
+// Entità collegate: si cercano sullo stesso dispositivo di HA, non dal nome,
+// perché i nomi reali (Zigbee2MQTT, Frigate) non seguono uno schema fisso.
+
+/** Sensore di potenza della presa. */
+export const powerOf = (switchId: string) => hass.sibling(switchId, (s) => s.attributes.device_class === 'power');
+
+/** Presa (interruttore) a cui appartiene un sensore di potenza. */
+export const switchOf = (sensorId: string) => hass.sibling(sensorId, (s) => s.entity_id.startsWith('switch.'));
+
+/** Sensore di movimento della telecamera (Frigate ne crea uno per telecamera). */
+export const motionOf = (cameraId: string) =>
+  hass.sibling(cameraId, (s) => s.entity_id.startsWith('binary_sensor.') && s.attributes.device_class === 'motion');
+
+/** Il termostato: in casa ce n'è uno solo. */
+export const thermostat = () => hass.entities('climate')[0];
+
+export const isPortrait = (c: HassEntity) => c.attributes.orientation === 'portrait' || !!hass.portrait[c.entity_id];
+
+/** Immagine della telecamera servita da HA: fotogramma singolo o flusso continuo (MJPEG). */
+export function cameraSrc(c: HassEntity, live = false): string | undefined {
+  const pic: string | undefined = c.attributes.entity_picture;
+  if (hass.demo || !pic) return undefined;
+  return hass.url(live ? pic.replace('/api/camera_proxy/', '/api/camera_proxy_stream/') : pic);
 }

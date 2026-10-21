@@ -4,9 +4,10 @@
   import ThermostatDial from '../lib/ui/ThermostatDial.svelte';
   import LineChart from '../lib/ui/LineChart.svelte';
   import Icon from '../lib/ui/Icon.svelte';
+  import { thermostat } from '../lib/view';
 
-  const id = 'climate.termostato';
-  const t = $derived(hass.states[id]);
+  const t = $derived(thermostat());
+  const id = $derived(t?.entity_id ?? '');
   const a = $derived(t?.attributes ?? {});
   const step = $derived(a.target_temp_step ?? 0.5);
   const set = (v: number) => hass.callService('climate', 'set_temperature', { entity_id: id, temperature: Math.min(30, Math.max(a.min_temp ?? 5, v)) });

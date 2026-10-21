@@ -1,35 +1,74 @@
 // Stato condiviso di Home Assistant per tutta l'app.
-// Fase 1: alimentato dai dati finti di ./mock.ts, con piccole variazioni
-// periodiche per simulare gli aggiornamenti in tempo reale.
-// Fase 2: le stesse proprietà verranno riempite da subscribeEntities e dai
-// registri letti via WebSocket; callService userà la connessione vera.
+// Due sorgenti con le stesse proprietà:
+// - collegamento vero (fase 2): stati da subscribeEntities, registri via WebSocket, vedi ./live.ts;
+// - dati finti del mockup (./mock.ts) quando VITE_HA_URL non è impostato o l'indirizzo
+//   contiene ?demo, così il mockup resta apribile senza Home Assistant.
 
 import * as mock from './mock';
 import type { AreaEntry, DeviceRegistryEntry, EntityRegistryEntry, HassEntity, HistoryPoint } from './types';
 
+export const HA_URL: string = (import.meta.env.VITE_HA_URL ?? '').replace(/\/$/, '');
+const DEMO = !HA_URL || new URLSearchParams(location.search).has('demo');
+
+export type Status = 'connecting' | 'ready' | 'error';
+
 class Hass {
-  states = $state<Record<string, HassEntity>>(structuredClone(mock.states));
-  areas = $state<AreaEntry[]>(mock.areas);
-  devices = $state<DeviceRegistryEntry[]>(mock.devices);
-  entityRegistry = $state<EntityRegistryEntry[]>(mock.entityRegistry);
-  connected = $state(true);
   /** true finché i dati sono quelli finti del mockup */
-  demo = true;
+  readonly demo = DEMO;
+  states = $state<Record<string, HassEntity>>(DEMO ? structuredClone(mock.states) : {});
+  areas = $state<AreaEntry[]>(DEMO ? mock.areas : []);
+  devices = $state<DeviceRegistryEntry[]>(DEMO ? mock.devices : []);
+  entityRegistry = $state<EntityRegistryEntry[]>(DEMO ? mock.entityRegistry : []);
+  status = $state<Status>(DEMO ? 'ready' : 'connecting');
+  /** Spiegazione da mostrare quando status è 'error'. */
+  error = $state('');
+  /** false quando la connessione cade dopo essere stata aperta (si riprova da sola). */
+  connected = $state(true);
+  /** Nome dell'utente di HA con cui si è entrati. */
+  user = $state('');
+  /** Avviso breve mostrato in basso (es. comando non inviato). */
+  notice = $state('');
+  /** Telecamere con l'immagine più alta che larga (la misura arriva col primo fotogramma). */
+  portrait = $state<Record<string, boolean>>({});
+
+  private reg = $derived(new Map(this.entityRegistry.map((r) => [r.entity_id, r])));
+  private dev = $derived(new Map(this.devices.map((d) => [d.id, d])));
 
   /** Area di un'entità: quella dell'entità, altrimenti quella del suo dispositivo (regola di HA). */
   areaOf(entity_id: string): string | null {
-    const e = this.entityRegistry.find((r) => r.entity_id === entity_id);
+    const e = this.reg.get(entity_id);
     if (!e) return null;
-    if (e.area_id) return e.area_id;
-    return this.devices.find((d) => d.id === e.device_id)?.area_id ?? null;
+    return e.area_id ?? (e.device_id ? this.dev.get(e.device_id)?.area_id ?? null : null);
+  }
+
+  deviceName(entity_id: string): string {
+    const d = this.reg.get(entity_id)?.device_id;
+    return (d && this.dev.get(d)?.name) || '';
   }
 
   areaName(area_id: string | null): string {
     return this.areas.find((a) => a.area_id === area_id)?.name ?? 'Senza stanza';
   }
 
+  /** Nascosta in HA, oppure di configurazione/diagnostica: non va proposta nella Casa. */
+  isBackground(entity_id: string): boolean {
+    const e = this.reg.get(entity_id);
+    return !!(e?.hidden_by || e?.entity_category);
+  }
+
   entities(domain: string): HassEntity[] {
     return Object.values(this.states).filter((s) => s.entity_id.startsWith(domain + '.'));
+  }
+
+  /** Un'altra entità dello stesso dispositivo (es. il sensore di potenza di una presa). */
+  sibling(entity_id: string, match: (s: HassEntity) => boolean): HassEntity | undefined {
+    const dev = this.reg.get(entity_id)?.device_id;
+    if (!dev) return undefined;
+    for (const r of this.entityRegistry) {
+      const s = r.device_id === dev && r.entity_id !== entity_id ? this.states[r.entity_id] : undefined;
+      if (s && match(s)) return s;
+    }
+    return undefined;
   }
 
   num(entity_id: string): number {
@@ -37,12 +76,24 @@ class Hass {
     return Number.isFinite(v) ? v : NaN;
   }
 
+  /** Cronologia: nel mockup dati finti; dal vivo arriva con la fase 3 (per ora vuota). */
   history(key: string): HistoryPoint[] {
-    return mock.history[key] ?? [];
+    return this.demo ? mock.history[key] ?? [] : [];
+  }
+
+  /** Indirizzo completo di un'immagine servita da HA (es. entity_picture delle telecamere). */
+  url(path: string): string {
+    return path.startsWith('/') ? HA_URL + path : path;
   }
 
   /** Stessa firma di callService di home-assistant-js-websocket. */
   async callService(domain: string, service: string, data: Record<string, any>): Promise<void> {
+    if (!this.demo) {
+      // Fase 2: solo lettura. I comandi veri si attivano nella fase 3, dopo aver
+      // controllato le regole di sicurezza sui nomi reali delle entità.
+      this.say('Comandi non ancora attivi: arrivano con la fase 3.');
+      return;
+    }
     const ids: string[] = [data.entity_id].flat();
     for (const id of ids) {
       const s = this.states[id];
@@ -62,28 +113,37 @@ class Hass {
         set(data.hvac_mode, { hvac_action: data.hvac_mode === 'off' ? 'off' : s.attributes.current_temperature < s.attributes.temperature ? 'heating' : 'idle' });
     }
     // Le prese seguono il relè: spenta = 0 W.
-    for (const id of ids.filter((i) => i.startsWith('switch.presa_'))) {
-      const p = id.replace('switch.', 'sensor.') + '_power';
-      if (this.states[id].state === 'off' && this.states[p]) this.states[p] = { ...this.states[p], state: '0' };
+    for (const id of ids.filter((i) => i.startsWith('switch.'))) {
+      const p = this.sibling(id, (s) => s.attributes.device_class === 'power');
+      if (this.states[id].state === 'off' && p) this.states[p.entity_id] = { ...p, state: '0' };
     }
+  }
+
+  private noticeTimer = 0;
+  say(text: string) {
+    this.notice = text;
+    clearTimeout(this.noticeTimer);
+    this.noticeTimer = window.setTimeout(() => (this.notice = ''), 4000);
   }
 }
 
 export const hass = new Hass();
 
-// Simulazione "dal vivo": i consumi oscillano come farebbero i sensori veri.
-const jitter: Record<string, [base: number, spread: number]> = {
-  'sensor.presa_rack_power': [140, 10],
-  'sensor.presa_lavatrice_power': [1830, 70],
-  'sensor.presa_stampante3d_power': [156, 14],
-  'sensor.ups_load': [43, 2],
-};
-setInterval(() => {
-  for (const [id, [base, spread]] of Object.entries(jitter)) {
-    const s = hass.states[id];
-    if (!s || s.state === '0') continue;
-    const sw = id.replace('sensor.', 'switch.').replace(/_power$/, '');
-    if (hass.states[sw]?.state === 'off') continue;
-    hass.states[id] = { ...s, state: String(Math.round(base + (Math.random() - 0.5) * spread)), last_updated: new Date().toISOString() };
-  }
-}, 2500);
+if (hass.demo) {
+  // Simulazione "dal vivo": i consumi oscillano come farebbero i sensori veri.
+  const jitter: Record<string, [base: number, spread: number]> = {
+    'sensor.presa_rack_power': [140, 10],
+    'sensor.presa_lavatrice_power': [1830, 70],
+    'sensor.presa_stampante3d_power': [156, 14],
+    'sensor.ups_load': [43, 2],
+  };
+  setInterval(() => {
+    for (const [id, [base, spread]] of Object.entries(jitter)) {
+      const s = hass.states[id];
+      if (!s || s.state === '0') continue;
+      const sw = id.replace('sensor.', 'switch.').replace(/_power$/, '');
+      if (hass.states[sw]?.state === 'off') continue;
+      hass.states[id] = { ...s, state: String(Math.round(base + (Math.random() - 0.5) * spread)), last_updated: new Date().toISOString() };
+    }
+  }, 2500);
+}

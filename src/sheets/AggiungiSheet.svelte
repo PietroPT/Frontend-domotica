@@ -4,7 +4,7 @@
   import { hass } from '../lib/ha/hass.svelte';
   import { app } from '../lib/app.svelte';
   import { layout } from '../lib/layout.svelte';
-  import { iconOf, nameOf } from '../lib/view';
+  import { canPin, iconOf, nameOf } from '../lib/view';
   import Sheet from '../lib/ui/Sheet.svelte';
   import Icon from '../lib/ui/Icon.svelte';
 
@@ -12,14 +12,6 @@
   const kinds: [string, string][] = [['tutto', 'Tutto'], ['light', 'Luci'], ['switch', 'Prese'], ['camera', 'Telecamere'], ['altro', 'Altro']];
   let kind = $state('tutto');
 
-  // L'infrastruttura (rack, UPS) sta solo in Avanzate: non si mette nella Casa.
-  const infra = /presa_rack|^sensor\.ups_/;
-  const usable = (id: string) => {
-    if (infra.test(id)) return false;
-    const d = id.split('.')[0];
-    const s = hass.states[id];
-    return ['light', 'switch', 'climate', 'camera'].includes(d) || (d === 'sensor' && s.attributes.device_class === 'power');
-  };
   const matchKind = (id: string) => {
     const d = id.split('.')[0];
     return kind === 'tutto' || d === kind || (kind === 'altro' && !['light', 'switch', 'camera'].includes(d));
@@ -29,7 +21,7 @@
       .map((area) => ({
         area,
         items: Object.values(hass.states)
-          .filter((s) => usable(s.entity_id) && matchKind(s.entity_id) && hass.areaOf(s.entity_id) === area)
+          .filter((s) => canPin(s.entity_id) && matchKind(s.entity_id) && hass.areaOf(s.entity_id) === area)
           .filter((s) => !q || `${nameOf(s)} ${s.entity_id}`.toLowerCase().includes(q.toLowerCase()))
           .sort((a, b) => Number(layout.has(a.entity_id)) - Number(layout.has(b.entity_id))),
       }))

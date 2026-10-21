@@ -1,15 +1,35 @@
 <script lang="ts">
-  // Fase 1: scena disegnata al posto del video. Fase 2: flusso della telecamera
-  // tramite Home Assistant (camera/stream → HLS), come oggi nell'app di HA.
+  // Immagine della telecamera servita da Home Assistant: nei riquadri un fotogramma
+  // rinnovato ogni `refresh` secondi, a schermo intero il flusso continuo (MJPEG).
+  // Senza `src` (mockup) si disegna una scena al posto del video.
   import { clock } from '../format';
-  let { name, portrait = false, motion = false, big = false }:
-    { name: string; portrait?: boolean; motion?: boolean; big?: boolean } = $props();
+  let { name, portrait = false, motion = false, big = false, src, refresh = 0, onshape }:
+    { name: string; portrait?: boolean; motion?: boolean; big?: boolean; src?: string; refresh?: number;
+      onshape?: (portrait: boolean) => void } = $props();
   let t = $state(clock());
   $effect(() => { const i = setInterval(() => (t = big ? new Date().toLocaleTimeString('it-IT') : clock()), 1000); return () => clearInterval(i); });
+
+  let tick = $state(0);
+  let broken = $state(false);
+  // Il token nell'indirizzo dell'immagine cambia ogni pochi minuti: si riprova.
+  $effect(() => { src; broken = false; });
+  $effect(() => {
+    if (!src || !refresh) return;
+    const i = setInterval(() => tick++, refresh * 1000);
+    return () => clearInterval(i);
+  });
+  const img = $derived(src && refresh ? `${src}&_=${tick}` : src);
 </script>
 
 <div class="cam" class:portrait class:big>
-  {#if portrait}
+  {#if src}
+    {#if broken}
+      <p class="off">Immagine non disponibile</p>
+    {:else}
+      <img src={img} alt="" onerror={() => (broken = true)}
+        onload={(e) => { const i = e.currentTarget as HTMLImageElement; onshape?.(i.naturalHeight > i.naturalWidth); }} />
+    {/if}
+  {:else if portrait}
     <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3a46" /><stop offset="1" stop-color="#1c1c24" /></linearGradient></defs>
       <rect width="300" height="400" fill="url(#sg)" />
@@ -43,7 +63,9 @@
 <style>
   .cam { container-type: inline-size; position: relative; overflow: hidden; border-radius: var(--r-tile); background: #18181c; aspect-ratio: 4 / 3; }
   .cam.portrait { aspect-ratio: 3 / 4; }
-  svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  svg, img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  img { object-fit: cover; }
+  .off { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(255, 255, 255, 0.7); font-size: 14px; padding: 12px; text-align: center; }
   .live, .motion {
     position: absolute; top: 10px; display: inline-flex; align-items: center; gap: 6px;
     font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: #fff;

@@ -3,26 +3,27 @@
   import { app } from '../lib/app.svelte';
   import { policyOf } from '../lib/policy';
   import { watt, since } from '../lib/format';
+  import { powerOf, switchOf } from '../lib/view';
   import Sheet from '../lib/ui/Sheet.svelte';
   import LineChart from '../lib/ui/LineChart.svelte';
   import Icon from '../lib/ui/Icon.svelte';
 
   let { id }: { id: string } = $props();
-  // Si apre sia dalla presa (switch.presa_x) sia dal solo sensore (sensor.presa_x_power).
-  const base = $derived(id.split('.')[1].replace(/_power$/, ''));
-  const sw = $derived(hass.states[`switch.${base}`]);
-  const power = $derived(hass.states[`sensor.${base}_power`]);
-  const p = $derived(policyOf(`switch.${base}`));
+  // Si apre sia dalla presa (switch.…) sia dal solo sensore di potenza (es. rack, la cui presa è disattivata).
+  const isSwitch = $derived(id.startsWith('switch.'));
+  const sw = $derived(isSwitch ? hass.states[id] : switchOf(id));
+  const power = $derived(isSwitch ? powerOf(id) : hass.states[id]);
+  const p = $derived(policyOf(id));
   const on = $derived(sw?.state === 'on');
   const w = $derived(power ? +power.state : NaN);
-  const name = $derived((sw ?? power)?.attributes.friendly_name.replace(/ Potenza$/, '') ?? base);
+  const name = $derived(((sw ?? power)?.attributes.friendly_name ?? id).replace(/ (Potenza|Power)$/i, ''));
   let confirming = $state(false);
 
   // Spegnere un carico attivo interrompe quello che sta facendo: si conferma sempre.
   const warning = $derived(p.confirmOff ?? (w > 50 ? `Sta assorbendo ${watt(w)}: spegnerla interrompe quello che sta facendo.` : null));
   function off() {
     if (warning && !confirming) { confirming = true; return; }
-    hass.callService('switch', 'turn_off', { entity_id: sw.entity_id });
+    if (sw) hass.callService('switch', 'turn_off', { entity_id: sw.entity_id });
     confirming = false;
   }
 </script>

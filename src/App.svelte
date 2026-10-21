@@ -12,6 +12,8 @@
   import PresaSheet from './sheets/PresaSheet.svelte';
   import TelecameraSheet from './sheets/TelecameraSheet.svelte';
   import AggiungiSheet from './sheets/AggiungiSheet.svelte';
+  import Accesso from './lib/ui/Accesso.svelte';
+  import { hass } from './lib/ha/hass.svelte';
 
   const tabs: [Page, string, IconName][] = [
     ['casa', 'Casa', 'casa'], ['luci', 'Luci', 'luce'], ['clima', 'Clima', 'termostato'],
@@ -32,6 +34,9 @@
   $effect(() => { app.page; scrollTo({ top: 0 }); });
 </script>
 
+{#if hass.status !== 'ready'}
+  <Accesso />
+{:else}
 <div class="shell">
   <nav class="tabs" aria-label="Sezioni">
     {#each tabs as [page, label, icon]}
@@ -60,6 +65,13 @@
 {:else if app.sheet?.kind === 'presa'}<PresaSheet id={app.sheet.id} />
 {:else if app.sheet?.kind === 'telecamera'}<TelecameraSheet id={app.sheet.id} />
 {:else if app.sheet?.kind === 'aggiungi'}<AggiungiSheet />{/if}
+{/if}
+
+<!-- Avvisi brevi: connessione caduta (si riprova da sola) o comando non inviato. -->
+<div class="toast" role="status" aria-live="polite">
+  {#if !hass.connected}<p>Connessione a Home Assistant persa: riprovo…</p>
+  {:else if hass.notice}<p>{hass.notice}</p>{/if}
+</div>
 
 <style>
   .shell { min-height: 100vh; }
@@ -85,7 +97,11 @@
   .tabs a.on :global(.d) { fill-opacity: 0.3; }
   .tabs a.adv.on { color: var(--rack); }
 
+  .toast { position: fixed; z-index: 60; left: 0; right: 0; bottom: calc(88px + env(safe-area-inset-bottom)); display: grid; justify-items: center; padding: 0 16px; pointer-events: none; }
+  .toast p { max-width: 480px; padding: 12px 18px; border-radius: 16px; background: var(--ink); color: var(--bg); font-size: 14.5px; font-weight: 600; box-shadow: var(--shadow); }
+
   @media (min-width: 720px) {
+    .toast { bottom: 24px; }
     .shell { display: grid; grid-template-columns: 96px 1fr; }
     .tabs {
       position: sticky; top: 0; height: 100vh; flex-direction: column; justify-content: flex-start; gap: 6px;

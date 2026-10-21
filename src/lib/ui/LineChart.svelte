@@ -28,6 +28,9 @@
 </script>
 
 <figure bind:clientWidth={W}>
+  {#if !pts.length}
+    <p class="empty" style:height="{height}px">Cronologia non ancora collegata.</p>
+  {:else}
   <svg viewBox="0 0 {W} {height}" role="img" aria-label={label} style:--c={color}>
     <defs>
       <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
@@ -48,6 +51,7 @@
     <path d={path(pts)} class="line" />
     {#if last}<circle cx={x(last.t)} cy={y(last.v)} r="5" class="end" />{/if}
   </svg>
+  {/if}
   {#if unit}<figcaption>{unit}</figcaption>{/if}
 </figure>
 
@@ -59,5 +63,6 @@
   .line { fill: none; stroke: var(--c); stroke-width: 2.4; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
   .dash { fill: none; stroke: var(--ink-3); stroke-width: 1.6; stroke-dasharray: 5 5; vector-effect: non-scaling-stroke; }
   .end { fill: var(--raised); stroke: var(--c); stroke-width: 3; }
+  .empty { display: grid; place-items: center; margin: 0; color: var(--ink-3); font-size: 14px; }
   figcaption { position: absolute; top: -2px; left: 0; font-size: 12px; color: var(--ink-3); }
 </style>

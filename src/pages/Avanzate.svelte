@@ -3,22 +3,37 @@
   import { app, type Theme } from '../lib/app.svelte';
   import { ago, duration, watt, since } from '../lib/format';
   import { iconOf } from '../lib/view';
+  import { logout } from '../lib/ha/live';
+  import type { HassEntity } from '../lib/ha/types';
   import Icon from '../lib/ui/Icon.svelte';
   import type { IconName } from '../lib/icons';
 
   const n = (id: string) => hass.num(id);
   const st = (id: string) => hass.states[id]?.state;
-  const charge = $derived(n('sensor.ups_battery_charge'));
-  const online = $derived(st('sensor.ups_status_data')?.startsWith('OL'));
-  const autos = $derived(hass.entities('automation'));
-  const printing = $derived(st('sensor.core_one') === 'printing');
+  const find = (re: RegExp) => Object.keys(hass.states).find((id) => re.test(id));
 
+  // UPS (NUT): i sensori si chiamano sensor.<nome UPS>_…; il nome si ricava dal sensore dei dati di stato.
+  const ups = $derived(find(/^sensor\..+_status_data$/)?.replace(/_status_data$/, ''));
+  const charge = $derived(n(`${ups}_battery_charge`));
+  const online = $derived(st(`${ups}_status_data`)?.startsWith('OL'));
+
+  // Rack: la presa è disattivata in HA, resta il sensore di potenza (e i suoi fratelli sullo stesso dispositivo).
+  const rack = $derived(Object.values(hass.states).find((s) => s.attributes.device_class === 'power' && /rack/i.test(`${s.entity_id} ${hass.deviceName(s.entity_id)}`)));
+  const rackOf = (dc: string) => (rack ? hass.sibling(rack.entity_id, (s) => s.attributes.device_class === dc) : undefined);
+
+  const autos = $derived(hass.entities('automation'));
+  const printer = $derived(find(/^sensor\.core_one$/));
+  const bridge = 'binary_sensor.zigbee2mqtt_bridge_connection_state';
+  const kibble = 'sensor.crocchette_livello';
+
+  // Solo i servizi che esistono in HA: un sensore mancante non diventa un «Guasto».
   const services: { icon: IconName; name: string; ok: boolean; detail: string }[] = $derived([
-    { icon: 'ha', name: 'Home Assistant', ok: hass.connected, detail: hass.connected ? 'Collegato · dati in tempo reale' : 'Non raggiungibile' },
-    { icon: 'zigbee', name: 'Zigbee2MQTT', ok: st('binary_sensor.zigbee2mqtt_bridge_connection_state') === 'on', detail: `Coordinatore collegato ${since(hass.states['binary_sensor.zigbee2mqtt_bridge_connection_state']?.last_changed ?? '')}` },
-    { icon: 'stampante3d', name: 'Stampante 3D', ok: true, detail: printing ? `In stampa · ${st('sensor.core_one_progress')}% · ${st('sensor.core_one_filename')}` : 'Inattiva' },
-    { icon: 'crocchette', name: 'Crocchette', ok: st('sensor.crocchette_livello') === 'Normale', detail: `Livello ${st('sensor.crocchette_livello')?.toLowerCase()}` },
+    { icon: 'ha', name: 'Home Assistant', ok: hass.connected, detail: hass.connected ? 'Collegato · dati in tempo reale' : 'Non raggiungibile, riprovo' },
+    ...(hass.states[bridge] ? [{ icon: 'zigbee' as IconName, name: 'Zigbee2MQTT', ok: st(bridge) === 'on', detail: st(bridge) === 'on' ? `Coordinatore collegato ${since(hass.states[bridge].last_changed)}` : `Coordinatore scollegato ${since(hass.states[bridge].last_changed)}` }] : []),
+    ...(printer ? [{ icon: 'stampante3d' as IconName, name: 'Stampante 3D', ok: st(printer) !== 'unavailable', detail: st(printer) === 'printing' ? `In stampa · ${st(printer + '_progress')}% · ${st(printer + '_filename')}` : 'Inattiva' }] : []),
+    ...(hass.states[kibble] ? [{ icon: 'crocchette' as IconName, name: 'Crocchette', ok: st(kibble) === 'Normale', detail: `Livello ${st(kibble)?.toLowerCase()}` }] : []),
   ]);
+  const val = (e: HassEntity | undefined, f: (v: number) => string) => (e && Number.isFinite(+e.state) ? f(+e.state) : '—');
   const themes: [Theme, string][] = [['auto', 'Automatico'], ['chiaro', 'Chiaro'], ['scuro', 'Scuro']];
 </script>
 
@@ -31,33 +46,37 @@
 </header>
 
 <div class="layout">
+  {#if ups}
   <section class="card ups">
     <div class="head">
       <span class="ic" style:background={online ? 'var(--rack)' : 'var(--pericolo)'}><Icon name="ups" /></span>
-      <div><h2>UPS</h2><p class="sub2">{online ? 'Alimentato dalla rete' : 'A batteria'} · {st('sensor.ups_status')}</p></div>
+      <div><h2>UPS</h2><p class="sub2">{online ? 'Alimentato dalla rete' : 'A batteria'} · {st(`${ups}_status`)}</p></div>
     </div>
     <div class="gauge" role="meter" aria-label="Carica batterie UPS" aria-valuenow={charge} aria-valuemin="0" aria-valuemax="100">
       <i style:width="{charge}%"></i><span class="num">{charge}%</span>
     </div>
     <dl class="rows">
-      <div><dt>Carico</dt><dd class="num">{n('sensor.ups_load')}%</dd></div>
-      <div><dt>Autonomia stimata</dt><dd class="num">{duration(n('sensor.ups_battery_runtime'))}</dd></div>
-      <div><dt>Tensione ingresso</dt><dd class="num">{n('sensor.ups_input_voltage')} V</dd></div>
+      <div><dt>Carico</dt><dd class="num">{val(hass.states[`${ups}_load`], (v) => `${v}%`)}</dd></div>
+      <div><dt>Autonomia stimata</dt><dd class="num">{val(hass.states[`${ups}_battery_runtime`], duration)}</dd></div>
+      <div><dt>Tensione ingresso</dt><dd class="num">{val(hass.states[`${ups}_input_voltage`], (v) => `${v} V`)}</dd></div>
     </dl>
     <p class="note">Sola lettura: NUT senza credenziali. L'autonomia è la stima dell'UPS, ottimista.</p>
   </section>
+  {/if}
 
+  {#if rack}
   <section class="card">
     <div class="head">
       <span class="ic" style:background="var(--rack)"><Icon name="rack" /></span>
       <div><h2>Rack</h2><p class="sub2">Presa protetta · si comanda solo da Zigbee2MQTT</p></div>
     </div>
     <dl class="rows">
-      <div><dt>Potenza</dt><dd class="num">{watt(n('sensor.presa_rack_power'))}</dd></div>
-      <div><dt>Tensione</dt><dd class="num">{n('sensor.presa_rack_voltage')} V</dd></div>
-      <div><dt>Totale</dt><dd class="num">{Math.round(n('sensor.presa_rack_energy'))} kWh</dd></div>
+      <div><dt>Potenza</dt><dd class="num">{val(rack, watt)}</dd></div>
+      <div><dt>Tensione</dt><dd class="num">{val(rackOf('voltage'), (v) => `${Math.round(v)} V`)}</dd></div>
+      <div><dt>Totale</dt><dd class="num">{val(rackOf('energy'), (v) => `${Math.round(v)} kWh`)}</dd></div>
     </dl>
   </section>
+  {/if}
 
   <section class="card">
     <h2>Servizi</h2>
@@ -84,6 +103,7 @@
         </li>
       {/each}
     </ul>
+    {#if !autos.length}<p class="note">Nessuna automazione in Home Assistant.</p>{/if}
     <p class="note">Le automazioni si scrivono in Home Assistant; qui si attivano e disattivano.</p>
   </section>
 
@@ -96,6 +116,15 @@
     </div>
     <p class="note">Automatico segue il telefono o il computer; sul pannello a muro passa allo scuro la sera.</p>
   </section>
+
+  {#if !hass.demo}
+    <section class="card">
+      <h2>Accesso</h2>
+      <p class="sub2 acc">Collegato a Home Assistant{hass.user ? ` come ${hass.user}` : ''}.</p>
+      <button class="pill out" onclick={logout}><Icon name="chiudi" size={20} />Esci da questo dispositivo</button>
+      <p class="note">Per entrare di nuovo servono nome utente e password di Home Assistant.</p>
+    </section>
+  {/if}
 </div>
 
 <style>
@@ -133,6 +162,8 @@
   .sw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 28px; height: 28px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); transition: transform 0.3s var(--ease); }
   .sw.on { background: var(--ok); }
   .sw.on::after { transform: translateX(22px); }
+  .acc { margin: 6px 0 12px; }
+  .out { background: var(--track); }
   .seg { display: flex; background: var(--track); border-radius: 14px; padding: 4px; margin-top: 12px; }
   .seg button { flex: 1; min-height: 44px; border: 0; border-radius: 10px; background: none; font-weight: 600; cursor: pointer; color: var(--ink-2); }
   .seg button.sel { background: var(--raised); color: var(--ink); box-shadow: var(--shadow); }

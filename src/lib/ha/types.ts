@@ -24,6 +24,8 @@ export interface EntityRegistryEntry {
   device_id: string | null;
   disabled_by: string | null;
   hidden_by: string | null;
+  /** 'config' o 'diagnostic' per le entità tecniche di un dispositivo. */
+  entity_category?: string | null;
 }
 
 export interface DeviceRegistryEntry {
