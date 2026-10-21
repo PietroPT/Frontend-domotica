@@ -1,6 +1,6 @@
 # HA-Dashboard
 
-Dashboard web personalizzata per Home Assistant, al posto della dashboard standard. Avviata il 21/10/2026; fasi 1–3 fatte e confermate da Pietro lo stesso giorno. Fase 4 (pubblicazione) in corso.
+Dashboard web personalizzata per Home Assistant, al posto della dashboard standard. Avviata il 21/10/2026; fasi 1–3 fatte e confermate da Pietro lo stesso giorno. Fase 4 (pubblicazione) in corso: la dashboard è pubblicata su `http://10.10.50.21`.
 
 **Dettagli operativi** (uso, istruzioni, prove, regole complete): `G:\Il mio Drive\AI\Rack\HA-Dashboard\LEGGIMI.md`. **Codice**: GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31`; copia sul PC in `C:\HA-Dashboard`, avvio con doppio clic su `avvia.cmd`.
 
@@ -34,6 +34,6 @@ Ricontrollate prima di ogni comando, riconosciute da entity_id, nome e dispositi
 
 ## Aperto
 
-- Fase 4, decisa: CT 203 `ha-dashboard` su pve1 con solo nginx (`http://10.10.50.21`, SERVERS), build fatta sul PC e copiata via SSH con chiave (`pubblica.cmd`); utente HA «Pannello» non amministratore e solo locale, il cui token sta solo sul Pi; utente non amministratore per l'altra persona. Da eseguire; poi il pannello sul Pi.
+- Fase 4, parte 1 fatta il 21/10: CT 203 `ha-dashboard` su pve1 con solo nginx (`http://10.10.50.21`, SERVERS), build fatta sul PC e copiata via SSH con chiave (`pubblica.cmd`), aperta anche da fuori casa col tunnel. Da fare: utente HA «Pannello» non amministratore e solo locale (il suo token starà solo sul Pi), utente non amministratore per l'altra persona, poi il pannello sul Pi.
 - Non provati: iPhone/Safari, tablet, Pi 4 (fluidità, leggibilità a 2–3 m); carico del video delle telecamere su Frigate e HA e resa dal tunnel WireGuard.
 - Allarme da progettare.
