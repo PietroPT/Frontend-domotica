@@ -2,7 +2,7 @@
 // così il tasto Indietro del telefono e il pannello kiosk si comportano bene.
 
 export type Page = 'casa' | 'luci' | 'clima' | 'energia' | 'telecamere' | 'avanzate';
-export type Sheet = null | { kind: 'luce' | 'presa' | 'telecamera'; id: string } | { kind: 'aggiungi' };
+export type Sheet = null | { kind: 'luce' | 'presa' | 'telecamera' | 'crocchette'; id: string } | { kind: 'aggiungi' };
 export type Theme = 'auto' | 'chiaro' | 'scuro';
 
 const PAGES: Page[] = ['casa', 'luci', 'clima', 'energia', 'telecamere', 'avanzate'];
@@ -15,7 +15,7 @@ function readHash(): { page: Page; sheet: Sheet } {
   if (sp === 'aggiungi') sheet = { kind: 'aggiungi' };
   else if (sp) {
     const [kind, id] = sp.split(':');
-    if (kind === 'luce' || kind === 'presa' || kind === 'telecamera') sheet = { kind, id };
+    if (kind === 'luce' || kind === 'presa' || kind === 'telecamera' || kind === 'crocchette') sheet = { kind, id };
   }
   return { page, sheet };
 }

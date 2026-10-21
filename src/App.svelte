@@ -12,6 +12,7 @@
   import PresaSheet from './sheets/PresaSheet.svelte';
   import TelecameraSheet from './sheets/TelecameraSheet.svelte';
   import AggiungiSheet from './sheets/AggiungiSheet.svelte';
+  import CrocchetteSheet from './sheets/CrocchetteSheet.svelte';
   import Accesso from './lib/ui/Accesso.svelte';
   import { hass } from './lib/ha/hass.svelte';
 
@@ -64,6 +65,7 @@
 {#if app.sheet?.kind === 'luce'}<LuceSheet id={app.sheet.id} />
 {:else if app.sheet?.kind === 'presa'}<PresaSheet id={app.sheet.id} />
 {:else if app.sheet?.kind === 'telecamera'}<TelecameraSheet id={app.sheet.id} />
+{:else if app.sheet?.kind === 'crocchette'}<CrocchetteSheet id={app.sheet.id} />
 {:else if app.sheet?.kind === 'aggiungi'}<AggiungiSheet />{/if}
 {/if}
 

@@ -16,7 +16,7 @@ const KEY = hass.demo ? 'ha-dashboard.casa.demo' : 'ha-dashboard.casa';
 const DEMO_DEFAULT = [
   'light.soggiorno_soffitto', 'light.soggiorno_lampada', 'light.soggiorno_striscia_tv',
   'climate.termostato',
-  'light.cucina_pensili', 'switch.presa_friggitrice',
+  'light.cucina_pensili', 'switch.presa_friggitrice', 'text.crocchette_alimentazione_manuale',
   'light.camera_comodino',
   'light.ufficio_scrivania', 'switch.presa_stampante3d',
   'switch.presa_lavatrice',

@@ -93,13 +93,13 @@ class Hass {
     return path.startsWith('/') ? HA_URL + path : path;
   }
 
-  /** Stessa firma di callService di home-assistant-js-websocket. */
-  async callService(domain: string, service: string, data: Record<string, any>): Promise<void> {
+  /** Stessa firma di callService di home-assistant-js-websocket; restituisce false se il comando non è partito. */
+  async callService(domain: string, service: string, data: Record<string, any>): Promise<boolean> {
     if (!this.demo) {
       // Fase 2: solo lettura. I comandi veri si attivano nella fase 3, dopo aver
       // controllato le regole di sicurezza sui nomi reali delle entità.
       this.say('Comandi non ancora attivi: arrivano con la fase 3.');
-      return;
+      return false;
     }
     const ids: string[] = [data.entity_id].flat();
     for (const id of ids) {
@@ -115,7 +115,14 @@ class Hass {
       } else if (domain === 'light' && service === 'turn_off') set('off', { brightness: null });
       else if ((domain === 'switch' || domain === 'automation') && service === 'turn_on') set('on');
       else if ((domain === 'switch' || domain === 'automation') && service === 'turn_off') set('off');
-      else if (domain === 'climate' && service === 'set_temperature') set(s.state, { temperature: data.temperature });
+      else if (domain === 'text' && service === 'set_value') {
+        // Distributore: la quantità scritta viene erogata e si somma ai totali.
+        const g = +data.value || 0;
+        for (const t of ['sensor.crocchette_totale_erogato', 'sensor.crocchette_erogato_manualmente']) {
+          const e = this.states[t];
+          if (e) this.states[t] = { ...e, state: String(+e.state + g) };
+        }
+      } else if (domain === 'climate' && service === 'set_temperature') set(s.state, { temperature: data.temperature });
       else if (domain === 'climate' && service === 'set_hvac_mode')
         set(data.hvac_mode, { hvac_action: data.hvac_mode === 'off' ? 'off' : s.attributes.current_temperature < s.attributes.temperature ? 'heating' : 'idle' });
     }
@@ -124,6 +131,7 @@ class Hass {
       const p = this.sibling(id, (s) => s.attributes.device_class === 'power');
       if (this.states[id].state === 'off' && p) this.states[p.entity_id] = { ...p, state: '0' };
     }
+    return true;
   }
 
   /** Rinomina un'entità in HA (registro delle entità). Nome vuoto = torna al nome originale.

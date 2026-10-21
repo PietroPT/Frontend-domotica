@@ -103,12 +103,27 @@ export function tileOf(id: string): TileView | null {
     };
   }
 
+  // Cibo extra del distributore PetKit (entità text dell'alimentazione manuale).
+  if (isFeeder(id)) {
+    const g = hass.states['sensor.crocchette_totale_erogato']?.state;
+    const low = hass.states['binary_sensor.crocchette_livello_cibo']?.state === 'on';
+    return {
+      ...base, icon: 'crocchette', title: 'Cibo extra', on: false, color: 'var(--clima)',
+      detail: low ? 'Cibo in esaurimento' : g ? `Oggi ${g} g` : 'Distributore',
+      toggle: () => app.open({ kind: 'crocchette', id }),
+      open: () => app.open({ kind: 'crocchette', id }),
+    };
+  }
+
   if (domain === 'camera') {
     return { ...base, on: false, color: 'var(--sicurezza)', detail: 'Dal vivo', open: () => app.open({ kind: 'telecamera', id }) };
   }
 
   return { ...base, on: e.state === 'on', color: 'var(--ink-3)', detail: `${e.state} · ${since(e.last_changed)}` };
 }
+
+/** Alimentazione manuale del distributore di crocchette: nella Casa diventa il pulsante «Cibo extra». */
+export const isFeeder = (id: string) => /^text\..*crocchett.*alimentazione_manuale$/.test(id);
 
 /** Si può mettere nella Casa: luci, prese, termostato, telecamere, sensori di potenza.
  *  L'infrastruttura (rack, UPS) sta solo in Avanzate; le entità nascoste o tecniche di HA restano fuori. */
@@ -117,7 +132,7 @@ export function canPin(id: string): boolean {
   if (!s || hass.isBackground(id) || policyOf(id).readOnly) return false;
   if (/(^|[._ ])ups([._ ]|$)/i.test(`${id} ${hass.deviceName(id)}`)) return false;
   const d = id.split('.')[0];
-  return ['light', 'switch', 'climate', 'camera'].includes(d) || (d === 'sensor' && s.attributes.device_class === 'power');
+  return ['light', 'switch', 'climate', 'camera'].includes(d) || (d === 'sensor' && s.attributes.device_class === 'power') || isFeeder(id);
 }
 
 // Entità collegate: si cercano sullo stesso dispositivo di HA, non dal nome,
