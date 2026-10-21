@@ -10,7 +10,27 @@
   let svg: SVGSVGElement;
   let dragging = $state(false);
   let local = $state(0);
-  const shown = $derived(dragging ? local : target);
+  // Dopo il rilascio il valore nuovo resta visibile finché HA non lo conferma (max 5 s).
+  let pending = $state(false);
+  let pendingTimer = 0;
+  $effect(() => { if (pending && target === local) pending = false; });
+  const shown = $derived(dragging || pending ? local : target);
+
+  // A riposo il numero grande è la temperatura della stanza; mentre si modifica (trascinando,
+  // con i tasti, con +/− della pagina) diventa la temperatura impostata, fino a 2,5 s dopo.
+  let recent = $state(false);
+  let recentTimer = 0;
+  let prev: number | undefined;
+  $effect(() => {
+    const t = target;
+    if (prev !== undefined && t !== prev) {
+      recent = true;
+      clearTimeout(recentTimer);
+      recentTimer = window.setTimeout(() => (recent = false), 2500);
+    }
+    prev = t;
+  });
+  const editing = $derived(dragging || pending || recent);
   const off = $derived(mode === 'off');
   const color = $derived(off ? 'var(--ink-3)' : action === 'heating' ? 'var(--caldo)' : 'var(--clima)');
 
@@ -32,7 +52,15 @@
   }
   function down(e: PointerEvent) { if (off) return; svg.setPointerCapture(e.pointerId); dragging = true; local = fromPointer(e); }
   function move(e: PointerEvent) { if (dragging) local = fromPointer(e); }
-  function up() { if (!dragging) return; dragging = false; if (local !== target) onchange(local); }
+  function up() {
+    if (!dragging) return;
+    dragging = false;
+    if (local === target) return;
+    pending = true;
+    clearTimeout(pendingTimer);
+    pendingTimer = window.setTimeout(() => (pending = false), 5000);
+    onchange(local);
+  }
   function key(e: KeyboardEvent) {
     const d = e.key === 'ArrowUp' || e.key === 'ArrowRight' ? step : e.key === 'ArrowDown' || e.key === 'ArrowLeft' ? -step : 0;
     if (!d || off) return;
@@ -47,7 +75,7 @@
 
 <div class="dial" style:--size="{size}px" style:--c={color}>
   <svg bind:this={svg} viewBox="0 0 300 300" role="slider" tabindex="0"
-    aria-label="Temperatura desiderata" aria-valuemin={min} aria-valuemax={max} aria-valuenow={shown}
+    aria-label="Temperatura desiderata, stanza a {temp(current)}" aria-valuemin={min} aria-valuemax={max} aria-valuenow={shown}
     aria-valuetext={off ? 'Spento' : temp(shown)} aria-disabled={off}
     onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={up} onkeydown={key}>
     <path d={arc(A0, A1)} class="track" />
@@ -64,8 +92,13 @@
     <span class="mode">
       {#if off}Spento{:else}<Icon name={action === 'heating' ? 'fiamma' : 'ok'} size={18} />{action === 'heating' ? 'Riscalda' : 'In temperatura'}{/if}
     </span>
-    <b class="num">{off ? '—' : temp(shown)}</b>
-    <span class="num">Ora {temp(current)}</span>
+    {#if editing && !off}
+      <b class="num set">{temp(shown)}</b>
+      <span class="num">Ora {temp(current)}</span>
+    {:else}
+      <b class="num">{temp(current)}</b>
+      {#if !off}<span class="num">Impostata a {temp(shown)}</span>{/if}
+    {/if}
   </div>
 </div>
 
@@ -73,6 +106,7 @@
   .dial { position: relative; width: var(--size); max-width: 100%; aspect-ratio: 1; margin-bottom: calc(var(--size) * -0.1); }
   svg { width: 100%; height: 100%; touch-action: none; cursor: grab; display: block; }
   svg[aria-disabled='true'] { cursor: default; }
+  svg:focus:not(:focus-visible) { outline: none; }
   .track { fill: none; stroke: var(--track); stroke-width: 18; stroke-linecap: round; }
   .active { fill: none; stroke: var(--c); stroke-width: 18; stroke-linecap: round; transition: stroke 0.4s var(--ease); }
   .tick { stroke: var(--ink-3); stroke-width: 1.4; stroke-linecap: round; opacity: 0.55; }
@@ -83,5 +117,6 @@
   .read { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 2px; pointer-events: none; }
   .mode { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 15px; color: var(--c); }
   b { font-size: calc(var(--size) * 0.2); font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+  b.set { color: var(--c); }
   .read > span:last-child { color: var(--ink-2); font-size: 15px; }
 </style>
