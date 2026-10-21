@@ -1,6 +1,6 @@
 # HA-Dashboard — interfaccia personalizzata per Home Assistant
 
-**Aggiornato il 21 ottobre 2026, sera.** Fasi 1, 2 e 3 **fatte e confermate da Pietro**, la 2 e la 3 provate sul suo Home Assistant («va tutto bene», 21/10). **Fase 4 in corso:** codice e istruzioni per LXC, pubblicazione, utenti e token pronti e provati sull'HA di prova ([sotto](#pubblicazione--fase-4)); da eseguire da Pietro. Il pannello sul Pi è il passo successivo.
+**Aggiornato il 21 ottobre 2026, sera.** Fasi 1, 2 e 3 **fatte e confermate da Pietro**, la 2 e la 3 provate sul suo Home Assistant («va tutto bene», 21/10). **Fase 4 in corso:** parte 1 **fatta da Pietro il 21/10 sera** ([sotto](#pubblicazione--fase-4)): CT 203 creato, dashboard pubblicata su `http://10.10.50.21`, aperta dal PC e dall'iPhone anche da fuori casa col tunnel. Restano gli utenti di HA e il token, poi il pannello sul Pi.
 
 Home Assistant resta il motore (integrazioni, automazioni, configurazione). La dashboard è solo l'interfaccia e parla con HA attraverso la API WebSocket ufficiale (`home-assistant-js-websocket`).
 
@@ -25,7 +25,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La d
 | 1. Mockup | Interfaccia completa con dati finti | **fatta e confermata** il 21/10 |
 | 2. Collegamento | Login di HA (OAuth), aree ed entità, stati reali in tempo reale | **fatta e confermata** il 21/10, provata sull'HA di casa |
 | 3. Controlli | Comandi veri, grafici dalla cronologia, energia di oggi | **fatta e confermata** il 21/10, provata sull'HA di casa |
-| 4. Pubblicazione | Build statica su un LXC con nginx su Proxmox, pannello kiosk sul Pi | **in corso**: parte 1 (LXC, pubblicazione, utenti, token) pronta; parte 2 (Pi) da preparare |
+| 4. Pubblicazione | Build statica su un LXC con nginx su Proxmox, pannello kiosk sul Pi | **in corso**: LXC e pubblicazione fatti e provati il 21/10; utenti, token e Pi da fare |
 
 ## Come si usa sul PC
 
@@ -35,7 +35,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La d
 
 **`.env`** contiene solo l'indirizzo di HA (`VITE_HA_URL=http://10.10.50.10:8123`): nessun segreto, ed è escluso da git. Senza `.env`, o aggiungendo `?demo` all'indirizzo, la dashboard parte con i dati finti del mockup.
 
-**Impostazione in HA per il login (fatta il 21/10):** **Impostazioni → Sistema → Rete → Server HTTP → Altre opzioni → Origini consentite CORS** contiene `http://localhost:5173`. Serve perché dopo il login il browser ritira l'accesso da HA con una richiesta dall'indirizzo della dashboard, e HA deve dichiararlo permesso. Dalla versione 2026.8 di HA questa impostazione si gestisce dall'interfaccia: un blocco `http:` in `configuration.yaml` viene importato una volta e poi ignorato, con un avviso «Riparazione» che chiede di toglierlo (Pietro l'ha tolto). Rischio basso: senza nome utente e password di HA quell'indirizzo non ottiene nulla. Nella fase 4 si aggiunge l'indirizzo dell'LXC ([passo 9](#parte-1--lxc-pubblicazione-accesso-da-fare)); `localhost` resta finché si usa `avvia.cmd`.
+**Impostazione in HA per il login (fatta il 21/10):** **Impostazioni → Sistema → Rete → Server HTTP → Altre opzioni → Origini consentite CORS** contiene `http://localhost:5173`. Serve perché dopo il login il browser ritira l'accesso da HA con una richiesta dall'indirizzo della dashboard, e HA deve dichiararlo permesso. Dalla versione 2026.8 di HA questa impostazione si gestisce dall'interfaccia: un blocco `http:` in `configuration.yaml` viene importato una volta e poi ignorato, con un avviso «Riparazione» che chiede di toglierlo (Pietro l'ha tolto). Rischio basso: senza nome utente e password di HA quell'indirizzo non ottiene nulla. Nella fase 4 si aggiunge l'indirizzo dell'LXC ([passo 9](#parte-1--lxc-pubblicazione-accesso-fatta-il-2110)); `localhost` resta finché si usa `avvia.cmd`.
 
 **Accesso:** si entra con nome utente e password di HA, nessuna password nuova. HA rilascia l'accesso e il browser lo conserva (`localStorage`, chiave `ha-dashboard.accesso`); si rinnova da solo. **Avanzate → Accesso → Esci da questo dispositivo** lo revoca.
 
@@ -49,7 +49,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La d
 
 **Perché l'accesso SSH solo con chiave e senza password di root:** l'unico uso è la copia dal PC; senza password non c'è niente da indovinare, e dalla Shell di pve1 si entra comunque con `pct enter 203`.
 
-### Parte 1 — LXC, pubblicazione, accesso (da fare)
+### Parte 1 — LXC, pubblicazione, accesso (fatta il 21/10)
 
 1. **Indirizzo libero.** pve1 → **Shell**: `ping -c 2 -W 1 10.10.50.21`. Atteso: `100% packet loss`. Se risponde qualcosa, fermarsi.
 2. **Chiave pubblica del PC.** In PowerShell: `Get-ChildItem $env:USERPROFILE\.ssh\*.pub`. Se c'è `id_ed25519.pub`: `Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub | Set-Clipboard`. È la parte **pubblica** della chiave: non è un segreto, si può incollare ovunque.
@@ -66,6 +66,24 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La d
 11. **Dal tunnel:** OPNsense → **Firewall → Rules**, interfaccia REMOTO: clonare la regola «TCP 8123 → `10.10.50.10`» cambiando destinazione in `10.10.50.21` e porta in `80` (HTTP); descrizione «REMOTO → HA-Dashboard (CT 203:80)»; Save e Apply. Prova dall'iPhone su rete cellulare con il tunnel acceso.
 
 Per gli aggiornamenti successivi basta il passo 8. Se una pubblicazione va male, la versione precedente è in `/var/www/ha-dashboard.old` sull'LXC.
+
+**Esito (21/10 sera, screenshot di Pietro):**
+
+| Passo | Risultato |
+|---|---|
+| 1 | `10.10.50.21` libero (`100% packet loss`) |
+| 2–3 | chiave del PC `id_ed25519` (ED25519, file del 15/09/2026) in `/root/pc-pietro.pub` su pve1. Ha una **passphrase**: è la voce «Matter passphrase» del password manager (la chiave fu creata per la VM del Matter Server) |
+| 4 | CT 203 creato e avviato dal modello `debian-13-standard_13.6-1_amd64` in `local`. Impronte delle chiavi host: **ED25519 `SHA256:QJR8T9fMYL2TDXREyE8QoeFEyg+r+/KV5m+YPJ83rgo`**, ECDSA `SHA256:l9aUV8RKVu5utyZ4UV2IeOAvCOnTmWnpgYGs9gcoCCk`, RSA `SHA256:J0SoGfjGt2G+FHCKOBXBSd+44258M9lt//HplhazaoA` |
+| 5–6 | nginx 1.26.3 (Debian 13) installato; `HTTP/1.1 200 OK` da pve1 |
+| 7–8 | `.env` con `PUBBLICA_SU`; prima pubblicazione riuscita («Pubblicata.»), impronta ED25519 confermata. La passphrase viene chiesta 4 volte a ogni pubblicazione |
+| 9–10 | origine `http://10.10.50.21` aggiunta in HA; dashboard aperta sul PC con dati e telecamere dal vivo |
+| 11 | regola REMOTO «REMOTO → HA-Dashboard (CT 203:80)», TCP 80 → `10.10.50.21`, **Log acceso**, applicata; dashboard aperta dall'iPhone su rete cellulare col tunnel |
+
+Visto nell'elenco delle regole REMOTO (21/10): Log acceso solo su HA e HA-Dashboard; spento su AdGuard 1 e 2, NAS SMB e PT-FISSO RustDesk (`10.10.20.10` porta 21118). La scheda rete al 30/09 lo dava acceso: da chiarire con Pietro.
+
+**Aggiornamenti di sicurezza automatici nel CT 203 (proposti, da confermare):** `pct exec 203 -- bash -c "apt-get -y install unattended-upgrades && printf 'APT::Periodic::Update-Package-Lists \"1\";\nAPT::Periodic::Unattended-Upgrade \"1\";\n' > /etc/apt/apt.conf.d/20auto-upgrades"`. Il CT è raggiungibile da TRUSTED anche senza la regola REMOTO.
+
+**Per la «fase B» della scheda rete** (regole TRUSTED precise al posto di «TRUSTED → SERVERS»): la dashboard ha bisogno di `10.10.50.21` TCP 80 e di `10.10.50.10` TCP 8123.
 
 ### Utenti di HA (da fare)
 
@@ -121,14 +139,14 @@ Effetto collaterale, prudente: una presa rinominata con «rack», «friggitrice�
 - **Telecamere Frigate attraverso HA:** viste funzionare, ma non misurati il carico del video continuo su Frigate e HA né la resa dal tunnel WireGuard.
 - **Dispositivi:** provata solo sul PC (Windows) e in Chromium. Non provati iPhone/Safari, il tablet, il Pi 4 del pannello (fluidità, leggibilità a 2–3 m).
 - **`avvia.cmd`:** scritto e controllato nel formato, usato da Pietro, ma non provato da me su Windows.
-- **`pubblica.cmd`:** la parte sull'LXC (comandi remoti, nginx) è provata in Linux; la parte Windows (lettura di `.env`, `ssh`/`scp` di Windows) no. Che la chiave del PC si chiami `id_ed25519` è un'ipotesi da verificare al passo 2.
-- **LXC:** comando `pct create` scritto sul modello di Frigate (CT 202), non eseguito. Che `zdata` e il modello Debian 13 in `local` ci siano su pve1 è dedotto dal LEGGIMI di Frigate. Inclusione nel backup notturno non verificata.
+- **`pubblica.cmd`:** usato da Pietro con successo il 21/10. La versione con il blocco unico dopo `git pull` e il controllo di `.git` non è stata provata da me su Windows.
+- **CT 203:** inclusione nel backup notturno non verificata.
 - **Scelta di cosa sta nella Casa:** salvata solo nel browser di ogni dispositivo; da decidere se condividerla.
 - **Allarme:** solo segnaposto.
 
 ## Prossimo passo
 
-**Fase 4, parte 1:** Pietro esegue i passi [qui sopra](#parte-1--lxc-pubblicazione-accesso-da-fare) e crea gli utenti. **Parte 2:** pannello a muro sul Pi 4 (Chromium a schermo intero con il token).
+**Fase 4:** utenti di HA («Pannello» e l'altra persona) e token del pannello ([sopra](#utenti-di-ha-da-fare)), poi **parte 2**: pannello a muro sul Pi 4 (Chromium a schermo intero con il token).
 
 Poi, quando Pietro vorrà: configurazione dell'**Allarme**.
 
@@ -139,6 +157,7 @@ Poi, quando Pietro vorrà: configurazione dell'**Allarme**.
 - **Primo HA di prova senza `history`:** la cronologia falliva per configurazione dell'HA di prova, non per il codice.
 - **Autonomia dell'UPS letta in secondi** mentre HA la mostra in minuti («0 min» invece di 9): corretto leggendo l'unità.
 - Il percorso indicato per i documenti di passaggio era `Rack\Handoff\`, che non esiste: si è seguito lo schema esistente (`Avvio sessione AI\HANDOFF.md` più un `LEGGIMI.md` per argomento).
+- **Fase 4, 21/10:** (1) la chiave pubblica incollata su pve1 era il comando stesso, copiato dalla chat sopra la chiave negli appunti: ora il comando `cat >` si lancia prima e la chiave si copia subito prima di incollare. (2) `pubblica.cmd` lanciato dalla copia su **Drive**: si è fermato per il `.env` mancante, ma `avvia.cmd` da lì avrebbe installato `node_modules` nella cartella sincronizzata. Entrambi ora si fermano se non trovano `.git`. (3) Primo collegamento SSH chiuso dal CT: probabilmente superati i 2 minuti di accesso mentre si cercava la passphrase. (4) I `.cmd` fanno `git pull` su se stessi e cmd legge il file mentre lo esegue: dopo il pull ora tutto è in un unico blocco tra parentesi, che cmd legge per intero prima di eseguirlo.
 - La skill «frontend design» citata da Pietro non è disponibile in questa sessione: usate `impeccable` e `karpathy-guidelines`.
 
 ## Letti e non letti
