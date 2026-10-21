@@ -8,7 +8,7 @@ mostra e comanda soltanto, attraverso la API WebSocket ufficiale (`home-assistan
 
 | Fase | Contenuto | Stato |
 |---|---|---|
-| 1. Mockup | Interfaccia completa con dati finti | fatta, in attesa di conferma |
+| 1. Mockup | Interfaccia completa con dati finti | fatta e confermata (21/10) |
 | 2. Collegamento | Login HA (OAuth), aree ed entità reali, stati in tempo reale | da fare |
 | 3. Controlli | Comandi veri e grafici dalla cronologia di HA | da fare |
 | 4. Pubblicazione | Build statica su LXC con nginx, `cors_allowed_origins` in HA | da fare |

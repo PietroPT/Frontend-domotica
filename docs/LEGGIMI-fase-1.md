@@ -1,6 +1,6 @@
 # HA-Dashboard — interfaccia personalizzata per Home Assistant
 
-**Aggiornato il 21 ottobre 2026.** Fase 1 (mockup) consegnata, **in attesa della conferma di Pietro** prima della fase 2.
+**Aggiornato il 21 ottobre 2026.** Fase 1 (mockup) consegnata e **confermata da Pietro** («va bene così», 21/10). Prossima: fase 2.
 
 Home Assistant resta il motore (integrazioni, automazioni, configurazione). La nuova app è solo l'interfaccia e parla con HA attraverso la API WebSocket ufficiale (`home-assistant-js-websocket`).
 
@@ -8,10 +8,11 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 
 | Cosa | Dove |
 |---|---|
-| Codice, copia principale con la cronologia | GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31`, commit della fase 1 `b9eeff4` e `3b4d70b` (correzioni della revisione) |
+| Codice, copia principale con la cronologia | GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31`, commit della fase 1 `b9eeff4`, `3b4d70b` (correzioni della revisione), `853f2c4` (questo documento in `docs/`) |
 | Copia dei sorgenti | questa cartella (`HA-Dashboard\`): stessa struttura del repository, senza `node_modules` e senza le skill `.claude\` |
 | Immagini d'esempio della fase 1 | `HA-Dashboard\immagini\` |
 | Profilo del prodotto (utenti, vincoli, regole) | `HA-Dashboard\PRODUCT.md` |
+| Sistema grafico (colori, caratteri, componenti) | `HA-Dashboard\DESIGN.md` |
 | Come provarla sul PC | `HA-Dashboard\README.md`, sezione «Provarla sul PC» |
 | Mockup da aprire sul telefono, senza installare nulla | https://claude.ai/artifact/Svq8v6PsfBhMorj3WG1y6o (privato: lo apre solo Pietro) |
 
@@ -21,7 +22,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 
 | Fase | Contenuto | Stato |
 |---|---|---|
-| 1. Mockup | Interfaccia completa con dati finti, nessun collegamento a HA | **fatta** il 21/10, da confermare |
+| 1. Mockup | Interfaccia completa con dati finti, nessun collegamento a HA | **fatta e confermata** il 21/10 |
 | 2. Collegamento | Login HA (OAuth, `getAuth`), lettura di aree ed entità, stati reali in tempo reale | da fare |
 | 3. Controlli | Comandi veri (accendi/spegni, regolazioni), grafici dalla cronologia di HA | da fare |
 | 4. Pubblicazione | Build statica servita da un LXC leggero con nginx su Proxmox, `http: cors_allowed_origins` in HA | da fare |
@@ -49,7 +50,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 
 **Dati finti:** le luci e le stanze Cucina, Camera e Bagno **sono inventate** (nei documenti non risultano luci in HA). Nomi e comportamenti di termostato, prese, UPS, Frigate, stampante e automazioni ricalcano i documenti, ma i valori sono di esempio. In ogni pagina c'è la scritta «Mockup con dati di esempio».
 
-**Revisione:** la build è passata da una revisione indipendente (agente di revisione della skill impeccable). Correzioni applicate dopo la revisione: rack tolto dalla Casa (l'infrastruttura sta solo in Avanzate), pannello a quattro colonne, fondo scuro viola-blu, clima in verde, icone distinte per le automazioni, dati UPS/rack in righe, grafico dell'energia coerente col valore attuale, barra in basso più leggibile, movimento ridotto rispettato.
+**Revisione:** la build è passata da una revisione indipendente (agente di revisione della skill impeccable), con verdetto finale «ship». Correzioni applicate dopo la revisione: rack tolto dalla Casa (l'infrastruttura sta solo in Avanzate), pannello a quattro colonne, fondo scuro viola-blu, clima in verde, icone distinte per le automazioni, dati UPS/rack in righe, grafico dell'energia coerente col valore attuale, barra in basso più leggibile, movimento ridotto rispettato, contrasto dell'icona sul disco ambra delle luci.
 
 ## Cosa NON è dimostrato
 
@@ -61,8 +62,8 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 
 ## Prossimo passo
 
-**Conferma di Pietro sulla fase 1**, eventuali ritocchi, poi **fase 2: collegamento**. Cosa servirà, anticipato e **non ancora fatto**:
-- l'indirizzo di HA è già noto (`10.10.50.10:8123`, documentato nel piano HA): non serve chiederlo;
+**Fase 2: collegamento** (la fase 1 è confermata). Cosa servirà, anticipato e **non ancora fatto**:
+- l'indirizzo di HA è già noto (documentato nel piano HA): non serve chiederlo;
 - **nessuna password nuova:** il login è quello di HA, con le credenziali che Pietro usa già;
 - in HA andrà aggiunta l'origine della dashboard in `http: cors_allowed_origins` (all'inizio quella del PC di sviluppo, nella fase 4 quella dell'LXC): istruzioni passo passo al momento;
 - il **token a lunga durata** servirà solo al pannello kiosk (fase 4). Lo genera HA, quindi è già lungo e casuale; va trattato come una password forte e resta solo sul Pi, mai nel repository.
@@ -72,6 +73,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 - Il percorso indicato per i documenti di passaggio era `Rack\Handoff\`, che non esiste: nel progetto Rack l'handoff è `Avvio sessione AI\HANDOFF.md` e ogni argomento ha la sua cartella con un `LEGGIMI.md`. Si è seguito lo schema esistente invece di creare una cartella nuova.
 - Il primo schizzo del termostato mostrava un'umidità del 54% che il termostato MOES non misura secondo i documenti: tolta prima della build.
 - La skill «frontend design» citata da Pietro non è disponibile in questa sessione: è stata usata `impeccable`, che copre lo stesso lavoro, insieme a `karpathy-guidelines`.
+- Diversi caricamenti su Drive sono stati bloccati dal controllo automatico della modalità «Auto»; ripresi in «Accetta modifiche» con conferma manuale.
 
 ## Letti e non letti
 
