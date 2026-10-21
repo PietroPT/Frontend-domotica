@@ -10,7 +10,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La d
 |---|---|
 | Codice, copia principale con la cronologia | GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31` (fase 3 chiusa al commit `006b57b`) |
 | Copia sul PC di Pietro, da cui gira | `C:\HA-Dashboard` (si aggiorna da sola a ogni avvio con `avvia.cmd`) |
-| Copia dei sorgenti su Drive | questa cartella (`HA-Dashboard\`): **ferma alla fase 1**. Il codice delle fasi 2 e 3 è solo su GitHub |
+| Copia dei sorgenti su Drive | questa cartella (`HA-Dashboard\`), **aggiornata a fine fase 3** (21/10 sera): stessa struttura del repository, senza `node_modules`, senza le skill `.claude\` e senza `package-lock.json` (lo rigenera `npm install`). `avvia.cmd` qui ha i fine riga Linux: quello da usare è nella copia sul PC. Versioni sostituite in `ARCHIVIO_FILE_VECCHI\2026-10-21\ha-dashboard-fase-3\` |
 | Profilo del prodotto (utenti, vincoli, regole) | `HA-Dashboard\PRODUCT.md` |
 | Sistema grafico (colori, caratteri, componenti) | `HA-Dashboard\DESIGN.md` (scritto alla fase 1) |
 | Mockup da aprire sul telefono, senza installare nulla | https://claude.ai/artifact/Svq8v6PsfBhMorj3WG1y6o (privato, dati finti della fase 1) |
