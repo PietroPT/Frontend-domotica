@@ -40,7 +40,7 @@ Dalla versione 2026.8 di HA la configurazione HTTP non si scrive più in `config
 1. **Impostazioni → Sistema → Rete**, scheda **Server HTTP → Altre opzioni**.
 2. Sotto **Origini consentite CORS** clicca **Aggiungi Origini consentite CORS** e scrivi `http://localhost:5173` (`http`, non `https`, senza barra finale). La voce `https://cast.home-assistant.io` è quella predefinita di HA: si lascia.
 3. **Salva** sotto «Altre opzioni»: HA si riavvia. Se dopo il riavvio chiede di confermare le nuove impostazioni, conferma.
-4. Se in `configuration.yaml` c'è un blocco `http:`, toglilo (File editor), salva, **Strumenti per sviluppatori → YAML → Verifica configurazione** e riavvia.
+4. Se in `configuration.yaml` c'è un blocco `http:`, toglilo (File editor), salva, controlla con **Impostazioni → Strumenti → scheda YAML → Verifica configurazione** e riavvia con **Impostazioni → ⋮ (in alto a destra) → Riavvia Home Assistant** (da HA 2026.2 gli «Strumenti per sviluppatori» non sono più nella barra laterale: stanno in Impostazioni → Strumenti).
 
 **Fatto il 21/10:** Pietro ha messo il blocco `http:` nel file; al riavvio HA (versione successiva alla 2026.8) l'ha importato e `http://localhost:5173` risulta nella lista delle origini CORS.
 
@@ -131,6 +131,8 @@ Anticipato e **non ancora fatto**:
 - il **token a lunga durata** servirà solo al pannello kiosk (fase 4). Lo genera HA, quindi è già lungo e casuale; va trattato come una password forte e resta solo sul Pi, mai nel repository.
 
 ## Errori di metodo
+
+- **Percorsi dell'interfaccia di HA dati per versioni vecchie** (21/10): `http:` in `configuration.yaml` (dalla 2026.8 si usa Impostazioni → Rete) e «Strumenti per sviluppatori» nella barra laterale (dalla 2026.2 sono in Impostazioni → Strumenti). La prova era su HA 2026.2.3, più vecchio di quello di casa. **Regola da qui in poi:** prima di dare un percorso dell'interfaccia di HA, verificarlo sulla documentazione della versione più recente.
 
 - Il percorso indicato per i documenti di passaggio era `Rack\Handoff\`, che non esiste: si è seguito lo schema esistente (`Avvio sessione AI\HANDOFF.md` più un `LEGGIMI.md` per argomento).
 - Il primo schizzo del termostato mostrava un'umidità che il MOES non misura: tolta prima della build.
