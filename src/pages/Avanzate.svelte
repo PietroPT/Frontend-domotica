@@ -37,14 +37,25 @@
   const printer = $derived(hass.demo ? find(/^sensor\.core_one$/) : hass.byKey('prusalink', 'printer_state'));
   const printerOf = (key: string, suffix: string) => (hass.demo ? `${printer}${suffix}` : hass.byKey('prusalink', key) ?? '');
   const bridge = 'binary_sensor.zigbee2mqtt_bridge_connection_state';
-  const kibble = 'sensor.crocchette_livello';
+  // Distributore PetKit (integrazione non ufficiale): entity_id letti dall'HA di casa il 21/10.
+  // «Livello cibo» è un allarme: off = cibo sufficiente, on = in esaurimento.
+  const kibble = 'binary_sensor.crocchette_livello_cibo';
+  const kibbleErr = $derived(st('sensor.crocchette_errore'));
+  const kibbleOk = $derived(st(kibble) === 'off' && (!kibbleErr || kibbleErr === 'No error'));
+  const kibbleDetail = $derived(
+    [
+      kibbleErr && kibbleErr !== 'No error' ? `Errore: ${kibbleErr}` : st(kibble) === 'on' ? 'Cibo in esaurimento' : st(kibble) === 'off' ? 'Cibo sufficiente' : 'Non raggiungibile',
+      hass.states['sensor.crocchette_totale_erogato'] ? `oggi ${st('sensor.crocchette_totale_erogato')} g` : '',
+      hass.states['sensor.crocchette_giorni_rimanenti_essicante'] ? `essiccante tra ${st('sensor.crocchette_giorni_rimanenti_essicante')} g` : '',
+    ].filter(Boolean).join(' · '),
+  );
 
   // Solo i servizi che esistono in HA: un sensore mancante non diventa un «Guasto».
   const services: { icon: IconName; name: string; ok: boolean; detail: string }[] = $derived([
     { icon: 'ha', name: 'Home Assistant', ok: hass.connected, detail: hass.connected ? 'Collegato · dati in tempo reale' : 'Non raggiungibile, riprovo' },
     ...(hass.states[bridge] ? [{ icon: 'zigbee' as IconName, name: 'Zigbee2MQTT', ok: st(bridge) === 'on', detail: st(bridge) === 'on' ? `Coordinatore collegato ${since(hass.states[bridge].last_changed)}` : `Coordinatore scollegato ${since(hass.states[bridge].last_changed)}` }] : []),
     ...(printer ? [{ icon: 'stampante3d' as IconName, name: 'Stampante 3D', ok: st(printer) !== 'unavailable', detail: st(printer) === 'printing' ? `In stampa · ${st(printerOf('progress', '_progress'))}% · ${st(printerOf('filename', '_filename'))}` : st(printer) === 'unavailable' ? 'Spenta o non raggiungibile' : 'Inattiva' }] : []),
-    ...(hass.states[kibble] ? [{ icon: 'crocchette' as IconName, name: 'Crocchette', ok: st(kibble) === 'Normale', detail: `Livello ${st(kibble)?.toLowerCase()}` }] : []),
+    ...(hass.states[kibble] ? [{ icon: 'crocchette' as IconName, name: 'Crocchette', ok: kibbleOk, detail: kibbleDetail }] : []),
   ]);
   const val = (e: HassEntity | undefined, f: (v: number) => string) => (e && Number.isFinite(+e.state) ? f(+e.state) : '—');
   // L'autonomia di NUT è in secondi, ma in HA si può scegliere di mostrarla in minuti o ore:

@@ -89,7 +89,12 @@ const defs: Def[] = [
 
   // Servizi
   ['binary_sensor.zigbee2mqtt_bridge_connection_state', 'on', { friendly_name: 'Zigbee2MQTT Bridge Stato connessione', device_class: 'connectivity' }, 'd_z2m', 3 * 24 * 60],
-  ['sensor.crocchette_livello', 'Normale', { friendly_name: 'Crocchette Livello' }, 'd_petkit', 400],
+  // Distributore PetKit: entity_id come nell'HA di casa (21/10).
+  ['binary_sensor.crocchette_livello_cibo', 'off', { friendly_name: 'Crocchette Livello cibo', device_class: 'problem' }, 'd_petkit', 400],
+  ['sensor.crocchette_errore', 'No error', { friendly_name: 'Crocchette Errore' }, 'd_petkit'],
+  ['sensor.crocchette_totale_erogato', '70', { friendly_name: 'Crocchette Totale erogato', unit_of_measurement: 'g', state_class: 'total_increasing' }, 'd_petkit'],
+  ['sensor.crocchette_giorni_rimanenti_essicante', '11', { friendly_name: 'Crocchette Giorni rimanenti essicante', unit_of_measurement: 'd' }, 'd_petkit'],
+  ['switch.cucina_crocchette_feeding_schedule', 'on', { friendly_name: 'Crocchette Feeding schedule' }, 'd_petkit'],
   ['automation.zigbee2mqtt_riavvio_se_fermo', 'on', { friendly_name: 'Zigbee2MQTT - riavvio se fermo', last_triggered: iso(5 * min) }, null],
   ['automation.zigbee2mqtt_avviso_se_scollegato', 'on', { friendly_name: 'Zigbee2MQTT - avviso se scollegato', last_triggered: iso(2 * 24 * 60 * min) }, null],
   ['automation.allarme_crocchette', 'on', { friendly_name: 'Allarme crocchette', last_triggered: iso(5 * 24 * 60 * min) }, null],

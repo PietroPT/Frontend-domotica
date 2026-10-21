@@ -22,6 +22,9 @@ const rules: [RegExp, Policy][] = [
   [/friggit/i, {
     noRemoteOn: 'Per sicurezza la friggitrice non si accende a distanza. Da qui si può solo spegnere.',
   }],
+  [/feeding.?schedule/i, {
+    confirmOff: 'Spegnendo il programma dei pasti il distributore smette di dare da mangiare al gatto agli orari stabiliti.',
+  }],
   [/stampant|core.?one|prusa/i, {
     confirmOff: "Se la stampa è appena finita, aspetta che l'estrusore si raffreddi prima di togliere corrente alla Core One.",
   }],
