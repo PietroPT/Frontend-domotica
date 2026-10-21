@@ -35,20 +35,14 @@ Tre passi. **Nessuna password nuova**: si entra con nome utente e password di Ho
 
 **Perché:** dopo il login, la dashboard ritira l'accesso da HA con una richiesta dal proprio indirizzo (`http://localhost:5173`). Il browser la blocca se HA non dichiara quell'indirizzo come permesso: è la lista `cors_allowed_origins`. Il collegamento in tempo reale (WebSocket) non ne ha bisogno, il login sì.
 
-1. In HA apri un editor dei file di configurazione. Se hai già **File editor** o **Studio Code Server**, usa quello. Altrimenti: **Impostazioni → Componenti aggiuntivi** (nelle versioni più recenti si chiama **App**) **→ Negozio dei componenti aggiuntivi → File editor → Installa**, poi **Avvia** e attiva **Mostra nella barra laterale**.
-2. Apri `/homeassistant/configuration.yaml` (in File editor: icona della cartella in alto a sinistra → `configuration.yaml`).
-3. Cerca una riga che inizia con `http:` **all'inizio della riga**.
-   - **Se non c'è**, aggiungi in fondo al file:
-     ```yaml
-     http:
-       cors_allowed_origins:
-         - http://localhost:5173
-     ```
-   - **Se c'è già** (per esempio con `use_x_forwarded_for`), **non aggiungere un secondo `http:`**: due blocchi `http:` rompono la configurazione. Aggiungi solo le due righe `cors_allowed_origins:` e `- http://localhost:5173` sotto quello esistente, con lo stesso rientro (due spazi) delle altre righe del blocco.
-   - L'indirizzo va scritto esattamente così: `http`, non `https`, e **senza** barra finale.
-4. Salva (icona del dischetto).
-5. **Strumenti per sviluppatori → scheda YAML → Verifica configurazione.** Deve dire che la configurazione è valida. Se dà errore, non riavviare: correggi (di solito è il rientro) o togli le righe aggiunte.
-6. Nella stessa pagina, **Riavvia → Riavvia Home Assistant**. La modifica a `http:` vale solo dopo il riavvio completo.
+Dalla versione 2026.8 di HA la configurazione HTTP non si scrive più in `configuration.yaml` ma si gestisce dall'interfaccia (se si mette un blocco `http:` nel file, HA lo importa una volta e poi mostra l'avviso «HTTP YAML configuration is ignored after migration»: va tolto dal file).
+
+1. **Impostazioni → Sistema → Rete**, scheda **Server HTTP → Altre opzioni**.
+2. Sotto **Origini consentite CORS** clicca **Aggiungi Origini consentite CORS** e scrivi `http://localhost:5173` (`http`, non `https`, senza barra finale). La voce `https://cast.home-assistant.io` è quella predefinita di HA: si lascia.
+3. **Salva** sotto «Altre opzioni»: HA si riavvia. Se dopo il riavvio chiede di confermare le nuove impostazioni, conferma.
+4. Se in `configuration.yaml` c'è un blocco `http:`, toglilo (File editor), salva, **Strumenti per sviluppatori → YAML → Verifica configurazione** e riavvia.
+
+**Fatto il 21/10:** Pietro ha messo il blocco `http:` nel file; al riavvio HA (versione successiva alla 2026.8) l'ha importato e `http://localhost:5173` risulta nella lista delle origini CORS.
 
 **Rischio:** basso. La lista permette solo a una pagina aperta su `localhost:5173` di *chiedere* l'accesso; senza nome utente e password di HA non ottiene nulla. Nella fase 4 si aggiungerà l'indirizzo dell'LXC e `localhost` si potrà togliere.
 

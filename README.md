@@ -32,15 +32,9 @@ Poi apri `http://localhost:5173`. Il file `.env` contiene solo l'indirizzo di Ho
 il mockup resta apribile aggiungendo `?demo` all'indirizzo (`http://localhost:5173/?demo`).
 
 Perché il login funzioni, Home Assistant deve accettare l'indirizzo della dashboard:
-in `configuration.yaml`
-
-```yaml
-http:
-  cors_allowed_origins:
-    - http://localhost:5173
-```
-
-(passi dettagliati in `docs/LEGGIMI.md`). Con `npm run dev -- --host` la vedi anche dal telefono
+**Impostazioni → Sistema → Rete → Server HTTP → Altre opzioni → Origini consentite CORS**,
+aggiungere `http://localhost:5173` (da HA 2026.8 non si usa più `http:` in `configuration.yaml`;
+passi dettagliati in `docs/LEGGIMI.md`). Con `npm run dev -- --host` la vedi anche dal telefono
 sulla stessa rete, all'indirizzo che il comando stampa (`Network: http://…:5173`); per il login
 da lì va aggiunto anche quell'indirizzo a `cors_allowed_origins`.
 
