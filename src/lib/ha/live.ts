@@ -18,6 +18,7 @@ import {
   type Connection,
 } from 'home-assistant-js-websocket';
 import { hass, HA_URL } from './hass.svelte';
+import type { HistoryPoint } from './types';
 
 const TOKENS = 'ha-dashboard.accesso';
 
@@ -51,6 +52,7 @@ export async function start() {
     conn = await createConnection({ auth });
     const c = conn;
     hass.ws = (msg) => c.sendMessagePromise(msg);
+    hass.watchHistory = (key) => watchHistory(c, key);
     await loadRegistries(conn);
     hass.user = (await getUser(conn)).name ?? '';
   } catch (err) {
@@ -79,6 +81,62 @@ export async function start() {
     t = window.setTimeout(() => conn && loadRegistries(conn).catch(() => {}), 1000);
   };
   for (const ev of ['area_registry_updated', 'device_registry_updated', 'entity_registry_updated']) conn.subscribeEvents(reload, ev);
+}
+
+// Cronologia delle ultime 24 ore in streaming (history/stream): HA manda prima il passato,
+// poi ogni cambiamento. Nessuna interrogazione periodica.
+const DAY = 24 * 3600_000;
+const streaming = new Set<string>();
+
+function watchHistory(c: Connection, key: string) {
+  const id = key.split(':')[0];
+  if (streaming.has(id)) return;
+  streaming.add(id);
+  // Termostato: la temperatura misurata e quella desiderata sono attributi, non lo stato.
+  const climate = id.startsWith('climate.');
+  c.subscribeMessage<{ states?: Record<string, { s: string; a?: Record<string, any>; lu: number }[]> }>(
+    (msg) => {
+      const rows = msg.states?.[id];
+      if (!rows?.length) return;
+      if (climate) {
+        merge(id, rows.map((r) => ({ t: r.lu * 1000, v: parseFloat(r.a?.current_temperature) })));
+        merge(`${id}:target`, rows.map((r) => ({ t: r.lu * 1000, v: parseFloat(r.a?.temperature) })));
+      } else {
+        merge(id, rows.map((r) => ({ t: r.lu * 1000, v: parseFloat(r.s) })));
+      }
+    },
+    {
+      type: 'history/stream',
+      entity_ids: [id],
+      start_time: new Date(Date.now() - DAY).toISOString(),
+      significant_changes_only: false,
+      minimal_response: !climate,
+      no_attributes: !climate,
+    },
+  ).catch((err) => {
+    // Senza cronologia il grafico lo dice; si potrà riprovare riaprendo la pagina.
+    streaming.delete(id);
+    console.warn('Cronologia non disponibile per', id, err);
+  });
+}
+
+/** Aggiunge i punti nuovi. Al massimo un punto al minuto: 24 ore di una presa che misura ogni
+ *  pochi secondi sarebbero decine di migliaia di punti, troppi per il Pi del pannello. */
+function merge(key: string, points: HistoryPoint[]) {
+  const fresh = points.filter((p) => Number.isFinite(p.t) && Number.isFinite(p.v));
+  if (!fresh.length) return;
+  const old = hass.hist[key] ?? [];
+  // Dopo una riconnessione HA rimanda tutto il periodo: in quel caso si riparte da capo.
+  const all = old.length && fresh[0].t > old[old.length - 1].t ? [...old, ...fresh] : fresh;
+  const cut = Date.now() - DAY;
+  const out: HistoryPoint[] = [];
+  for (const p of all) {
+    if (p.t < cut && all.length > 1) continue;
+    const last = out[out.length - 1];
+    if (last && Math.floor(last.t / 60_000) === Math.floor(p.t / 60_000)) out[out.length - 1] = p;
+    else out.push(p);
+  }
+  hass.hist[key] = out;
 }
 
 async function loadRegistries(c: Connection) {

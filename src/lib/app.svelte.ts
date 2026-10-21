@@ -1,11 +1,11 @@
 // Navigazione, foglio aperto e tema. Lo stato vive nell'indirizzo (#/pagina)
 // così il tasto Indietro del telefono e il pannello kiosk si comportano bene.
 
-export type Page = 'casa' | 'luci' | 'clima' | 'energia' | 'telecamere' | 'avanzate';
+export type Page = 'casa' | 'luci' | 'clima' | 'energia' | 'telecamere' | 'allarme' | 'avanzate';
 export type Sheet = null | { kind: 'luce' | 'presa' | 'telecamera' | 'crocchette'; id: string } | { kind: 'aggiungi' };
 export type Theme = 'auto' | 'chiaro' | 'scuro';
 
-const PAGES: Page[] = ['casa', 'luci', 'clima', 'energia', 'telecamere', 'avanzate'];
+const PAGES: Page[] = ['casa', 'luci', 'clima', 'energia', 'telecamere', 'allarme', 'avanzate'];
 
 function readHash(): { page: Page; sheet: Sheet } {
   const [path, query = ''] = location.hash.replace(/^#\/?/, '').split('?');

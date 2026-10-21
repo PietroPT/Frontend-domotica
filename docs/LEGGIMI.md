@@ -1,6 +1,6 @@
 # HA-Dashboard — interfaccia personalizzata per Home Assistant
 
-**Aggiornato il 21 ottobre 2026.** Fase 1 (mockup) confermata da Pietro. **Fase 2 (collegamento) consegnata, in attesa della prova di Pietro sul suo Home Assistant** e della sua conferma prima della fase 3.
+**Aggiornato il 21 ottobre 2026, sera.** Fasi 1 e 2 confermate da Pietro (la 2 provata sul suo HA). **Fase 3 (comandi veri e cronologia) consegnata, da provare sull'HA di casa** e da confermare prima della fase 4.
 
 Home Assistant resta il motore (integrazioni, automazioni, configurazione). La nuova app è solo l'interfaccia e parla con HA attraverso la API WebSocket ufficiale (`home-assistant-js-websocket`).
 
@@ -23,9 +23,31 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 | Fase | Contenuto | Stato |
 |---|---|---|
 | 1. Mockup | Interfaccia completa con dati finti, nessun collegamento a HA | **fatta e confermata** il 21/10 |
-| 2. Collegamento | Login HA (OAuth, `getAuth`), aree ed entità, stati reali in tempo reale | **fatta** il 21/10, provata su un HA di prova; **da provare sull'HA di casa** |
-| 3. Controlli | Comandi veri (accendi/spegni, regolazioni), grafici dalla cronologia di HA | da fare |
+| 2. Collegamento | Login HA (OAuth, `getAuth`), aree ed entità, stati reali in tempo reale | **fatta e confermata** il 21/10 (provata sull'HA di casa) |
+| 3. Controlli | Comandi veri (accendi/spegni, regolazioni), grafici dalla cronologia di HA | **fatta** il 21/10, provata su un HA di prova; **da provare sull'HA di casa** |
 | 4. Pubblicazione | Build statica servita da un LXC leggero con nginx su Proxmox, token del pannello kiosk | da fare |
+
+## Fase 3 — cosa è stato fatto
+
+- **Comandi veri** verso HA (`call_service`). Passano tutti da un punto unico (`hass.callService`) che **rilegge le regole di sicurezza prima di inviare**: presa del rack mai, friggitrice mai accesa a distanza, anche se un giorno una schermata dimenticasse il controllo. Le conferme («sta assorbendo 1.843 W», stampante, programma dei pasti) restano nelle schermate. Se HA rifiuta un comando, compare il motivo.
+- **Automazioni**: disattivarne una richiede un secondo tocco entro 4 secondi (un tocco per sbaglio non deve spegnere il riavvio di Zigbee2MQTT o l'avviso DNS); riattivarla è immediato.
+- **Cibo extra**: ora eroga davvero (10–50 g), con «Annulla erogazione».
+- **Grafici dalla cronologia** delle ultime 24 ore: potenza delle prese, potenza totale, temperatura misurata e desiderata del termostato. Arrivano in streaming (`history/stream`): HA manda il passato e poi ogni cambiamento, senza interrogazioni periodiche. Al massimo un punto al minuto per non appesantire il Pi.
+- **Energia di oggi** (totale, per presa, ora per ora) dai contatori kWh delle prese, con le statistiche a 5 minuti di HA: gli stessi numeri del pannello Energia di HA. Si ricarica all'apertura della pagina e a ogni cambio d'ora.
+- **Allarme** (richiesta di Pietro, 21/10): nuova voce nel menu, pagina segnaposto «da configurare» con l'elenco dei sensori di movimento, presenza e apertura che HA ha già.
+
+**Prova eseguita (21/10)** sull'HA 2026.2.3 di prova (integrazione `demo`, con `recorder` e `history`): luce accesa davvero dalla dashboard; cronologia in streaming di termostato e potenza; pagina Allarme; nel mockup: doppio tocco sulle automazioni, Cibo extra, energia ora per ora. La prima prova della cronologia è fallita perché l'HA di prova non aveva il modulo `history` (l'HA di casa ce l'ha di serie): non era un errore del codice, ma ora un errore del genere viene scritto nella console del browser invece di fermare la pagina.
+
+### Fase 3 — da fare per provarla
+
+1. Chiudi la finestra nera della dashboard e riapri `avvia.cmd` (scarica la versione nuova).
+2. Prove consigliate, su comandi innocui:
+   - **Clima:** alza la temperatura di 0,5° con «+», poi riabbassala;
+   - **Cibo extra:** eroga **10 g** e guarda se il distributore li dà (non è ancora verificato che l'integrazione PetKit eroghi in questo modo);
+   - **Friggitrice:** la presa non deve avere il pulsante «Accendi»; **Rack**: nessun comando;
+   - **Energia:** «Oggi … kWh» e le barre ora per ora devono avere numeri simili al pannello **Energia** di HA;
+   - **Clima / una presa:** i grafici delle ultime 24 ore devono avere una linea.
+3. Riferisci cosa non torna.
 
 ## Fase 2 — da fare per provarla
 
@@ -127,11 +149,11 @@ Il mockup (senza `.env`) è stato ricontrollato e non è cambiato.
 - **Nessuna prova su un dispositivo vero.** Catture di un browser (Chromium) a 390×844 (telefono) e 1280×800 (pannello). Non provati: iPhone/Safari, il Pi 4, i tablet.
 - **Leggibilità a distanza sul pannello** non misurata.
 - **Scelta di cosa sta nella Casa** salvata solo nel browser: non condivisa fra telefono, PC e pannello. Da decidere (dati utente di HA, ma ogni persona ha il suo utente).
-- **Cronologia e comandi**: non collegati (fase 3).
+- **Fase 3 non ancora provata sull'HA di casa**: comandi veri, erogazione del cibo extra (meccanismo dell'integrazione PetKit non verificato), cronologia e statistiche di energia con i dati reali.
 
 ## Prossimo passo
 
-**Prova di Pietro della fase 2 sul suo HA** (passi qui sopra) e conferma. Poi **fase 3: controlli**: comandi veri con le regole di sicurezza verificate sui nomi reali, grafici dalla cronologia di HA (`history/stream` per le ultime 24 ore, statistiche per l'energia di oggi).
+**Prova di Pietro della fase 3 sul suo HA** (passi qui sopra) e conferma. Poi **fase 4: pubblicazione** (LXC con nginx su Proxmox, indirizzo fisso della dashboard in CORS, token del pannello kiosk) e, quando Pietro vorrà, la configurazione dell'**Allarme**.
 
 Anticipato e **non ancora fatto**:
 - per far usare la dashboard all'altra persona serve un suo utente in HA (**Impostazioni → Persone → Aggiungi persona → Può effettuare l'accesso**). La password: HA non è esposto su internet (solo rete di casa e WireGuard), quindi basta una **frase facile da ricordare e da scrivere sul telefono**, purché non usata altrove; l'opzione «Può accedere solo dalla rete locale» la limita ancora. Utile dalla fase 4, quando la dashboard sarà pubblicata;

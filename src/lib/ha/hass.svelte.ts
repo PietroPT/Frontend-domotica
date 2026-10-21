@@ -5,6 +5,7 @@
 //   contiene ?demo, così il mockup resta apribile senza Home Assistant.
 
 import * as mock from './mock';
+import { policyOf } from '../policy';
 import type { AreaEntry, DeviceRegistryEntry, EntityRegistryEntry, HassEntity, HistoryPoint } from './types';
 
 export const HA_URL: string = (import.meta.env.VITE_HA_URL ?? '').replace(/\/$/, '');
@@ -83,9 +84,22 @@ class Hass {
     return Number.isFinite(v) ? v : NaN;
   }
 
-  /** Cronologia: nel mockup dati finti; dal vivo arriva con la fase 3 (per ora vuota). */
+  /** Cronologia delle ultime 24 ore, riempita dal vivo da live.ts (history/stream). */
+  hist = $state<Record<string, HistoryPoint[]>>({});
+  /** Avvia lo streaming della cronologia di una chiave: lo imposta live.ts. */
+  watchHistory: ((key: string) => void) | null = null;
+  private watched = new Set<string>();
+
+  /** Cronologia di un'entità (chiave = entity_id; per il termostato anche «climate.x:target»).
+   *  La prima richiesta avvia lo streaming da HA; i punti arrivano poi da soli. */
   history(key: string): HistoryPoint[] {
-    return this.demo ? mock.history[key] ?? [] : [];
+    if (this.demo) return mock.history[key] ?? [];
+    const watch = this.watchHistory;
+    if (watch && !this.watched.has(key)) {
+      this.watched.add(key);
+      queueMicrotask(() => watch(key)); // fuori dal calcolo in corso: la sottoscrizione scrive stato
+    }
+    return this.hist[key] ?? [];
   }
 
   /** Indirizzo completo di un'immagine servita da HA (es. entity_picture delle telecamere). */
@@ -93,15 +107,38 @@ class Hass {
     return path.startsWith('/') ? HA_URL + path : path;
   }
 
+  /** Regole di sicurezza applicate a ogni comando, qualunque schermata lo mandi
+   *  (le conferme prima di spegnere restano nelle schermate). Restituisce il motivo del blocco. */
+  private blocked(service: string, ids: string[]): string | null {
+    for (const id of ids) {
+      const p = policyOf(id);
+      if (p.readOnly) return p.readOnly;
+      if (p.noRemoteOn && (service === 'turn_on' || service === 'toggle')) return p.noRemoteOn;
+    }
+    return null;
+  }
+
   /** Stessa firma di callService di home-assistant-js-websocket; restituisce false se il comando non è partito. */
   async callService(domain: string, service: string, data: Record<string, any>): Promise<boolean> {
-    if (!this.demo) {
-      // Fase 2: solo lettura. I comandi veri si attivano nella fase 3, dopo aver
-      // controllato le regole di sicurezza sui nomi reali delle entità.
-      this.say('Comandi non ancora attivi: arrivano con la fase 3.');
+    const ids: string[] = [data.entity_id].flat().filter(Boolean);
+    const stop = this.blocked(service, ids);
+    if (stop) {
+      this.say(stop);
       return false;
     }
-    const ids: string[] = [data.entity_id].flat();
+    if (!this.demo) {
+      if (!this.ws || !this.connected) {
+        this.say('Home Assistant non è collegato: comando non inviato.');
+        return false;
+      }
+      try {
+        await this.ws({ type: 'call_service', domain, service, service_data: data });
+        return true;
+      } catch (err: any) {
+        this.say(`Comando non riuscito: ${err?.message ?? err}`);
+        return false;
+      }
+    }
     for (const id of ids) {
       const s = this.states[id];
       if (!s) continue;

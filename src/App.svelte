@@ -8,6 +8,7 @@
   import Energia from './pages/Energia.svelte';
   import Telecamere from './pages/Telecamere.svelte';
   import Avanzate from './pages/Avanzate.svelte';
+  import Allarme from './pages/Allarme.svelte';
   import LuceSheet from './sheets/LuceSheet.svelte';
   import PresaSheet from './sheets/PresaSheet.svelte';
   import TelecameraSheet from './sheets/TelecameraSheet.svelte';
@@ -18,7 +19,7 @@
 
   const tabs: [Page, string, IconName][] = [
     ['casa', 'Casa', 'casa'], ['luci', 'Luci', 'luce'], ['clima', 'Clima', 'termostato'],
-    ['energia', 'Energia', 'energia'], ['telecamere', 'Telecamere', 'telecamera'],
+    ['energia', 'Energia', 'energia'], ['telecamere', 'Telecamere', 'telecamera'], ['allarme', 'Allarme', 'allarme'],
   ];
 
   // Tema: automatico segue il sistema; chiaro e scuro lo forzano.
@@ -58,6 +59,7 @@
     {:else if app.page === 'clima'}<Clima />
     {:else if app.page === 'energia'}<Energia />
     {:else if app.page === 'telecamere'}<Telecamere />
+    {:else if app.page === 'allarme'}<Allarme />
     {:else if app.page === 'avanzate'}<Avanzate />{/if}
   </main>
 </div>

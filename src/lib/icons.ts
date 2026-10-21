@@ -45,6 +45,7 @@ export const ICONS = {
   cerca: "<circle class=\"d\" cx=\"10.6\" cy=\"10.6\" r=\"6.2\"/><path d=\"M15.2 15.2l5 5\"/>",
   orologio: "<circle class=\"d\" cx=\"12\" cy=\"12\" r=\"8.6\"/><path d=\"M12 7.4V12l3.2 2\"/>",
   stella: "<path class=\"d\" d=\"M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.5l-5.1 2.7 1-5.6-4.1-4 5.7-.8z\"/>",
+  allarme: "<path class=\"d\" d=\"M12 3.2 19 6v5.6c0 4.3-2.9 7.6-7 9.2-4.1-1.6-7-4.9-7-9.2V6z\"/><circle cx=\"12\" cy=\"10.8\" r=\"1.7\"/><path d=\"M12 12.5v3\"/>",
   matita: "<path class=\"d\" d=\"M15.6 4.6a2 2 0 0 1 2.8 0l1 1a2 2 0 0 1 0 2.8L9 18.8l-4.6 1 1-4.6z\"/><path d=\"M13.8 6.4l3.8 3.8\"/>",
   chiudi: "<path d=\"M6.5 6.5l11 11M17.5 6.5l-11 11\"/>",
   indietro: "<path d=\"M15 5.5 8.5 12l6.5 6.5\"/>",

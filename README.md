@@ -4,14 +4,14 @@ Interfaccia web personalizzata che sostituisce la dashboard standard di Home Ass
 Home Assistant resta il motore (integrazioni, automazioni, configurazione): questa app
 mostra e comanda soltanto, attraverso la API WebSocket ufficiale (`home-assistant-js-websocket`).
 
-**Stato: fase 2, collegamento a Home Assistant in sola lettura.** Login di HA, stanze,
-dispositivi e stati veri in tempo reale; i comandi arrivano con la fase 3.
+**Stato: fase 3, comandi veri e cronologia.** Login di HA, stanze, dispositivi e stati veri
+in tempo reale, comandi con le regole di sicurezza, grafici dalla cronologia di HA.
 
 | Fase | Contenuto | Stato |
 |---|---|---|
 | 1. Mockup | Interfaccia completa con dati finti | fatta e confermata (21/10) |
-| 2. Collegamento | Login HA (OAuth), aree ed entità reali, stati in tempo reale | fatta (21/10), da confermare |
-| 3. Controlli | Comandi veri e grafici dalla cronologia di HA | da fare |
+| 2. Collegamento | Login HA (OAuth), aree ed entità reali, stati in tempo reale | fatta e confermata (21/10) |
+| 3. Controlli | Comandi veri e grafici dalla cronologia di HA | fatta (21/10), da confermare |
 | 4. Pubblicazione | Build statica su LXC con nginx, `cors_allowed_origins` in HA | da fare |
 
 ## Provarla sul PC

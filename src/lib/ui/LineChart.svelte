@@ -9,9 +9,15 @@
   let W = $state(600);
   const PADL = 44, PADB = 24, PADT = 10;
   const gid = 'g' + Math.random().toString(36).slice(2, 8);
-  const t1 = Date.now();
+  // «Ora» si ricalcola a ogni punto nuovo, così il grafico scorre con i dati dal vivo.
+  const t1 = $derived(Math.max(Date.now(), series.at(-1)?.t ?? 0));
   const t0 = $derived(t1 - hours * 3600_000);
-  const pts = $derived(series.filter((p) => p.t >= t0));
+  // HA registra un valore solo quando cambia: l'ultimo vale fino a ora.
+  const pts = $derived.by(() => {
+    const p = series.filter((q) => q.t >= t0);
+    const last = p.at(-1);
+    return last && last.t < t1 - 60_000 ? [...p, { t: t1, v: last.v }] : p;
+  });
   const all = $derived([...pts, ...(dashed ?? []).filter((p) => p.t >= t0)].map((p) => p.v));
   const lo = $derived(Math.min(...all) >= 0 && Math.min(...all) < Math.max(...all) * 0.3 ? 0 : Math.floor(Math.min(...all) - 0.5));
   // Massimo «tondo» (1, 2, 2,5, 5 × 10^n) per righe guida leggibili.

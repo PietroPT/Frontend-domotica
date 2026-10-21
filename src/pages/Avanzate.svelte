@@ -34,6 +34,21 @@
   const rackOf = (dc: string) => (rack ? hass.sibling(rack.entity_id, (s) => s.attributes.device_class === dc) : undefined);
 
   const autos = $derived(hass.entities('automation'));
+  // Disattivare un'automazione (es. il riavvio di Zigbee2MQTT) richiede un secondo tocco entro 4 secondi:
+  // un tocco per sbaglio non deve spegnere una protezione. Riattivarla è immediato.
+  let confirmOff = $state<string | null>(null);
+  let confirmTimer = 0;
+  function toggleAuto(a: HassEntity) {
+    if (a.state !== 'on') return hass.callService('automation', 'turn_on', { entity_id: a.entity_id });
+    if (confirmOff !== a.entity_id) {
+      confirmOff = a.entity_id;
+      clearTimeout(confirmTimer);
+      confirmTimer = window.setTimeout(() => (confirmOff = null), 4000);
+      return;
+    }
+    confirmOff = null;
+    return hass.callService('automation', 'turn_off', { entity_id: a.entity_id });
+  }
   const printer = $derived(hass.demo ? find(/^sensor\.core_one$/) : hass.byKey('prusalink', 'printer_state'));
   const printerOf = (key: string, suffix: string) => (hass.demo ? `${printer}${suffix}` : hass.byKey('prusalink', key) ?? '');
   const bridge = 'binary_sensor.zigbee2mqtt_bridge_connection_state';
@@ -125,9 +140,11 @@
       {#each autos as a (a.entity_id)}
         <li>
           <span class="ic small" class:on={a.state === 'on'}><Icon name={iconOf(a)} /></span>
-          <span class="what"><b>{a.attributes.friendly_name}</b><small>Ultima esecuzione {a.attributes.last_triggered ? ago(a.attributes.last_triggered) : 'mai'}</small></span>
+          <span class="what"><b>{a.attributes.friendly_name}</b>
+            {#if confirmOff === a.entity_id}<small class="ask">Tocca di nuovo per disattivarla</small>
+            {:else}<small>Ultima esecuzione {a.attributes.last_triggered ? ago(a.attributes.last_triggered) : 'mai'}</small>{/if}</span>
           <button class="sw" class:on={a.state === 'on'} role="switch" aria-checked={a.state === 'on'} aria-label="{a.attributes.friendly_name}: {a.state === 'on' ? 'attiva' : 'disattivata'}"
-            onclick={() => hass.callService('automation', a.state === 'on' ? 'turn_off' : 'turn_on', { entity_id: a.entity_id })}></button>
+            onclick={() => toggleAuto(a)}></button>
         </li>
       {/each}
     </ul>
@@ -183,6 +200,7 @@
   .list li + li { border-top: 1px solid var(--sep); }
   .what b { display: block; font-weight: 600; font-size: 15px; }
   .what small { display: block; font-size: 13px; color: var(--ink-2); }
+  .what small.ask { color: var(--pericolo); font-weight: 600; }
   .state { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; color: var(--ok); }
   .state i { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
   .state.bad { color: var(--pericolo); }

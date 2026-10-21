@@ -33,7 +33,8 @@ export function iconOf(e: HassEntity): IconName {
   if (domain === 'switch') return 'presa';
   if (domain === 'automation') return 'automazione';
   if (e.attributes.device_class === 'power') return 'energia';
-  if (e.attributes.device_class === 'motion') return 'movimento';
+  if (e.attributes.device_class === 'motion' || e.attributes.device_class === 'occupancy') return 'movimento';
+  if (domain === 'alarm_control_panel') return 'allarme';
   return 'stella';
 }
 
