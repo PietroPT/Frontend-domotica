@@ -50,7 +50,7 @@ contiene migliaia di file che Google Drive proverebbe a sincronizzare.
 ## Com'è fatta
 
 - **Svelte 5 + TypeScript + Vite.** Svelte aggiorna solo il numero che cambia (i consumi
-  arrivano ogni pochi secondi) e produce un pacchetto piccolo (≈40 KB compressi): conta sul
+  arrivano ogni pochi secondi) e produce un pacchetto piccolo (≈47 KB compressi, libreria di connessione compresa): conta sul
   Raspberry Pi 4 del pannello.
 - `src/lib/ha/` — modello dei dati uguale a quello di Home Assistant (stati, aree, registro
   entità e dispositivi). `live.ts` lo riempie dalla connessione vera (login di HA,
