@@ -18,21 +18,25 @@ if not exist .env (
   echo Creato .env con l'indirizzo di Home Assistant.
 )
 
-echo Aggiorno il codice da GitHub...
-git pull --ff-only
-if errorlevel 1 echo Aggiornamento non riuscito: parto con la versione già presente.
+rem Da qui in poi un unico blocco: cmd lo legge tutto prima di eseguirlo, quindi git pull può
+rem aggiornare questo stesso file senza che cmd riprenda a leggerlo da un punto sbagliato.
+(
+  echo Aggiorno il codice da GitHub...
+  git pull --ff-only
+  if errorlevel 1 echo Aggiornamento non riuscito: parto con la versione già presente.
 
-echo Controllo i pacchetti...
-call npm.cmd install --no-audit --no-fund
-if errorlevel 1 (
+  echo Controllo i pacchetti...
+  call npm.cmd install --no-audit --no-fund
+  if errorlevel 1 (
+    echo.
+    echo Installazione dei pacchetti non riuscita: leggi il messaggio qui sopra.
+    pause
+    exit /b 1
+  )
+
   echo.
-  echo Installazione dei pacchetti non riuscita: leggi il messaggio qui sopra.
+  echo Avvio. Il browser si apre da solo su http://localhost:5173
+  echo Lascia aperta questa finestra: chiudendola la dashboard si ferma.
+  call npm.cmd run dev -- --open
   pause
-  exit /b 1
 )
-
-echo.
-echo Avvio. Il browser si apre da solo su http://localhost:5173
-echo Lascia aperta questa finestra: chiudendola la dashboard si ferma.
-call npm.cmd run dev -- --open
-pause
