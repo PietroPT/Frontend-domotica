@@ -7,9 +7,9 @@ Dashboard web personalizzata per Home Assistant, al posto della dashboard standa
 ## Cos'è
 
 - Home Assistant resta il motore (integrazioni, automazioni, configurazione); la dashboard è solo l'interfaccia, collegata con la API WebSocket ufficiale.
-- Svelte 5 + TypeScript + Vite: pacchetto piccolo (≈47 KB compressi), pensato anche per il Pi 4 del pannello a muro.
+- Svelte 5 + TypeScript + Vite: pacchetto piccolo (≈53 KB compressi), pensato anche per il Pi 4 del pannello a muro.
 - Dati dal vivo senza interrogazioni periodiche: stati, aree e dispositivi, cronologia delle ultime 24 ore, energia di oggi dalle statistiche di HA.
-- Accesso con il login di HA (nessun token nel codice). Il pannello kiosk userà un token a lunga durata solo sul Pi (fase 4).
+- Accesso con il login di HA (nessun token nel codice). Il pannello a muro entra con un token a lunga durata che sta solo sul Pi e si revoca da HA.
 
 ## Decisioni di Pietro (21/10)
 
