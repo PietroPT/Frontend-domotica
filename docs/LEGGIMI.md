@@ -31,7 +31,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 
 - **Comandi veri** verso HA (`call_service`). Passano tutti da un punto unico (`hass.callService`) che **rilegge le regole di sicurezza prima di inviare**: presa del rack mai, friggitrice mai accesa a distanza, anche se un giorno una schermata dimenticasse il controllo. Le conferme («sta assorbendo 1.843 W», stampante, programma dei pasti) restano nelle schermate. Se HA rifiuta un comando, compare il motivo.
 - **Automazioni**: disattivarne una richiede un secondo tocco entro 4 secondi (un tocco per sbaglio non deve spegnere il riavvio di Zigbee2MQTT o l'avviso DNS); riattivarla è immediato.
-- **Cibo extra**: ora eroga davvero (10–50 g), con «Annulla erogazione».
+- **Cibo extra**: ora eroga davvero (10–50 g), con «Annulla erogazione». **Provato da Pietro sull'HA di casa il 21/10: il distributore eroga.**
 - **Grafici dalla cronologia** delle ultime 24 ore: potenza delle prese, potenza totale, temperatura misurata e desiderata del termostato. Arrivano in streaming (`history/stream`): HA manda il passato e poi ogni cambiamento, senza interrogazioni periodiche. Al massimo un punto al minuto per non appesantire il Pi.
 - **Energia di oggi** (totale, per presa, ora per ora) dai contatori kWh delle prese, con le statistiche a 5 minuti di HA: gli stessi numeri del pannello Energia di HA. Si ricarica all'apertura della pagina e a ogni cambio d'ora.
 - **Allarme** (richiesta di Pietro, 21/10): nuova voce nel menu, pagina segnaposto «da configurare» con l'elenco dei sensori di movimento, presenza e apertura che HA ha già.
@@ -43,7 +43,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 1. Chiudi la finestra nera della dashboard e riapri `avvia.cmd` (scarica la versione nuova).
 2. Prove consigliate, su comandi innocui:
    - **Clima:** alza la temperatura di 0,5° con «+», poi riabbassala;
-   - **Cibo extra:** eroga **10 g** e guarda se il distributore li dà (non è ancora verificato che l'integrazione PetKit eroghi in questo modo);
+   - ~~**Cibo extra:** eroga 10 g~~ — fatto il 21/10, eroga;
    - **Friggitrice:** la presa non deve avere il pulsante «Accendi»; **Rack**: nessun comando;
    - **Energia:** «Oggi … kWh» e le barre ora per ora devono avere numeri simili al pannello **Energia** di HA;
    - **Clima / una presa:** i grafici delle ultime 24 ore devono avere una linea.
@@ -149,7 +149,7 @@ Il mockup (senza `.env`) è stato ricontrollato e non è cambiato.
 - **Nessuna prova su un dispositivo vero.** Catture di un browser (Chromium) a 390×844 (telefono) e 1280×800 (pannello). Non provati: iPhone/Safari, il Pi 4, i tablet.
 - **Leggibilità a distanza sul pannello** non misurata.
 - **Scelta di cosa sta nella Casa** salvata solo nel browser: non condivisa fra telefono, PC e pannello. Da decidere (dati utente di HA, ma ogni persona ha il suo utente).
-- **Fase 3 non ancora provata sull'HA di casa**: comandi veri, erogazione del cibo extra (meccanismo dell'integrazione PetKit non verificato), cronologia e statistiche di energia con i dati reali.
+- **Fase 3 non ancora provata sull'HA di casa**: comandi veri (il cibo extra invece è provato), cronologia e statistiche di energia con i dati reali.
 
 ## Prossimo passo
 
