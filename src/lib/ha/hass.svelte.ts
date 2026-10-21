@@ -56,6 +56,11 @@ class Hass {
     return !!(e?.hidden_by || e?.entity_category);
   }
 
+  /** Entità di un'integrazione riconosciuta dal suo nome interno (es. 'nut', 'battery_charge'), se è attiva. */
+  byKey(platform: string, key: string): string | undefined {
+    return this.entityRegistry.find((r) => r.platform === platform && r.translation_key === key && this.states[r.entity_id])?.entity_id;
+  }
+
   entities(domain: string): HassEntity[] {
     return Object.values(this.states).filter((s) => s.entity_id.startsWith(domain + '.'));
   }

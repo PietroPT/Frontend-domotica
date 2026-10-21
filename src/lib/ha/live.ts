@@ -95,6 +95,8 @@ async function loadRegistries(c: Connection) {
     disabled_by: e.disabled_by ?? null,
     hidden_by: e.hidden_by ?? null,
     entity_category: e.entity_category ?? null,
+    platform: e.platform,
+    translation_key: e.translation_key ?? null,
   }));
 }
 

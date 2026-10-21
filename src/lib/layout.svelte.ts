@@ -1,11 +1,14 @@
 // Quali entità compaiono nella Casa. Salvato nel browser del dispositivo.
 // Finché non si sceglie nulla, con Home Assistant collegato si vedono tutte le
 // luci, prese, termostati e telecamere (tranne l'infrastruttura, vedi canPin).
+// Fra gli interruttori solo le prese vere, cioè quelli con un sensore di potenza:
+// gli altri (es. «Permit join» di Zigbee2MQTT, i comandi del distributore di
+// crocchette) non sono dispositivi da accendere e spegnere dalla Casa.
 // Da valutare: il salvataggio nei dati utente di HA (frontend/set_user_data),
 // così telefono, PC e pannello vedono la stessa casa.
 
 import { hass } from './ha/hass.svelte';
-import { canPin } from './view';
+import { canPin, powerOf } from './view';
 
 // Chiave diversa per il mockup: le scelte fatte sui dati finti non toccano la casa vera.
 const KEY = hass.demo ? 'ha-dashboard.casa.demo' : 'ha-dashboard.casa';
@@ -31,7 +34,10 @@ function load(): string[] | null {
 class Layout {
   private saved = $state<string[] | null>(load());
   pinned = $derived(
-    this.saved ?? (hass.demo ? DEMO_DEFAULT : Object.keys(hass.states).filter((id) => canPin(id) && !id.startsWith('sensor.'))),
+    this.saved ??
+      (hass.demo
+        ? DEMO_DEFAULT
+        : Object.keys(hass.states).filter((id) => canPin(id) && !id.startsWith('sensor.') && (!id.startsWith('switch.') || !!powerOf(id)))),
   );
 
   has(id: string) {

@@ -12,17 +12,30 @@
   const st = (id: string) => hass.states[id]?.state;
   const find = (re: RegExp) => Object.keys(hass.states).find((id) => re.test(id));
 
-  // UPS (NUT): i sensori si chiamano sensor.<nome UPS>_…; il nome si ricava dal sensore dei dati di stato.
-  const ups = $derived(find(/^sensor\..+_status_data$/)?.replace(/_status_data$/, ''));
-  const charge = $derived(n(`${ups}_battery_charge`));
-  const online = $derived(st(`${ups}_status_data`)?.startsWith('OL'));
+  // UPS (NUT) e stampante (PrusaLink): riconosciuti dall'integrazione e dal nome interno della misura,
+  // che non cambia rinominando le entità. Nel mockup (registro senza integrazione) si usa il nome dell'entity_id.
+  const nut = (key: string, suffix: string) => (hass.demo ? find(new RegExp(`^sensor\\.ups_${suffix}$`)) : hass.byKey('nut', key));
+  const upsIds = $derived({
+    charge: nut('battery_charge', 'battery_charge'),
+    status: nut('ups_status', 'status_data'),
+    display: nut('ups_status_display', 'status'),
+    load: nut('ups_load', 'load'),
+    runtime: nut('battery_runtime', 'battery_runtime'),
+    voltage: nut('input_voltage', 'input_voltage'),
+  });
+  const ups = $derived(upsIds.charge ?? upsIds.status ?? upsIds.display);
+  const charge = $derived(upsIds.charge ? n(upsIds.charge) : NaN);
+  const online = $derived(
+    upsIds.status ? st(upsIds.status)?.startsWith('OL') : /online|rete/i.test(st(upsIds.display ?? '') ?? ''),
+  );
 
   // Rack: la presa è disattivata in HA, resta il sensore di potenza (e i suoi fratelli sullo stesso dispositivo).
   const rack = $derived(Object.values(hass.states).find((s) => s.attributes.device_class === 'power' && /rack/i.test(`${s.entity_id} ${hass.deviceName(s.entity_id)}`)));
   const rackOf = (dc: string) => (rack ? hass.sibling(rack.entity_id, (s) => s.attributes.device_class === dc) : undefined);
 
   const autos = $derived(hass.entities('automation'));
-  const printer = $derived(find(/^sensor\.core_one$/));
+  const printer = $derived(hass.demo ? find(/^sensor\.core_one$/) : hass.byKey('prusalink', 'printer_state'));
+  const printerOf = (key: string, suffix: string) => (hass.demo ? `${printer}${suffix}` : hass.byKey('prusalink', key) ?? '');
   const bridge = 'binary_sensor.zigbee2mqtt_bridge_connection_state';
   const kibble = 'sensor.crocchette_livello';
 
@@ -30,7 +43,7 @@
   const services: { icon: IconName; name: string; ok: boolean; detail: string }[] = $derived([
     { icon: 'ha', name: 'Home Assistant', ok: hass.connected, detail: hass.connected ? 'Collegato · dati in tempo reale' : 'Non raggiungibile, riprovo' },
     ...(hass.states[bridge] ? [{ icon: 'zigbee' as IconName, name: 'Zigbee2MQTT', ok: st(bridge) === 'on', detail: st(bridge) === 'on' ? `Coordinatore collegato ${since(hass.states[bridge].last_changed)}` : `Coordinatore scollegato ${since(hass.states[bridge].last_changed)}` }] : []),
-    ...(printer ? [{ icon: 'stampante3d' as IconName, name: 'Stampante 3D', ok: st(printer) !== 'unavailable', detail: st(printer) === 'printing' ? `In stampa · ${st(printer + '_progress')}% · ${st(printer + '_filename')}` : 'Inattiva' }] : []),
+    ...(printer ? [{ icon: 'stampante3d' as IconName, name: 'Stampante 3D', ok: st(printer) !== 'unavailable', detail: st(printer) === 'printing' ? `In stampa · ${st(printerOf('progress', '_progress'))}% · ${st(printerOf('filename', '_filename'))}` : st(printer) === 'unavailable' ? 'Spenta o non raggiungibile' : 'Inattiva' }] : []),
     ...(hass.states[kibble] ? [{ icon: 'crocchette' as IconName, name: 'Crocchette', ok: st(kibble) === 'Normale', detail: `Livello ${st(kibble)?.toLowerCase()}` }] : []),
   ]);
   const val = (e: HassEntity | undefined, f: (v: number) => string) => (e && Number.isFinite(+e.state) ? f(+e.state) : '—');
@@ -50,15 +63,15 @@
   <section class="card ups">
     <div class="head">
       <span class="ic" style:background={online ? 'var(--rack)' : 'var(--pericolo)'}><Icon name="ups" /></span>
-      <div><h2>UPS</h2><p class="sub2">{online ? 'Alimentato dalla rete' : 'A batteria'} · {st(`${ups}_status`)}</p></div>
+      <div><h2>UPS</h2><p class="sub2">{online ? 'Alimentato dalla rete' : 'A batteria'}{upsIds.display ? ` · ${st(upsIds.display)}` : ''}</p></div>
     </div>
     <div class="gauge" role="meter" aria-label="Carica batterie UPS" aria-valuenow={charge} aria-valuemin="0" aria-valuemax="100">
       <i style:width="{charge}%"></i><span class="num">{charge}%</span>
     </div>
     <dl class="rows">
-      <div><dt>Carico</dt><dd class="num">{val(hass.states[`${ups}_load`], (v) => `${v}%`)}</dd></div>
-      <div><dt>Autonomia stimata</dt><dd class="num">{val(hass.states[`${ups}_battery_runtime`], duration)}</dd></div>
-      <div><dt>Tensione ingresso</dt><dd class="num">{val(hass.states[`${ups}_input_voltage`], (v) => `${v} V`)}</dd></div>
+      <div><dt>Carico</dt><dd class="num">{val(hass.states[upsIds.load ?? ''], (v) => `${v}%`)}</dd></div>
+      <div><dt>Autonomia stimata</dt><dd class="num">{val(hass.states[upsIds.runtime ?? ''], duration)}</dd></div>
+      <div><dt>Tensione ingresso</dt><dd class="num">{val(hass.states[upsIds.voltage ?? ''], (v) => `${v} V`)}</dd></div>
     </dl>
     <p class="note">Sola lettura: NUT senza credenziali. L'autonomia è la stima dell'UPS, ottimista.</p>
   </section>

@@ -26,6 +26,10 @@ export interface EntityRegistryEntry {
   hidden_by: string | null;
   /** 'config' o 'diagnostic' per le entità tecniche di un dispositivo. */
   entity_category?: string | null;
+  /** Integrazione che ha creato l'entità (es. 'nut', 'prusalink'). */
+  platform?: string;
+  /** Nome interno della misura nell'integrazione: non cambia con la lingua né se si rinomina l'entità. */
+  translation_key?: string | null;
 }
 
 export interface DeviceRegistryEntry {

@@ -55,7 +55,7 @@
       <rect x="90" y="196" width="60" height="70" rx="10" fill="#3d3d46" />
     </svg>
   {/if}
-  <span class="live"><i></i>LIVE</span>
+  {#if !broken}<span class="live"><i></i>LIVE</span>{/if}
   {#if motion}<span class="motion">Movimento</span>{/if}
   <span class="foot"><b>{name}</b><span class="num">{t}</span></span>
 </div>
