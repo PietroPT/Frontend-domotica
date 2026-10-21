@@ -60,7 +60,7 @@
       <span><b>Clima</b><small class="num">{temp(term?.attributes.current_temperature)} → {temp(term?.attributes.temperature)}</small></span>
     </button>
     <button class="chip" onclick={() => app.go('luci')}>
-      <span class="c" style:background="var(--luci)"><Icon name="luce" size={18} /></span>
+      <span class="c" style:background="var(--luci)" style:color="var(--on-luci)"><Icon name="luce" size={18} /></span>
       <span><b>Luci</b><small>{lightsOn ? `${lightsOn} accese` : 'Tutte spente'}</small></span>
     </button>
     <button class="chip" onclick={() => app.go('energia')}>

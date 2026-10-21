@@ -31,5 +31,9 @@
   .grid > * { min-width: 0; }
   .cam { border: 0; padding: 0; background: none; text-align: left; cursor: pointer; display: grid; gap: 8px; }
   .meta { font-size: 13.5px; color: var(--ink-2); padding-left: 4px; }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    .cam :global(.cam.portrait) { aspect-ratio: 4 / 3; }
+  }
   @media (min-width: 720px) { h1 { font-size: 40px; } }
 </style>

@@ -41,7 +41,7 @@
 </div>
 
 <style>
-  .cam { position: relative; overflow: hidden; border-radius: var(--r-tile); background: #18181c; aspect-ratio: 4 / 3; }
+  .cam { container-type: inline-size; position: relative; overflow: hidden; border-radius: var(--r-tile); background: #18181c; aspect-ratio: 4 / 3; }
   .cam.portrait { aspect-ratio: 3 / 4; }
   svg { position: absolute; inset: 0; width: 100%; height: 100%; }
   .live, .motion {
@@ -60,5 +60,6 @@
   }
   .foot b { font-size: 15px; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .big .foot b { font-size: 18px; }
+  @container (max-width: 190px) { .foot .num { display: none; } }
   @keyframes blink { 50% { opacity: 0.35; } }
 </style>

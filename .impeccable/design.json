@@ -1,0 +1,593 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-21T00:00:00Z",
+  "title": "Design System: Casa",
+  "extensions": {
+    "colorMeta": {
+      "luci-amber": {
+        "role": "secondary",
+        "displayName": "Lamp Amber",
+        "canonical": "#f59f0a",
+        "purpose": "Lights; lit icon discs, brightness fill, warnings.",
+        "tonalRamp": [
+          "#3d2802",
+          "#6e4804",
+          "#9f6706",
+          "#d08708",
+          "#f59f0a",
+          "#f8bc54",
+          "#fbd99d",
+          "#fef1da"
+        ]
+      },
+      "clima-green": {
+        "role": "secondary",
+        "displayName": "Leaf Green",
+        "canonical": "#2fb35a",
+        "purpose": "Climate tiles, Clima chip, dial when holding.",
+        "tonalRamp": [
+          "#0c2d16",
+          "#155128",
+          "#1f743a",
+          "#28984c",
+          "#2fb35a",
+          "#6dca8c",
+          "#ace1bd",
+          "#e0f4e6"
+        ]
+      },
+      "caldo-orange": {
+        "role": "tertiary",
+        "displayName": "Ember Orange",
+        "canonical": "#ff7a2e",
+        "purpose": "Heating state, inside the thermostat dial only.",
+        "tonalRamp": [
+          "#401e0c",
+          "#733715",
+          "#a64f1e",
+          "#d96827",
+          "#ff7a2e",
+          "#ffa26d",
+          "#ffcaab",
+          "#ffebe0"
+        ]
+      },
+      "energia-blue": {
+        "role": "primary",
+        "displayName": "Energy Blue",
+        "canonical": "#0a7cff",
+        "purpose": "Energy, active navigation, focus ring, primary button.",
+        "tonalRamp": [
+          "#021f40",
+          "#043873",
+          "#0651a6",
+          "#0869d9",
+          "#0a7cff",
+          "#54a3ff",
+          "#9dcbff",
+          "#daebff"
+        ]
+      },
+      "sicurezza-violet": {
+        "role": "secondary",
+        "displayName": "Signal Violet",
+        "canonical": "#a64fe0",
+        "purpose": "Security chip and motion badge.",
+        "tonalRamp": [
+          "#2a1438",
+          "#4b2465",
+          "#6c3392",
+          "#8d43be",
+          "#a64fe0",
+          "#c184e9",
+          "#dbb9f3",
+          "#f2e5fa"
+        ]
+      },
+      "rack-teal": {
+        "role": "tertiary",
+        "displayName": "Rack Teal",
+        "canonical": "#1ba3b8",
+        "purpose": "Infrastructure; Avanzate and slide-to-unlock only.",
+        "tonalRamp": [
+          "#07292e",
+          "#0c4953",
+          "#126a78",
+          "#178b9c",
+          "#1ba3b8",
+          "#5fbfcd",
+          "#a4dae3",
+          "#ddf1f4"
+        ]
+      },
+      "pericolo-red": {
+        "role": "tertiary",
+        "displayName": "Alert Red",
+        "canonical": "#ff3b30",
+        "purpose": "Danger button, UPS on battery, offline.",
+        "tonalRamp": [
+          "#400f0c",
+          "#731b16",
+          "#a6261f",
+          "#d93229",
+          "#ff3b30",
+          "#ff766e",
+          "#ffb1ac",
+          "#ffe2e0"
+        ]
+      },
+      "ok-green": {
+        "role": "tertiary",
+        "displayName": "OK Green",
+        "canonical": "#2fb35a",
+        "purpose": "Healthy state, switches on, UPS gauge.",
+        "tonalRamp": [
+          "#0c2d16",
+          "#155128",
+          "#1f743a",
+          "#28984c",
+          "#2fb35a",
+          "#6dca8c",
+          "#ace1bd",
+          "#e0f4e6"
+        ]
+      },
+      "ground-day": {
+        "role": "neutral",
+        "displayName": "Daylight Ground",
+        "canonical": "#eef0f6",
+        "purpose": "Light-theme base under the wallpaper glows.",
+        "tonalRamp": [
+          "#3c3c3e",
+          "#6b6c6f",
+          "#9b9ca0",
+          "#caccd1",
+          "#eef0f6",
+          "#f3f4f9",
+          "#f8f9fb",
+          "#fcfdfe"
+        ]
+      },
+      "ground-night": {
+        "role": "neutral",
+        "displayName": "Violet-Navy Night",
+        "canonical": "#100d1f",
+        "purpose": "Dark-theme base under violet and navy glows.",
+        "tonalRamp": [
+          "#040308",
+          "#07060e",
+          "#0a0814",
+          "#0e0b1a",
+          "#100d1f",
+          "#585662",
+          "#9f9ea5",
+          "#dbdbdd"
+        ]
+      },
+      "raised-night": {
+        "role": "neutral",
+        "displayName": "Night Raised",
+        "canonical": "#1d1a2c",
+        "purpose": "Sheets in the dark theme.",
+        "tonalRamp": [
+          "#07060b",
+          "#0d0c14",
+          "#13111d",
+          "#191625",
+          "#1d1a2c",
+          "#615f6b",
+          "#a5a3ab",
+          "#dddddf"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1c1c1e",
+        "purpose": "Primary text; ink on lit tiles in both themes.",
+        "tonalRamp": [
+          "#070708",
+          "#0d0d0d",
+          "#121214",
+          "#18181a",
+          "#1c1c1e",
+          "#606062",
+          "#a4a4a5",
+          "#dddddd"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink Secondary",
+        "canonical": "#636369",
+        "purpose": "Detail and secondary text.",
+        "tonalRamp": [
+          "#19191a",
+          "#2d2d2f",
+          "#404044",
+          "#545459",
+          "#636369",
+          "#929296",
+          "#c1c1c3",
+          "#e8e8e8"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink Tertiary",
+        "canonical": "#8e8e93",
+        "purpose": "Inactive tabs, padlocks, ticks.",
+        "tonalRamp": [
+          "#242425",
+          "#404042",
+          "#5c5c60",
+          "#79797d",
+          "#8e8e93",
+          "#b0b0b3",
+          "#d2d2d4",
+          "#eeeeef"
+        ]
+      },
+      "luci-amber-dark": {
+        "role": "secondary",
+        "displayName": "Lamp Amber (night)",
+        "purpose": "Dark-theme value of the same category colour."
+      },
+      "clima-green-dark": {
+        "role": "secondary",
+        "displayName": "Leaf Green (night)",
+        "purpose": "Dark-theme value of the same category colour."
+      },
+      "energia-blue-dark": {
+        "role": "primary",
+        "displayName": "Energy Blue (night)",
+        "purpose": "Dark-theme value of the same category colour."
+      },
+      "sicurezza-violet-dark": {
+        "role": "secondary",
+        "displayName": "Signal Violet (night)",
+        "purpose": "Dark-theme value of the same category colour."
+      },
+      "rack-teal-dark": {
+        "role": "tertiary",
+        "displayName": "Rack Teal (night)",
+        "purpose": "Dark-theme value of the same category colour."
+      },
+      "tile-day": {
+        "role": "neutral",
+        "displayName": "Frosted Tile (day)"
+      },
+      "tile-night": {
+        "role": "neutral",
+        "displayName": "Frosted Tile (night)"
+      },
+      "tile-on": {
+        "role": "neutral",
+        "displayName": "Lit Pane"
+      },
+      "tile-on-night": {
+        "role": "neutral",
+        "displayName": "Lit Pane (night)"
+      },
+      "raised-day": {
+        "role": "neutral",
+        "displayName": "Raised (day)"
+      },
+      "track-day": {
+        "role": "neutral",
+        "displayName": "Track (day)"
+      },
+      "track-night": {
+        "role": "neutral",
+        "displayName": "Track (night)"
+      },
+      "sep-day": {
+        "role": "neutral",
+        "displayName": "Separator (day)"
+      },
+      "sep-night": {
+        "role": "neutral",
+        "displayName": "Separator (night)"
+      },
+      "ink-night": {
+        "role": "neutral",
+        "displayName": "Ink (night)"
+      },
+      "ink-2-night": {
+        "role": "neutral",
+        "displayName": "Ink Secondary (night)"
+      },
+      "ink-3-night": {
+        "role": "neutral",
+        "displayName": "Ink Tertiary (night)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page titles; 34px phone, 40px from 720px."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Sheet titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Room and section headings."
+      },
+      "tile-title": {
+        "displayName": "Tile Title",
+        "purpose": "Tile names, two-line clamp; 16px on the wall panel."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Date lines, row labels, readouts."
+      },
+      "detail": {
+        "displayName": "Detail",
+        "purpose": "Tile state; one-line clamp only from 1100px."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Tab labels; 12.5px on the rail."
+      },
+      "readout": {
+        "displayName": "Readout",
+        "purpose": "The single big live number on a page, in its category colour; 46px in sheets."
+      }
+    },
+    "wallpaper": [
+      {
+        "name": "wall-day",
+        "value": "radial-gradient(130% 80% at 12% -10%, #d6e2f7 0%, rgba(214,226,247,0) 55%), radial-gradient(90% 60% at 100% 0%, #efe3f3 0%, rgba(239,227,243,0) 50%), #eef0f6"
+      },
+      {
+        "name": "wall-night",
+        "value": "radial-gradient(140% 110% at 0% 0%, #2d2350 0%, rgba(45,35,80,0) 70%), radial-gradient(120% 90% at 100% 100%, #10243f 0%, rgba(16,36,63,0) 65%), #100d1f"
+      }
+    ],
+    "shadows": [
+      {
+        "name": "lit",
+        "value": "0 1px 1px rgba(20,20,40,0.04), 0 6px 20px -10px rgba(20,20,40,0.25)",
+        "purpose": "On tiles and selected segments (day)."
+      },
+      {
+        "name": "lit-night",
+        "value": "0 1px 1px rgba(0,0,0,0.3), 0 10px 24px -12px rgba(0,0,0,0.7)",
+        "purpose": "On tiles and selected segments (night)."
+      },
+      {
+        "name": "lift",
+        "value": "0 2px 4px rgba(20,20,40,0.06), 0 18px 40px -16px rgba(20,20,40,0.35)",
+        "purpose": "Sheets (day)."
+      },
+      {
+        "name": "lift-night",
+        "value": "0 2px 6px rgba(0,0,0,0.4), 0 24px 50px -18px rgba(0,0,0,0.8)",
+        "purpose": "Sheets (night)."
+      },
+      {
+        "name": "knob-glow",
+        "value": "0 4px 12px -4px color-mix(in srgb, var(--rack) 70%, transparent)",
+        "purpose": "Slide-to-unlock knob only."
+      },
+      {
+        "name": "chrome-glass",
+        "value": "backdrop-filter: saturate(180%) blur(20px)",
+        "purpose": "Tab bar and rail over 92% opaque chrome."
+      },
+      {
+        "name": "focus-ring",
+        "value": "outline: 3px solid var(--energia); outline-offset: 2px",
+        "purpose": "All focusable controls."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Every transition and entrance."
+      },
+      {
+        "name": "tile-fill",
+        "value": "0.35s",
+        "purpose": "Tile background, shadow and disc colour on toggle."
+      },
+      {
+        "name": "press",
+        "value": "scale(0.975) over 0.2s",
+        "purpose": "Pressed tile."
+      },
+      {
+        "name": "sheet-rise",
+        "value": "0.5s, from translateY(40%) and opacity 0",
+        "purpose": "Bottom sheet on phone."
+      },
+      {
+        "name": "sheet-pop",
+        "value": "0.45s, from scale(0.97) and opacity 0",
+        "purpose": "Centred sheet from 720px."
+      },
+      {
+        "name": "scrim-fade",
+        "value": "0.3s",
+        "purpose": "Sheet scrim."
+      },
+      {
+        "name": "unlock-shimmer",
+        "value": "3.2s linear infinite",
+        "purpose": "Slide-to-unlock label; disabled under reduced motion."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "all durations 0.01ms",
+        "purpose": "Global prefers-reduced-motion collapse."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "rail",
+        "value": "720px",
+        "purpose": "Side rail, centred sheets, auto-fill tile grid."
+      },
+      {
+        "name": "wide",
+        "value": "1100px",
+        "purpose": "4-column tiles, 320px right column, one-line detail."
+      },
+      {
+        "name": "panel",
+        "value": "(pointer: coarse) and (min-width: 1100px)",
+        "purpose": "Wall panel: 84px tiles, 16px tile titles."
+      },
+      {
+        "name": "max",
+        "value": "1440px",
+        "purpose": "Content max width."
+      }
+    ],
+    "icons": {
+      "grid": "24",
+      "strokeWidth": "1.75",
+      "caps": "round",
+      "duotoneFill": "currentColor at 16%; 30-32% on active surfaces",
+      "source": "src/lib/icons.ts"
+    }
+  },
+  "components": [
+    {
+      "name": "Tile (on)",
+      "kind": "card",
+      "refersTo": "tile-on",
+      "description": "Signature device tile, lit: solid pane, shadow, category-coloured disc.",
+      "html": "<div class=\"ds-tile ds-on\" style=\"--c:var(--luci,#f59f0a)\"><button class=\"ds-dot\" aria-pressed=\"true\" aria-label=\"Spegni Soffitto\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z\" fill=\"currentColor\" fill-opacity=\"0.16\"/><path d=\"M9.5 19h5M10.5 21.5h3\"/></svg></button><button class=\"ds-body\"><span class=\"ds-t\">Soffitto</span><span class=\"ds-d\">70%</span></button></div>",
+      "css": ".ds-tile{display:flex;align-items:center;gap:10px;min-height:72px;width:220px;padding:10px 6px 10px 10px;border-radius:var(--r-tile,18px);background:var(--tile,rgba(255,255,255,.62));font-family:'Inter Variable',system-ui,sans-serif;transition:background-color .35s cubic-bezier(.16,1,.3,1),box-shadow .35s cubic-bezier(.16,1,.3,1),transform .2s cubic-bezier(.16,1,.3,1)}.ds-tile:active{transform:scale(.975)}.ds-tile.ds-on{background:var(--tile-on,#fff);box-shadow:var(--shadow,0 1px 1px rgba(20,20,40,.04),0 6px 20px -10px rgba(20,20,40,.25));color:#1c1c1e}.ds-dot{width:48px;height:48px;flex:none;border-radius:50%;display:grid;place-items:center;border:0;padding:0;background:var(--track,rgba(120,120,128,.18));color:var(--ink-2,#636369);cursor:pointer}.ds-on .ds-dot{background:var(--c);color:#fff}.ds-body{flex:1;display:flex;flex-direction:column;align-items:flex-start;background:none;border:0;padding:0 4px;text-align:left;cursor:pointer;color:inherit;font:inherit}.ds-t{font-weight:600;font-size:15px;line-height:1.2;letter-spacing:-.01em}.ds-d{font-size:13.5px;color:#6e6e73;font-variant-numeric:tabular-nums}.ds-dot:focus-visible,.ds-body:focus-visible{outline:3px solid var(--energia,#0a7cff);outline-offset:2px;border-radius:10px}"
+    },
+    {
+      "name": "Tile (off)",
+      "kind": "card",
+      "refersTo": "tile",
+      "description": "Device tile at rest: frosted pane, grey disc.",
+      "html": "<div class=\"ds-tile2\"><button class=\"ds-dot2\" aria-pressed=\"false\" aria-label=\"Accendi Comodino\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z\" fill=\"currentColor\" fill-opacity=\"0.16\"/><path d=\"M9.5 19h5M10.5 21.5h3\"/></svg></button><button class=\"ds-body2\"><span class=\"ds-t2\">Comodino</span><span class=\"ds-d2\">Spenta</span></button></div>",
+      "css": ".ds-tile2{display:flex;align-items:center;gap:10px;min-height:72px;width:220px;padding:10px 6px 10px 10px;border-radius:var(--r-tile,18px);background:var(--tile,rgba(255,255,255,.62));font-family:'Inter Variable',system-ui,sans-serif;color:var(--ink,#1c1c1e);transition:background-color .35s cubic-bezier(.16,1,.3,1)}.ds-tile2:hover{background:var(--tile-hover,rgba(255,255,255,.8))}.ds-dot2{width:48px;height:48px;flex:none;border-radius:50%;display:grid;place-items:center;border:0;padding:0;background:var(--track,rgba(120,120,128,.18));color:var(--ink-2,#636369);cursor:pointer}.ds-body2{flex:1;display:flex;flex-direction:column;align-items:flex-start;background:none;border:0;padding:0 4px;text-align:left;cursor:pointer;color:inherit;font:inherit}.ds-t2{font-weight:600;font-size:15px;line-height:1.2;letter-spacing:-.01em}.ds-d2{font-size:13.5px;color:var(--ink-2,#636369)}.ds-dot2:focus-visible,.ds-body2:focus-visible{outline:3px solid var(--energia,#0a7cff);outline-offset:2px;border-radius:10px}"
+    },
+    {
+      "name": "Summary Chip",
+      "kind": "chip",
+      "refersTo": "summary-chip",
+      "description": "Category summary that navigates to its page.",
+      "html": "<button class=\"ds-chip\"><span class=\"ds-chip-c\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M13 2 5 13.5h6L10 22l8-11.5h-6z\" fill=\"currentColor\" fill-opacity=\"0.16\"/></svg></span><span><b>Energia</b><small>2,14 kW</small></span></button>",
+      "css": ".ds-chip{display:flex;align-items:center;gap:9px;min-height:52px;padding:6px 16px 6px 7px;border-radius:16px;border:0;background:var(--tile,rgba(255,255,255,.62));cursor:pointer;text-align:left;font-family:'Inter Variable',system-ui,sans-serif;color:var(--ink,#1c1c1e)}.ds-chip:hover{background:var(--tile-hover,rgba(255,255,255,.8))}.ds-chip:focus-visible{outline:3px solid var(--energia,#0a7cff);outline-offset:2px}.ds-chip-c{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--energia,#0a7cff)}.ds-chip b{display:block;font-size:14px;font-weight:600;line-height:1.2}.ds-chip small{display:block;font-size:12.5px;color:var(--ink-2,#636369);font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Full-width confirming action in sheets.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Accendi</button>",
+      "css": ".ds-btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;width:260px;border:0;border-radius:18px;font-family:'Inter Variable',system-ui,sans-serif;font-weight:600;font-size:16px;cursor:pointer;transition:transform .2s cubic-bezier(.16,1,.3,1)}.ds-btn:active{transform:scale(.975)}.ds-btn:focus-visible{outline:3px solid var(--energia,#0a7cff);outline-offset:2px}.ds-btn-primary{background:var(--energia,#0a7cff);color:#fff}"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive action, e.g. cutting a plug.",
+      "html": "<button class=\"ds-btn3\">Spegni la presa</button>",
+      "css": ".ds-btn3{display:flex;align-items:center;justify-content:center;min-height:56px;width:260px;border:0;border-radius:18px;background:var(--pericolo,#ff3b30);color:#fff;font-family:'Inter Variable',system-ui,sans-serif;font-weight:600;font-size:16px;cursor:pointer}.ds-btn3:active{transform:scale(.975)}.ds-btn3:focus-visible{outline:3px solid var(--energia,#0a7cff);outline-offset:2px}"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "input",
+      "refersTo": "segmented",
+      "description": "Mode and theme pickers.",
+      "html": "<div class=\"ds-seg\"><button class=\"ds-sel\">Automatico</button><button>Chiaro</button><button>Scuro</button></div>",
+      "css": ".ds-seg{display:flex;width:320px;background:var(--track,rgba(120,120,128,.18));border-radius:14px;padding:4px;font-family:'Inter Variable',system-ui,sans-serif}.ds-seg button{flex:1;min-height:44px;border:0;border-radius:10px;background:none;font:inherit;font-weight:600;cursor:pointer;color:var(--ink-2,#636369);transition:background-color .3s cubic-bezier(.16,1,.3,1)}.ds-seg button.ds-sel{background:var(--raised,#fff);color:var(--ink,#1c1c1e);box-shadow:var(--shadow,0 1px 1px rgba(20,20,40,.04),0 6px 20px -10px rgba(20,20,40,.25))}.ds-seg button:focus-visible{outline:3px solid var(--energia,#0a7cff);outline-offset:2px}"
+    },
+    {
+      "name": "Tab Bar",
+      "kind": "nav",
+      "refersTo": "nav-tab-active",
+      "description": "Phone bottom tab bar; side rail from 720px.",
+      "html": "<nav class=\"ds-tabs\"><a class=\"ds-on\" href=\"#\"><svg width=\"26\" height=\"26\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 10.5 12 4l8 6.5V20H4z\" fill=\"currentColor\" fill-opacity=\"0.3\"/></svg><span>Casa</span></a><a href=\"#\"><svg width=\"26\" height=\"26\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z\" fill=\"currentColor\" fill-opacity=\"0.16\"/><path d=\"M9.5 19h5\"/></svg><span>Luci</span></a></nav>",
+      "css": ".ds-tabs{display:flex;width:320px;justify-content:space-around;padding:6px 4px 8px;background:var(--chrome,rgba(246,247,251,.92));backdrop-filter:saturate(180%) blur(20px);border-top:1px solid var(--sep,rgba(60,60,67,.13));font-family:'Inter Variable',system-ui,sans-serif}.ds-tabs a{flex:1;display:grid;justify-items:center;gap:2px;padding:6px 0;min-height:56px;color:var(--ink-3,#8e8e93);text-decoration:none;font-size:11.5px;font-weight:600;transition:color .25s cubic-bezier(.16,1,.3,1)}.ds-tabs a.ds-on{color:var(--energia,#0a7cff)}.ds-tabs a:focus-visible{outline:3px solid var(--energia,#0a7cff);outline-offset:2px;border-radius:10px}"
+    },
+    {
+      "name": "Slide To Unlock",
+      "kind": "custom",
+      "refersTo": "slide-to-unlock",
+      "description": "The gate to Avanzate; shimmer off under reduced motion.",
+      "html": "<div class=\"ds-unlock\"><span class=\"ds-unlock-l\">Scorri per Avanzate</span><button class=\"ds-knob\" aria-label=\"Scorri per Avanzate\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"5\" y=\"10.5\" width=\"14\" height=\"10\" rx=\"2.5\" fill=\"currentColor\" fill-opacity=\"0.16\"/><path d=\"M8 10.5V8a4 4 0 0 1 8 0v2.5\"/></svg></button></div>",
+      "css": ".ds-unlock{position:relative;width:300px;height:60px;border-radius:30px;padding:6px;background:var(--tile,rgba(255,255,255,.62));box-shadow:inset 0 0 0 1px var(--sep,rgba(60,60,67,.13));overflow:hidden;font-family:'Inter Variable',system-ui,sans-serif}.ds-unlock-l{position:absolute;inset:0;display:grid;place-items:center;padding-left:40px;font-weight:600;font-size:15.5px;background:linear-gradient(90deg,#636369 0%,#636369 40%,#1c1c1e 50%,#636369 60%,#636369 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:ds-shine 3.2s linear infinite;pointer-events:none}.ds-knob{position:relative;z-index:1;width:48px;height:48px;border-radius:50%;border:0;padding:0;display:grid;place-items:center;background:var(--rack,#1ba3b8);color:#fff;box-shadow:0 4px 12px -4px color-mix(in srgb,var(--rack,#1ba3b8) 70%,transparent);cursor:grab}.ds-knob:focus-visible{outline:3px solid var(--energia,#0a7cff);outline-offset:2px}@keyframes ds-shine{from{background-position:100% 0}to{background-position:-100% 0}}@media (prefers-reduced-motion:reduce){.ds-unlock-l{animation:none;-webkit-text-fill-color:#636369}}"
+    },
+    {
+      "name": "Brightness Slider",
+      "kind": "input",
+      "refersTo": "brightness-slider",
+      "description": "Vertical pill slider in the light sheet.",
+      "html": "<div class=\"ds-pill\" role=\"slider\" tabindex=\"0\" aria-label=\"Luminosità\" aria-valuenow=\"70\" aria-valuemin=\"0\" aria-valuemax=\"100\"><div class=\"ds-fill\"></div></div>",
+      "css": ".ds-pill{position:relative;overflow:hidden;width:112px;height:240px;border-radius:34px;background:var(--track,rgba(120,120,128,.18));cursor:ns-resize;transition:transform .3s cubic-bezier(.16,1,.3,1)}.ds-pill:active{transform:scale(1.03)}.ds-pill:focus-visible{outline:3px solid var(--energia,#0a7cff);outline-offset:2px}.ds-fill{position:absolute;left:0;right:0;bottom:0;height:70%;background:linear-gradient(to top,var(--luci,#f59f0a),color-mix(in srgb,var(--luci,#f59f0a) 70%,#fff))}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Lit Room",
+    "overview": "The category standard, played straight at Apple Home's finish. The house is a set of rooms; each room is a grid of soft, translucent tiles laid over a blurred, tinted wallpaper. A tile at rest is a frosted pane that lets the wall show through; a tile that is on becomes solid white, lifts with a soft shadow, and its icon disc fills with its category colour. Reading the screen is reading which panes are lit.\n\nDensity is calm and direct: one tap toggles, the chevron-less tile body opens a detail sheet, and every control is large (48px minimum, 84px tiles on the wall panel). Colour is never decoration. Each category owns one hue (amber lights, green climate, blue energy, violet security, teal rack), and that hue appears only when something in that category is active or being navigated to. Type is a single family, Inter Variable, self-hosted as the stand-in for SF, set tight and bold for headings and quiet grey for detail.\n\nInfrastructure is not part of the everyday world. Rack and UPS appear only in Avanzate, behind the slide-to-unlock control, and that page is where teal lives.",
+    "keyCharacteristics": [
+      "Blurred two-glow wallpaper ground: pale blue and lilac by day, violet-navy by night.",
+      "Translucent 18px tiles that turn solid white and lift when on.",
+      "One colour per category, shown as a filled circular icon disc.",
+      "Inter Variable throughout, negative tracking on headings, tabular numerals for live values.",
+      "Custom duotone icon set on a 24 grid, 1.75 stroke, 16% tinted fill.",
+      "Sheets rise from the bottom on phone and pop centred on wider screens, with an exponential ease-out."
+    ],
+    "rules": [
+      {
+        "name": "The One Hue Per Category Rule",
+        "body": "Lights are amber, climate is green, energy is blue, security is violet, infrastructure is teal. A device tile takes its category colour and no other; a new category gets a new hue, never a borrowed one.",
+        "section": "colors"
+      },
+      {
+        "name": "The Colour Means On Rule",
+        "body": "Category colour fills an icon disc only when that thing is on or active. An off tile is grey disc on frosted glass. State is carried twice: the tile turns solid and the detail text changes (\"Spenta\", \"70%\"), so colour is never the only signal.",
+        "section": "colors"
+      },
+      {
+        "name": "The Heat Stays In The Dial Rule",
+        "body": "Climate is green on tiles and chips. Ember Orange appears only inside the thermostat dial while heating.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "All headings and labels are sentence case Italian. The only uppercase string is the \"LIVE\" status badge on camera feeds, a camera-feed convention, not a heading device.",
+        "section": "typography"
+      },
+      {
+        "name": "The Live Numbers Rule",
+        "body": "Every value that updates from Home Assistant is set in tabular numerals so it does not jitter.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lit Panes Lift Rule",
+        "body": "Resting surfaces are flat. A tile earns a shadow by being on; a sheet earns one by floating. Nothing else casts a shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do give every device a tile in its category colour, and fill the disc only when it is on.",
+      "Do pair every colour state with a text state (\"Spenta\", \"70%\", \"Riscalda\") and with the solid-pane change.",
+      "Do keep touch targets at 44px minimum for icon buttons and 48px for tile toggles, growing tiles to 84px on the wall panel.",
+      "Do use the shared ease `cubic-bezier(0.16, 1, 0.3, 1)` for every transition and entrance, and let reduced motion collapse them.",
+      "Do set live values in tabular numerals.",
+      "Do draw new icons in the house style: 24 grid, 1.75 stroke, duotone fill.",
+      "Do clamp tile detail text to one line only from 1100px up; let it wrap below."
+    ],
+    "donts": [
+      "Don't use orange for climate outside the thermostat dial; climate tiles and chips are green.",
+      "Don't put rack, UPS or other infrastructure on Casa or any everyday page; they live only in Avanzate.",
+      "Don't offer a toggle for a device the safety rules forbid; show it read-only with a padlock and the reason.",
+      "Don't give resting surfaces shadows or borders; depth at rest is glass and tone.",
+      "Don't add uppercase eyebrows or kickers above headings; headings are sentence case and stand alone.",
+      "Don't swap Inter for another face or pull in a stock icon library."
+    ]
+  }
+}
