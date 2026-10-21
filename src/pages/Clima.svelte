@@ -5,6 +5,7 @@
   import LineChart from '../lib/ui/LineChart.svelte';
   import Icon from '../lib/ui/Icon.svelte';
   import { thermostat } from '../lib/view';
+  import NomeModificabile from '../lib/ui/NomeModificabile.svelte';
 
   const t = $derived(thermostat());
   const id = $derived(t?.entity_id ?? '');
@@ -40,6 +41,7 @@
       <LineChart label="Temperatura nelle ultime 24 ore" series={hass.history(id)} dashed={hass.history(id + ':target')}
         color="var(--clima)" format={(v) => temp(v, 0)} />
       <dl>
+        <div><dt>Nome</dt><dd><NomeModificabile small {id} name={t.attributes.friendly_name ?? id} /></dd></div>
         <div><dt>Programmazione</dt><dd>Manuale (impostazioni di fabbrica)</dd></div>
         <div><dt>Ultimo cambio di stato</dt><dd>{since(t.last_changed)}</dd></div>
         <div><dt>Collegamento</dt><dd>Zigbee2MQTT · MOES ZHT-S03</dd></div>

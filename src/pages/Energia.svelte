@@ -61,7 +61,7 @@
           <button onclick={() => app.open({ kind: 'presa', id: r.sw?.entity_id ?? r.s.entity_id })}>
             <span class="ic" class:on={r.w > 1}><Icon name={iconOf(r.s)} /></span>
             <span class="what">
-              <b>{nameOf(r.s)}</b>
+              <b>{nameOf(r.sw ?? r.s)}</b>
               <small class:warn={r.p.readOnly || r.p.noRemoteOn}>
                 {#if r.p.readOnly}Sola lettura · {hass.areaName(hass.areaOf(r.s.entity_id))}{:else if r.p.noRemoteOn && r.sw?.state === 'off'}Spenta · non si accende a distanza{:else}{r.sw?.state === 'off' ? 'Spenta' : 'Accesa'} · {hass.areaName(hass.areaOf(r.s.entity_id))}{/if}
               </small>

@@ -13,7 +13,7 @@
 </script>
 
 {#if c}
-  <Sheet wide title={c.attributes.friendly_name} subtitle={m ? (m.state === 'on' ? 'Movimento in corso' : `Ultimo movimento ${ago(m.last_changed)}`) : 'Frigate'} onclose={() => app.close()}>
+  <Sheet wide renameId={id} title={c.attributes.friendly_name ?? id} subtitle={m ? (m.state === 'on' ? 'Movimento in corso' : `Ultimo movimento ${ago(m.last_changed)}`) : 'Frigate'} onclose={() => app.close()}>
     <div class="v" class:portrait>
       <CameraView big name={c.attributes.friendly_name} {portrait} motion={m?.state === 'on'} src={cameraSrc(c, true)}
         onshape={(p) => (hass.portrait[id] = p)} />

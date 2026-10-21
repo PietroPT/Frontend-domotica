@@ -1,9 +1,11 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import Icon from './Icon.svelte';
+  import NomeModificabile from './NomeModificabile.svelte';
 
-  let { title, subtitle, onclose, children, wide = false }:
-    { title: string; subtitle?: string; onclose: () => void; children: Snippet; wide?: boolean } = $props();
+  // renameId: se c'è, il titolo è il nome di quell'entità e si cambia toccandolo.
+  let { title, subtitle, onclose, children, wide = false, renameId }:
+    { title: string; subtitle?: string; onclose: () => void; children: Snippet; wide?: boolean; renameId?: string } = $props();
 
   let panel: HTMLElement;
   $effect(() => {
@@ -19,8 +21,8 @@
 <div class="sheet" class:wide role="dialog" aria-modal="true" aria-label={title} tabindex="-1" bind:this={panel}>
   <div class="grab" aria-hidden="true"></div>
   <header>
-    <div>
-      <h2>{title}</h2>
+    <div class="ti">
+      {#if renameId}<NomeModificabile id={renameId} name={title} />{:else}<h2>{title}</h2>{/if}
       {#if subtitle}<p>{subtitle}</p>{/if}
     </div>
     <button class="x" onclick={onclose} aria-label="Chiudi"><Icon name="chiudi" size={20} /></button>
@@ -49,6 +51,7 @@
   .grab { width: 40px; height: 5px; border-radius: 3px; background: var(--track); margin: 0 auto 10px; }
   header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
   h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+  .ti { min-width: 0; flex: 1; }
   header p { color: var(--ink-2); font-size: 14.5px; margin-top: 2px; }
   .x { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--track); display: grid; place-items: center; cursor: pointer; color: var(--ink-2); flex: none; }
 

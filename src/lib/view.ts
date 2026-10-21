@@ -67,7 +67,7 @@ export function tileOf(id: string): TileView | null {
       ...base, on, color: 'var(--luci)',
       detail: on ? (e.attributes.brightness != null ? `${pct}%` : 'Accesa') : 'Spenta',
       toggle: () => hass.callService('light', on ? 'turn_off' : 'turn_on', { entity_id: id }),
-      open: e.attributes.supported_color_modes?.some((m: string) => m !== 'onoff') ? () => app.open({ kind: 'luce', id }) : undefined,
+      open: () => app.open({ kind: 'luce', id }),
     };
   }
 
@@ -99,7 +99,7 @@ export function tileOf(id: string): TileView | null {
       ...base, on: true, color: id.includes('rack') ? 'var(--rack)' : 'var(--energia)',
       detail: watt(+e.state),
       locked: !!policyOf(id).readOnly,
-      open: () => app.go('energia'),
+      open: () => app.open({ kind: 'presa', id }),
     };
   }
 

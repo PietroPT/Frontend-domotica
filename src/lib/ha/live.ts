@@ -49,6 +49,8 @@ export async function start() {
     // Il ritorno dal login lascia ?auth_callback=1&code=… nell'indirizzo: si toglie.
     if (location.search.includes('auth_callback')) history.replaceState(null, '', location.pathname + location.hash);
     conn = await createConnection({ auth });
+    const c = conn;
+    hass.ws = (msg) => c.sendMessagePromise(msg);
     await loadRegistries(conn);
     hass.user = (await getUser(conn)).name ?? '';
   } catch (err) {

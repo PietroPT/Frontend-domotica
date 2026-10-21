@@ -10,6 +10,7 @@
   const on = $derived(e?.state === 'on');
   const pct = $derived(Math.round(((e?.attributes.brightness ?? 0) / 255) * 100));
   const ct = $derived(e?.attributes.supported_color_modes?.includes('color_temp'));
+  const dimmable = $derived(e?.attributes.supported_color_modes?.some((m: string) => m !== 'onoff'));
   const temps = [[2700, 'Calda', '#ffb35c'], [4000, 'Neutra', '#ffe2b8'], [5500, 'Fredda', '#dce9ff']] as const;
 
   const set = (v: number) =>
@@ -17,9 +18,9 @@
 </script>
 
 {#if e}
-  <Sheet title={e.attributes.friendly_name} subtitle="{hass.areaName(hass.areaOf(id))} · {on ? 'Accesa' : 'Spenta'}" onclose={() => app.close()}>
+  <Sheet renameId={id} title={e.attributes.friendly_name ?? id} subtitle="{hass.areaName(hass.areaOf(id))} · {on ? 'Accesa' : 'Spenta'}" onclose={() => app.close()}>
     <div class="body">
-      <BrightnessSlider value={pct} off={!on} onchange={set} label="Luminosità {e.attributes.friendly_name}" />
+      {#if dimmable}<BrightnessSlider value={pct} off={!on} onchange={set} label="Luminosità {e.attributes.friendly_name}" />{/if}
       {#if ct}
         <div class="temps" role="radiogroup" aria-label="Colore della luce">
           {#each temps as [k, label, sw]}

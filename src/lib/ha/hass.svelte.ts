@@ -26,6 +26,8 @@ class Hass {
   connected = $state(true);
   /** Nome dell'utente di HA con cui si è entrati. */
   user = $state('');
+  /** Invio di un messaggio a HA: lo imposta live.ts quando la connessione è aperta. */
+  ws: ((msg: { type: string; [key: string]: unknown }) => Promise<unknown>) | null = null;
   /** Avviso breve mostrato in basso (es. comando non inviato). */
   notice = $state('');
   /** Telecamere con l'immagine più alta che larga (la misura arriva col primo fotogramma). */
@@ -122,6 +124,20 @@ class Hass {
       const p = this.sibling(id, (s) => s.attributes.device_class === 'power');
       if (this.states[id].state === 'off' && p) this.states[p.entity_id] = { ...p, state: '0' };
     }
+  }
+
+  /** Rinomina un'entità in HA (registro delle entità). Nome vuoto = torna al nome originale.
+   *  Non è un comando a un dispositivo: cambia solo il nome visibile, non l'entity_id. */
+  async rename(entity_id: string, name: string): Promise<void> {
+    const clean = name.trim() || null;
+    if (this.demo) {
+      const s = this.states[entity_id];
+      const original = mock.states[entity_id]?.attributes.friendly_name ?? entity_id;
+      if (s) this.states[entity_id] = { ...s, attributes: { ...s.attributes, friendly_name: clean ?? original } };
+      return;
+    }
+    if (!this.ws) throw new Error('Home Assistant non è collegato');
+    await this.ws({ type: 'config/entity_registry/update', entity_id, name: clean });
   }
 
   private noticeTimer = 0;
