@@ -9,7 +9,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 | Cosa | Dove |
 |---|---|
 | Codice, copia principale con la cronologia | GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31` |
-| Copia dei sorgenti | questa cartella (`HA-Dashboard\`): stessa struttura del repository, senza `node_modules` e senza le skill `.claude\`. **È ferma alla fase 1**: il codice della fase 2 è solo su GitHub (commit `69edca4`), da cui si scarica con `git clone` o `git pull` |
+| Copia dei sorgenti | questa cartella (`HA-Dashboard\`): stessa struttura del repository, senza `node_modules` e senza le skill `.claude\`. **È ferma alla fase 1**: il codice delle fasi 2 e 3 è solo su GitHub (ultimo commit della fase 3 `006b57b`), da cui `avvia.cmd` lo scarica da solo |
 | Immagini d'esempio della fase 1 | `HA-Dashboard\immagini\` |
 | Profilo del prodotto (utenti, vincoli, regole) | `HA-Dashboard\PRODUCT.md` |
 | Sistema grafico (colori, caratteri, componenti) | `HA-Dashboard\DESIGN.md` |
