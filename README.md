@@ -11,7 +11,7 @@ in tempo reale, comandi con le regole di sicurezza, grafici dalla cronologia di 
 |---|---|---|
 | 1. Mockup | Interfaccia completa con dati finti | fatta e confermata (21/10) |
 | 2. Collegamento | Login HA (OAuth), aree ed entità reali, stati in tempo reale | fatta e confermata (21/10) |
-| 3. Controlli | Comandi veri e grafici dalla cronologia di HA | fatta (21/10), da confermare |
+| 3. Controlli | Comandi veri e grafici dalla cronologia di HA | fatta e confermata (21/10) |
 | 4. Pubblicazione | Build statica su LXC con nginx, `cors_allowed_origins` in HA | da fare |
 
 ## Provarla sul PC
