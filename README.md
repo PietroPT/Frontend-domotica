@@ -27,7 +27,11 @@ npm install
 npm run dev -- --host
 ```
 
-Poi apri `http://localhost:5173`. Il file `.env` contiene solo l'indirizzo di Home Assistant
+Poi apri `http://localhost:5173`.
+
+**Dalla seconda volta basta un doppio clic su `avvia.cmd`** (nella cartella `C:\HA-Dashboard`):
+aggiorna il codice da GitHub, installa i pacchetti che mancano, avvia la dashboard e apre il
+browser. La finestra nera va lasciata aperta; chiudendola la dashboard si ferma. Il file `.env` contiene solo l'indirizzo di Home Assistant
 (niente password): se manca, l'app parte con i dati di esempio del mockup. Anche con `.env`
 il mockup resta apribile aggiungendo `?demo` all'indirizzo (`http://localhost:5173/?demo`).
 

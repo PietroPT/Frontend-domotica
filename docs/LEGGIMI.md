@@ -75,6 +75,8 @@ npm run dev
    - Toccando un comando compare «Comandi non ancora attivi: arrivano con la fase 3»: è voluto.
 4. Se qualcosa non va, la dashboard mostra «Non riesco a collegarmi» con il motivo. Il caso più probabile è il passo 1 (lista `cors_allowed_origins` mancante o scritta diversa).
 
+**Avvio dalle volte successive:** doppio clic su `C:\HA-Dashboard\avvia.cmd`. Fa da solo `git pull`, `npm install` e `npm run dev`, e apre il browser su `http://localhost:5173`. Usa `npm.cmd`, quindi non serve cambiare le impostazioni di sicurezza di PowerShell. Collegamento sul desktop: tasto destro su `avvia.cmd` → **Mostra altre opzioni** → **Invia a** → **Desktop (crea collegamento)**. La finestra nera va lasciata aperta finché si usa la dashboard.
+
 **Uscire:** Avanzate → Accesso → **Esci da questo dispositivo** revoca l'accesso di questo browser in HA.
 
 ## Fase 2 — cosa è stato fatto
