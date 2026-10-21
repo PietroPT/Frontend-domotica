@@ -47,6 +47,10 @@
     ...(hass.states[kibble] ? [{ icon: 'crocchette' as IconName, name: 'Crocchette', ok: st(kibble) === 'Normale', detail: `Livello ${st(kibble)?.toLowerCase()}` }] : []),
   ]);
   const val = (e: HassEntity | undefined, f: (v: number) => string) => (e && Number.isFinite(+e.state) ? f(+e.state) : '—');
+  // L'autonomia di NUT è in secondi, ma in HA si può scegliere di mostrarla in minuti o ore:
+  // il valore arriva già convertito nell'unità scelta, quindi si riporta in secondi.
+  const SEC: Record<string, number> = { s: 1, min: 60, h: 3600, d: 86400 };
+  const seconds = (e: HassEntity | undefined) => (e ? +e.state * (SEC[e.attributes.unit_of_measurement] ?? 1) : NaN);
   const themes: [Theme, string][] = [['auto', 'Automatico'], ['chiaro', 'Chiaro'], ['scuro', 'Scuro']];
 </script>
 
@@ -70,7 +74,7 @@
     </div>
     <dl class="rows">
       <div><dt>Carico</dt><dd class="num">{val(hass.states[upsIds.load ?? ''], (v) => `${v}%`)}</dd></div>
-      <div><dt>Autonomia stimata</dt><dd class="num">{val(hass.states[upsIds.runtime ?? ''], duration)}</dd></div>
+      <div><dt>Autonomia stimata</dt><dd class="num">{duration(seconds(hass.states[upsIds.runtime ?? '']))}</dd></div>
       <div><dt>Tensione ingresso</dt><dd class="num">{val(hass.states[upsIds.voltage ?? ''], (v) => `${v} V`)}</dd></div>
     </dl>
     <p class="note">Sola lettura: NUT senza credenziali. L'autonomia è la stima dell'UPS, ottimista.</p>
