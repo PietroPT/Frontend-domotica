@@ -5,6 +5,13 @@ rem La copia passa da SSH con la chiave del PC: nessuna password in questo file.
 chcp 65001 >nul
 setlocal
 cd /d "%~dp0"
+rem Solo dalla copia di lavoro (C:\HA-Dashboard): da Drive installerebbe migliaia di file nella cartella sincronizzata.
+if not exist ".git\" (
+  echo Questo file va lanciato dalla copia sul PC, C:\HA-Dashboard, non da qui:
+  echo %~dp0
+  pause
+  exit /b 1
+)
 
 set "DEST="
 if exist ".env" for /f "usebackq tokens=1,* delims==" %%a in (".env") do if /i "%%a"=="PUBBLICA_SU" set "DEST=%%b"

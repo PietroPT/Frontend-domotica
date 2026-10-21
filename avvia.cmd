@@ -5,6 +5,13 @@ rem Per fermarla: chiudere questa finestra (oppure Ctrl+C).
 chcp 65001 >nul
 cd /d "%~dp0"
 title HA-Dashboard
+rem Solo dalla copia di lavoro (C:\HA-Dashboard): da Drive installerebbe migliaia di file nella cartella sincronizzata.
+if not exist ".git\" (
+  echo Questo file va lanciato dalla copia sul PC, C:\HA-Dashboard, non da qui:
+  echo %~dp0
+  pause
+  exit /b 1
+)
 
 if not exist .env (
   copy .env.example .env >nul
