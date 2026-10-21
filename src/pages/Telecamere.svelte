@@ -2,10 +2,10 @@
   import { hass } from '../lib/ha/hass.svelte';
   import { app } from '../lib/app.svelte';
   import { ago } from '../lib/format';
-  import { cameraSrc, isPortrait, motionOf } from '../lib/view';
+  import { cameraSrc, isHomeCamera, isPortrait, motionOf } from '../lib/view';
   import CameraView from '../lib/ui/CameraView.svelte';
 
-  const cams = $derived(hass.entities('camera'));
+  const cams = $derived(hass.entities('camera').filter((c) => isHomeCamera(c.entity_id)));
 </script>
 
 <header class="top">

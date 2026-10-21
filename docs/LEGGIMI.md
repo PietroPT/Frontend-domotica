@@ -1,6 +1,6 @@
 # HA-Dashboard — interfaccia personalizzata per Home Assistant
 
-**Aggiornato il 21 ottobre 2026, sera.** Fasi 1 e 2 confermate da Pietro (la 2 provata sul suo HA). **Fase 3 (comandi veri e cronologia) consegnata, da provare sull'HA di casa** e da confermare prima della fase 4.
+**Aggiornato il 21 ottobre 2026, sera.** Fasi 1, 2 e 3 **confermate da Pietro**, provate sul suo Home Assistant («va tutto bene», 21/10). Prossima: fase 4 (pubblicazione).
 
 Home Assistant resta il motore (integrazioni, automazioni, configurazione). La nuova app è solo l'interfaccia e parla con HA attraverso la API WebSocket ufficiale (`home-assistant-js-websocket`).
 
@@ -24,7 +24,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 |---|---|---|
 | 1. Mockup | Interfaccia completa con dati finti, nessun collegamento a HA | **fatta e confermata** il 21/10 |
 | 2. Collegamento | Login HA (OAuth, `getAuth`), aree ed entità, stati reali in tempo reale | **fatta e confermata** il 21/10 (provata sull'HA di casa) |
-| 3. Controlli | Comandi veri (accendi/spegni, regolazioni), grafici dalla cronologia di HA | **fatta** il 21/10, provata su un HA di prova; **da provare sull'HA di casa** |
+| 3. Controlli | Comandi veri (accendi/spegni, regolazioni), grafici dalla cronologia di HA | **fatta e confermata** il 21/10 (provata sull'HA di casa) |
 | 4. Pubblicazione | Build statica servita da un LXC leggero con nginx su Proxmox, token del pannello kiosk | da fare |
 
 ## Fase 3 — cosa è stato fatto
@@ -34,6 +34,8 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La n
 - **Cibo extra**: ora eroga davvero (10–50 g), con «Annulla erogazione». **Provato da Pietro sull'HA di casa il 21/10: il distributore eroga.**
 - **Grafici dalla cronologia** delle ultime 24 ore: potenza delle prese, potenza totale, temperatura misurata e desiderata del termostato. Arrivano in streaming (`history/stream`): HA manda il passato e poi ogni cambiamento, senza interrogazioni periodiche. Al massimo un punto al minuto per non appesantire il Pi.
 - **Energia di oggi** (totale, per presa, ora per ora) dai contatori kWh delle prese, con le statistiche a 5 minuti di HA: gli stessi numeri del pannello Energia di HA. Si ricarica all'apertura della pagina e a ogni cambio d'ora.
+- **Termostato** (richieste di Pietro, 21/10): in grande la temperatura della stanza, sotto in piccolo l'obiettivo come solo numero nel colore del termostato (scartate la parola «Impostata a» e l'icona a bersaglio). Mentre si modifica, in grande e colorato il valore che si sta impostando, sotto «Ora …»; torna normale 2,5 s dopo la conferma di HA. Dopo il rilascio il valore nuovo resta visibile finché HA non lo conferma.
+- **Telecamera della stampante 3D** (PrusaLink) esclusa da Telecamere, Casa e «Aggiungi» (Pietro: serve solo per le stampe). Riconosciuta dall'integrazione, quindi resta esclusa anche se rinominata.
 - **Allarme** (richiesta di Pietro, 21/10): nuova voce nel menu, pagina segnaposto «da configurare» con l'elenco dei sensori di movimento, presenza e apertura che HA ha già.
 
 **Prova eseguita (21/10)** sull'HA 2026.2.3 di prova (integrazione `demo`, con `recorder` e `history`): luce accesa davvero dalla dashboard; cronologia in streaming di termostato e potenza; pagina Allarme; nel mockup: doppio tocco sulle automazioni, Cibo extra, energia ora per ora. La prima prova della cronologia è fallita perché l'HA di prova non aveva il modulo `history` (l'HA di casa ce l'ha di serie): non era un errore del codice, ma ora un errore del genere viene scritto nella console del browser invece di fermare la pagina.
@@ -149,11 +151,11 @@ Il mockup (senza `.env`) è stato ricontrollato e non è cambiato.
 - **Nessuna prova su un dispositivo vero.** Catture di un browser (Chromium) a 390×844 (telefono) e 1280×800 (pannello). Non provati: iPhone/Safari, il Pi 4, i tablet.
 - **Leggibilità a distanza sul pannello** non misurata.
 - **Scelta di cosa sta nella Casa** salvata solo nel browser: non condivisa fra telefono, PC e pannello. Da decidere (dati utente di HA, ma ogni persona ha il suo utente).
-- **Fase 3 non ancora provata sull'HA di casa**: comandi veri (il cibo extra invece è provato), cronologia e statistiche di energia con i dati reali.
+- **Fase 3 provata da Pietro sull'HA di casa** (termostato, friggitrice senza «Accendi», rack senza comandi, energia di oggi simile al pannello Energia di HA, grafici, cibo extra): esito riferito da Pietro, non misurato da me.
 
 ## Prossimo passo
 
-**Prova di Pietro della fase 3 sul suo HA** (passi qui sopra) e conferma. Poi **fase 4: pubblicazione** (LXC con nginx su Proxmox, indirizzo fisso della dashboard in CORS, token del pannello kiosk) e, quando Pietro vorrà, la configurazione dell'**Allarme**.
+**Fase 4: pubblicazione** (LXC con nginx su Proxmox, indirizzo fisso della dashboard in CORS, token del pannello kiosk) e, quando Pietro vorrà, la configurazione dell'**Allarme**.
 
 Anticipato e **non ancora fatto**:
 - per far usare la dashboard all'altra persona serve un suo utente in HA (**Impostazioni → Persone → Aggiungi persona → Può effettuare l'accesso**). La password: HA non è esposto su internet (solo rete di casa e WireGuard), quindi basta una **frase facile da ricordare e da scrivere sul telefono**, purché non usata altrove; l'opzione «Può accedere solo dalla rete locale» la limita ancora. Utile dalla fase 4, quando la dashboard sarà pubblicata;

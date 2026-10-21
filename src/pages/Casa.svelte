@@ -2,7 +2,7 @@
   import { hass } from '../lib/ha/hass.svelte';
   import { app } from '../lib/app.svelte';
   import { layout } from '../lib/layout.svelte';
-  import { cameraSrc, isPortrait, motionOf, thermostat, tileOf } from '../lib/view';
+  import { cameraSrc, isHomeCamera, isPortrait, motionOf, thermostat, tileOf } from '../lib/view';
   import { kw, temp, today, clock } from '../lib/format';
   import Tile from '../lib/ui/Tile.svelte';
   import Icon from '../lib/ui/Icon.svelte';
@@ -37,7 +37,7 @@
     parts.push(on ? (on === 1 ? '1 luce accesa' : `${on} luci accese`) : 'Luci spente');
     return parts.join(' · ');
   }
-  const cams = $derived(layout.pinned.filter((id) => id.startsWith('camera.') && hass.states[id]));
+  const cams = $derived(layout.pinned.filter((id) => isHomeCamera(id) && hass.states[id]));
   // Somma dei rapporti larghezza/altezza: con un'altezza comune le telecamere riempiono la riga.
   const camRatio = $derived(cams.reduce((a, id) => a + (isPortrait(hass.states[id]) ? 3 / 4 : 4 / 3), 0));
 </script>

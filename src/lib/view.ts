@@ -123,6 +123,10 @@ export function tileOf(id: string): TileView | null {
   return { ...base, on: e.state === 'on', color: 'var(--ink-3)', detail: `${e.state} · ${since(e.last_changed)}` };
 }
 
+/** Telecamere della casa: esclusa quella della stampante 3D (PrusaLink), che serve solo per le stampe (Pietro, 21/10). */
+export const isHomeCamera = (id: string) =>
+  id.startsWith('camera.') && hass.platformOf(id) !== 'prusalink' && !/prusa|core.?one/i.test(`${id} ${hass.deviceName(id)}`);
+
 /** Alimentazione manuale del distributore di crocchette: nella Casa diventa il pulsante «Cibo extra». */
 export const isFeeder = (id: string) => /^text\..*crocchett.*alimentazione_manuale$/.test(id);
 
@@ -133,6 +137,7 @@ export function canPin(id: string): boolean {
   if (!s || hass.isBackground(id) || policyOf(id).readOnly) return false;
   if (/(^|[._ ])ups([._ ]|$)/i.test(`${id} ${hass.deviceName(id)}`)) return false;
   const d = id.split('.')[0];
+  if (d === 'camera' && !isHomeCamera(id)) return false;
   return ['light', 'switch', 'climate', 'camera'].includes(d) || (d === 'sensor' && s.attributes.device_class === 'power') || isFeeder(id);
 }
 

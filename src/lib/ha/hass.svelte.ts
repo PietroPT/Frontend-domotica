@@ -44,6 +44,11 @@ class Hass {
     return e.area_id ?? (e.device_id ? this.dev.get(e.device_id)?.area_id ?? null : null);
   }
 
+  /** Integrazione che ha creato l'entità (es. 'prusalink'), se nota. */
+  platformOf(entity_id: string): string | undefined {
+    return this.reg.get(entity_id)?.platform;
+  }
+
   deviceName(entity_id: string): string {
     const d = this.reg.get(entity_id)?.device_id;
     return (d && this.dev.get(d)?.name) || '';
