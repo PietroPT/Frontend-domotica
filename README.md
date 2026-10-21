@@ -16,29 +16,29 @@ in tempo reale, comandi con le regole di sicurezza, grafici dalla cronologia di 
 
 ## Provarla sul PC
 
-Serve [Node.js](https://nodejs.org) 22 o più recente.
+**Ogni volta: doppio clic su `avvia.cmd`** (nella cartella `C:\HA-Dashboard`): aggiorna il codice
+da GitHub, installa i pacchetti che mancano, avvia la dashboard e apre il browser su
+`http://localhost:5173`. La finestra nera va lasciata aperta; chiudendola la dashboard si ferma.
+
+**La prima volta** servono [Node.js](https://nodejs.org) 22 o più recente e Git; poi in PowerShell:
 
 ```powershell
 git clone https://github.com/PietroPT/Frontend-domotica.git C:\HA-Dashboard
 cd C:\HA-Dashboard
 git checkout claude/ecstatic-archimedes-kwey31
 Copy-Item .env.example .env
-npm install
-npm run dev -- --host
+npm.cmd install
+npm.cmd run dev
 ```
 
-Poi apri `http://localhost:5173`.
-
-**Dalla seconda volta basta un doppio clic su `avvia.cmd`** (nella cartella `C:\HA-Dashboard`):
-aggiorna il codice da GitHub, installa i pacchetti che mancano, avvia la dashboard e apre il
-browser. La finestra nera va lasciata aperta; chiudendola la dashboard si ferma. Il file `.env` contiene solo l'indirizzo di Home Assistant
-(niente password): se manca, l'app parte con i dati di esempio del mockup. Anche con `.env`
-il mockup resta apribile aggiungendo `?demo` all'indirizzo (`http://localhost:5173/?demo`).
+(`npm.cmd` invece di `npm` perché PowerShell blocca gli script `.ps1`.) Il file `.env` contiene
+solo l'indirizzo di Home Assistant (niente password): se manca, l'app parte con i dati di esempio
+del mockup, che resta apribile anche aggiungendo `?demo` all'indirizzo.
 
 Perché il login funzioni, Home Assistant deve accettare l'indirizzo della dashboard:
 **Impostazioni → Sistema → Rete → Server HTTP → Altre opzioni → Origini consentite CORS**,
 aggiungere `http://localhost:5173` (da HA 2026.8 non si usa più `http:` in `configuration.yaml`;
-passi dettagliati in `docs/LEGGIMI.md`). Con `npm run dev -- --host` la vedi anche dal telefono
+passi dettagliati in `docs/LEGGIMI.md`). Con `npm.cmd run dev -- --host` la vedi anche dal telefono
 sulla stessa rete, all'indirizzo che il comando stampa (`Network: http://…:5173`); per il login
 da lì va aggiunto anche quell'indirizzo a `cors_allowed_origins`.
 

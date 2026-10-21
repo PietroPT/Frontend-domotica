@@ -1,175 +1,101 @@
 # HA-Dashboard — interfaccia personalizzata per Home Assistant
 
-**Aggiornato il 21 ottobre 2026, sera.** Fasi 1, 2 e 3 **confermate da Pietro**, provate sul suo Home Assistant («va tutto bene», 21/10). Prossima: fase 4 (pubblicazione).
+**Aggiornato il 21 ottobre 2026, sera.** Fasi 1, 2 e 3 **fatte e confermate da Pietro**, la 2 e la 3 provate sul suo Home Assistant («va tutto bene», 21/10). Prossima: **fase 4, pubblicazione**.
 
-Home Assistant resta il motore (integrazioni, automazioni, configurazione). La nuova app è solo l'interfaccia e parla con HA attraverso la API WebSocket ufficiale (`home-assistant-js-websocket`).
+Home Assistant resta il motore (integrazioni, automazioni, configurazione). La dashboard è solo l'interfaccia e parla con HA attraverso la API WebSocket ufficiale (`home-assistant-js-websocket`).
 
 ## Dove sta cosa
 
 | Cosa | Dove |
 |---|---|
-| Codice, copia principale con la cronologia | GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31` |
-| Copia dei sorgenti | questa cartella (`HA-Dashboard\`): stessa struttura del repository, senza `node_modules` e senza le skill `.claude\`. **È ferma alla fase 1**: il codice delle fasi 2 e 3 è solo su GitHub (ultimo commit della fase 3 `006b57b`), da cui `avvia.cmd` lo scarica da solo |
-| Immagini d'esempio della fase 1 | `HA-Dashboard\immagini\` |
+| Codice, copia principale con la cronologia | GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31` (fase 3 chiusa al commit `006b57b`) |
+| Copia sul PC di Pietro, da cui gira | `C:\HA-Dashboard` (si aggiorna da sola a ogni avvio con `avvia.cmd`) |
+| Copia dei sorgenti su Drive | questa cartella (`HA-Dashboard\`): **ferma alla fase 1**. Il codice delle fasi 2 e 3 è solo su GitHub |
 | Profilo del prodotto (utenti, vincoli, regole) | `HA-Dashboard\PRODUCT.md` |
-| Sistema grafico (colori, caratteri, componenti) | `HA-Dashboard\DESIGN.md` |
-| Come provarla sul PC | qui sotto, «Fase 2 — da fare per provarla», e `HA-Dashboard\README.md` |
-| Mockup da aprire sul telefono, senza installare nulla | https://claude.ai/artifact/Svq8v6PsfBhMorj3WG1y6o (privato: lo apre solo Pietro; dati finti della fase 1) |
+| Sistema grafico (colori, caratteri, componenti) | `HA-Dashboard\DESIGN.md` (scritto alla fase 1) |
+| Mockup da aprire sul telefono, senza installare nulla | https://claude.ai/artifact/Svq8v6PsfBhMorj3WG1y6o (privato, dati finti della fase 1) |
 
-**Perché il codice vive su GitHub e qui c'è una copia:** `npm install` crea una cartella `node_modules` con migliaia di file; dentro `G:\Il mio Drive\` Google Drive proverebbe a sincronizzarli tutti. Si lavora in una cartella locale (`C:\HA-Dashboard`) clonata dal repository; la copia su Drive si aggiorna a ogni fine fase.
+**Perché il codice vive su GitHub e non su Drive:** `npm install` crea una cartella `node_modules` con migliaia di file che Google Drive proverebbe a sincronizzare. Sul PC si lavora in `C:\HA-Dashboard`, clonata dal repository.
 
 ## Fasi
 
 | Fase | Contenuto | Stato |
 |---|---|---|
-| 1. Mockup | Interfaccia completa con dati finti, nessun collegamento a HA | **fatta e confermata** il 21/10 |
-| 2. Collegamento | Login HA (OAuth, `getAuth`), aree ed entità, stati reali in tempo reale | **fatta e confermata** il 21/10 (provata sull'HA di casa) |
-| 3. Controlli | Comandi veri (accendi/spegni, regolazioni), grafici dalla cronologia di HA | **fatta e confermata** il 21/10 (provata sull'HA di casa) |
-| 4. Pubblicazione | Build statica servita da un LXC leggero con nginx su Proxmox, token del pannello kiosk | da fare |
+| 1. Mockup | Interfaccia completa con dati finti | **fatta e confermata** il 21/10 |
+| 2. Collegamento | Login di HA (OAuth), aree ed entità, stati reali in tempo reale | **fatta e confermata** il 21/10, provata sull'HA di casa |
+| 3. Controlli | Comandi veri, grafici dalla cronologia, energia di oggi | **fatta e confermata** il 21/10, provata sull'HA di casa |
+| 4. Pubblicazione | Build statica su un LXC con nginx su Proxmox, pannello kiosk sul Pi | da fare |
 
-## Fase 3 — cosa è stato fatto
+## Come si usa sul PC
 
-- **Comandi veri** verso HA (`call_service`). Passano tutti da un punto unico (`hass.callService`) che **rilegge le regole di sicurezza prima di inviare**: presa del rack mai, friggitrice mai accesa a distanza, anche se un giorno una schermata dimenticasse il controllo. Le conferme («sta assorbendo 1.843 W», stampante, programma dei pasti) restano nelle schermate. Se HA rifiuta un comando, compare il motivo.
-- **Automazioni**: disattivarne una richiede un secondo tocco entro 4 secondi (un tocco per sbaglio non deve spegnere il riavvio di Zigbee2MQTT o l'avviso DNS); riattivarla è immediato.
-- **Cibo extra**: ora eroga davvero (10–50 g), con «Annulla erogazione». **Provato da Pietro sull'HA di casa il 21/10: il distributore eroga.**
-- **Grafici dalla cronologia** delle ultime 24 ore: potenza delle prese, potenza totale, temperatura misurata e desiderata del termostato. Arrivano in streaming (`history/stream`): HA manda il passato e poi ogni cambiamento, senza interrogazioni periodiche. Al massimo un punto al minuto per non appesantire il Pi.
-- **Energia di oggi** (totale, per presa, ora per ora) dai contatori kWh delle prese, con le statistiche a 5 minuti di HA: gli stessi numeri del pannello Energia di HA. Si ricarica all'apertura della pagina e a ogni cambio d'ora.
-- **Termostato** (richieste di Pietro, 21/10): in grande la temperatura della stanza, sotto in piccolo l'obiettivo come solo numero nel colore del termostato (scartate la parola «Impostata a» e l'icona a bersaglio). Mentre si modifica, in grande e colorato il valore che si sta impostando, sotto «Ora …»; torna normale 2,5 s dopo la conferma di HA. Dopo il rilascio il valore nuovo resta visibile finché HA non lo conferma.
-- **Telecamera della stampante 3D** (PrusaLink) esclusa da Telecamere, Casa e «Aggiungi» (Pietro: serve solo per le stampe). Riconosciuta dall'integrazione, quindi resta esclusa anche se rinominata.
-- **Allarme** (richiesta di Pietro, 21/10): nuova voce nel menu, pagina segnaposto «da configurare» con l'elenco dei sensori di movimento, presenza e apertura che HA ha già.
+**Ogni volta:** doppio clic su `C:\HA-Dashboard\avvia.cmd`. Aggiorna il codice da GitHub, installa i pacchetti che mancano, avvia la dashboard e apre il browser su `http://localhost:5173`. La finestra nera va lasciata aperta; chiudendola la dashboard si ferma. Collegamento sul desktop: tasto destro su `avvia.cmd` → **Mostra altre opzioni** → **Invia a** → **Desktop (crea collegamento)**.
 
-**Prova eseguita (21/10)** sull'HA 2026.2.3 di prova (integrazione `demo`, con `recorder` e `history`): luce accesa davvero dalla dashboard; cronologia in streaming di termostato e potenza; pagina Allarme; nel mockup: doppio tocco sulle automazioni, Cibo extra, energia ora per ora. La prima prova della cronologia è fallita perché l'HA di prova non aveva il modulo `history` (l'HA di casa ce l'ha di serie): non era un errore del codice, ma ora un errore del genere viene scritto nella console del browser invece di fermare la pagina.
+**Prima installazione (fatta il 21/10):** Node.js LTS e Git (`winget install OpenJS.NodeJS.LTS`, `winget install Git.Git`), poi in PowerShell `git clone https://github.com/PietroPT/Frontend-domotica.git C:\HA-Dashboard`, `cd C:\HA-Dashboard`, `git checkout claude/ecstatic-archimedes-kwey31`, `Copy-Item .env.example .env`, `npm.cmd install`, `npm.cmd run dev`. In PowerShell si usa `npm.cmd` e non `npm`, perché Windows blocca gli script `.ps1`: così non si cambiano le impostazioni di sicurezza.
 
-### Fase 3 — da fare per provarla
+**`.env`** contiene solo l'indirizzo di HA (`VITE_HA_URL=http://10.10.50.10:8123`): nessun segreto, ed è escluso da git. Senza `.env`, o aggiungendo `?demo` all'indirizzo, la dashboard parte con i dati finti del mockup.
 
-1. Chiudi la finestra nera della dashboard e riapri `avvia.cmd` (scarica la versione nuova).
-2. Prove consigliate, su comandi innocui:
-   - **Clima:** alza la temperatura di 0,5° con «+», poi riabbassala;
-   - ~~**Cibo extra:** eroga 10 g~~ — fatto il 21/10, eroga;
-   - **Friggitrice:** la presa non deve avere il pulsante «Accendi»; **Rack**: nessun comando;
-   - **Energia:** «Oggi … kWh» e le barre ora per ora devono avere numeri simili al pannello **Energia** di HA;
-   - **Clima / una presa:** i grafici delle ultime 24 ore devono avere una linea.
-3. Riferisci cosa non torna.
+**Impostazione in HA per il login (fatta il 21/10):** **Impostazioni → Sistema → Rete → Server HTTP → Altre opzioni → Origini consentite CORS** contiene `http://localhost:5173`. Serve perché dopo il login il browser ritira l'accesso da HA con una richiesta dall'indirizzo della dashboard, e HA deve dichiararlo permesso. Dalla versione 2026.8 di HA questa impostazione si gestisce dall'interfaccia: un blocco `http:` in `configuration.yaml` viene importato una volta e poi ignorato, con un avviso «Riparazione» che chiede di toglierlo (Pietro l'ha tolto). Rischio basso: senza nome utente e password di HA quell'indirizzo non ottiene nulla. Nella fase 4 si aggiunge l'indirizzo dell'LXC e `localhost` si potrà togliere.
 
-## Fase 2 — da fare per provarla
+**Accesso:** si entra con nome utente e password di HA, nessuna password nuova. HA rilascia l'accesso e il browser lo conserva (`localStorage`, chiave `ha-dashboard.accesso`); si rinnova da solo. **Avanzate → Accesso → Esci da questo dispositivo** lo revoca.
 
-Tre passi. **Nessuna password nuova**: si entra con nome utente e password di Home Assistant che usi già.
+## Cosa fa
 
-### 1. Home Assistant: permettere il login dalla dashboard
+- **Dati dal vivo, senza interrogazioni periodiche:** stati con `subscribeEntities`; aree, dispositivi ed entità riletti solo quando HA segnala una modifica; cronologia in streaming (`history/stream`). Se la connessione cade compare «Connessione a Home Assistant persa: riprovo…» e riparte da sola.
+- **Casa:** stanze come le aree di HA. Al primo avvio luci, prese vere (quelle con sensore di potenza), termostato, telecamere e il riquadro **Cibo extra**; con «+» si aggiunge o toglie (scelta salvata nel browser di quel dispositivo).
+- **Luci, Clima, Energia, Telecamere, Allarme, Avanzate** (Avanzate si apre facendo scorrere il cursore «Scorri per Avanzate»).
+- **Termostato:** in grande la temperatura della stanza, sotto in piccolo l'obiettivo, solo il numero nel colore del termostato (scelta di Pietro dopo aver scartato «Impostata a» e un'icona a bersaglio). Mentre si modifica, in grande e colorato il valore che si sta impostando, sotto «Ora …».
+- **Grafici delle ultime 24 ore** dalla cronologia di HA: potenza delle prese e totale, temperatura misurata e desiderata. Al massimo un punto al minuto, per non appesantire il Pi.
+- **Energia di oggi** (totale, per presa, ora per ora) dalle statistiche a 5 minuti dei contatori kWh delle prese: gli stessi numeri del pannello Energia di HA.
+- **Telecamere** di Frigate attraverso HA: fotogramma ogni 10 secondi nei riquadri, video continuo (MJPEG) a schermo intero. La telecamera della stampante 3D (PrusaLink) è esclusa (Pietro: serve solo per le stampe).
+- **Cibo extra** (Cucina): scelta 10–50 g, «Eroga» e «Annulla erogazione», con le entità di PetKit `text.crocchette_alimentazione_manuale` e `button.crocchette_annulla_alimentazione_manuale`. Dopo l'invio il pulsante resta fermo qualche secondo per evitare doppie porzioni. **Provato il 21/10: eroga.**
+- **Rinominare:** si tocca il riquadro, poi il nome con la matita in alto nel foglio (in Clima la riga «Nome»). Il nome si salva **in Home Assistant** (scelta di Pietro): vale ovunque, anche nell'app di HA e per gli assistenti vocali. L'entity_id non cambia, quindi automazioni e regole di sicurezza restano agganciate. Campo vuoto = nome originale. Serve un utente amministratore.
+- **Avanzate:** UPS (NUT, sola lettura), Rack (sola lettura), Servizi (HA, Zigbee2MQTT, stampante, crocchette), Automazioni, Aspetto, Accesso. UPS e stampante si riconoscono dall'integrazione che li crea, non dal nome.
+- **Allarme:** voce nel menu con pagina segnaposto «da configurare», che elenca i sensori di movimento, presenza e apertura già presenti in HA (richiesta di Pietro, da configurare più avanti).
 
-**Perché:** dopo il login, la dashboard ritira l'accesso da HA con una richiesta dal proprio indirizzo (`http://localhost:5173`). Il browser la blocca se HA non dichiara quell'indirizzo come permesso: è la lista `cors_allowed_origins`. Il collegamento in tempo reale (WebSocket) non ne ha bisogno, il login sì.
+## Regole di sicurezza
 
-Dalla versione 2026.8 di HA la configurazione HTTP non si scrive più in `configuration.yaml` ma si gestisce dall'interfaccia (se si mette un blocco `http:` nel file, HA lo importa una volta e poi mostra l'avviso «HTTP YAML configuration is ignored after migration»: va tolto dal file).
+Nel codice (`src\lib\policy.ts`) e ricontrollate in un punto unico prima di **ogni** comando (`hass.callService`), qualunque schermata lo mandi. Si riconoscono da entity_id, nome visibile e nome del dispositivo, quindi una rinomina non le toglie. Fonte: [piano HA](<../Documenti rack/piano-home-assistant.md#prese-zigbee-sonoff-s60zbtpf-7-ottobre-2026>).
 
-1. **Impostazioni → Sistema → Rete**, scheda **Server HTTP → Altre opzioni**.
-2. Sotto **Origini consentite CORS** clicca **Aggiungi Origini consentite CORS** e scrivi `http://localhost:5173` (`http`, non `https`, senza barra finale). La voce `https://cast.home-assistant.io` è quella predefinita di HA: si lascia.
-3. **Salva** sotto «Altre opzioni»: HA si riavvia. Se dopo il riavvio chiede di confermare le nuove impostazioni, conferma.
-4. Se in `configuration.yaml` c'è un blocco `http:`, toglilo (File editor), salva, controlla con **Impostazioni → Strumenti → scheda YAML → Verifica configurazione** e riavvia con **Impostazioni → ⋮ (in alto a destra) → Riavvia Home Assistant** (da HA 2026.2 gli «Strumenti per sviluppatori» non sono più nella barra laterale: stanno in Impostazioni → Strumenti).
+- **Rack:** nessun comando, solo misura.
+- **Friggitrice:** si può solo spegnere, mai accendere a distanza.
+- **Stampante 3D:** conferma prima di spegnere (raffreddamento dell'estrusore).
+- **Programma dei pasti** (`switch.cucina_crocchette_feeding_schedule`): conferma prima di spegnerlo.
+- **Qualunque presa sopra 50 W:** conferma prima di spegnerla.
+- **Automazioni:** per disattivarne una serve un secondo tocco entro 4 secondi; riattivarla è immediato.
+- **UPS:** solo lettura.
 
-**Fatto il 21/10:** Pietro ha messo il blocco `http:` nel file; al riavvio HA (versione successiva alla 2026.8) l'ha importato e `http://localhost:5173` risulta nella lista delle origini CORS.
+Effetto collaterale, prudente: una presa rinominata con «rack», «friggitrice» o «stampante» nel nome eredita la regola corrispondente.
 
-**Rischio:** basso. La lista permette solo a una pagina aperta su `localhost:5173` di *chiedere* l'accesso; senza nome utente e password di HA non ottiene nulla. Nella fase 4 si aggiungerà l'indirizzo dell'LXC e `localhost` si potrà togliere.
+## Prove eseguite
 
-### 2. PC: avviare la dashboard
-
-Serve **Node.js 22 o più recente** (https://nodejs.org, versione «LTS», installazione con le opzioni proposte) e **Git** (https://git-scm.com). Poi in **PowerShell**:
-
-```powershell
-git clone https://github.com/PietroPT/Frontend-domotica.git C:\HA-Dashboard
-cd C:\HA-Dashboard
-git checkout claude/ecstatic-archimedes-kwey31
-Copy-Item .env.example .env
-npm install
-npm run dev
-```
-
-- `.env` contiene solo l'indirizzo di HA (`http://10.10.50.10:8123`), già scritto: **nessun segreto**, ed è escluso da git.
-- Se avevi già clonato il repository per la fase 1: `cd C:\HA-Dashboard`, `git pull`, `Copy-Item .env.example .env`, `npm install`, `npm run dev`.
-- Il mockup con i dati finti resta disponibile su `http://localhost:5173/?demo`.
-
-### 3. Primo accesso e cosa guardare
-
-1. Apri `http://localhost:5173`. Si apre la pagina di login di HA con l'avviso «Stai per dare accesso a http://localhost:5173/»: è normale, è la dashboard che chiede l'accesso. Entra con le tue credenziali di HA.
-2. Torni alla dashboard con i tuoi dati veri. Dalla seconda volta non chiede più il login: l'accesso resta salvato **solo in questo browser**.
-3. Guarda e dimmi:
-   - **Casa:** le stanze sono quelle delle aree di HA? Ci sono dispositivi «Senza stanza» che invece hanno una stanza?
-   - **Avanzate** (scorri il cursore): compaiono le schede **UPS** e **Rack** con valori sensati? Se una manca, i nomi delle entità sono diversi da quelli previsti e lo sistemo.
-   - **Telecamere:** si vedono le immagini di Soggiorno e Ufficio? Aprendone una, il video si muove?
-   - **Energia:** ci sono tutte le prese con i consumi?
-   - Toccando un comando compare «Comandi non ancora attivi: arrivano con la fase 3»: è voluto.
-4. Se qualcosa non va, la dashboard mostra «Non riesco a collegarmi» con il motivo. Il caso più probabile è il passo 1 (lista `cors_allowed_origins` mancante o scritta diversa).
-
-**Avvio dalle volte successive:** doppio clic su `C:\HA-Dashboard\avvia.cmd`. Fa da solo `git pull`, `npm install` e `npm run dev`, e apre il browser su `http://localhost:5173`. Usa `npm.cmd`, quindi non serve cambiare le impostazioni di sicurezza di PowerShell. Collegamento sul desktop: tasto destro su `avvia.cmd` → **Mostra altre opzioni** → **Invia a** → **Desktop (crea collegamento)**. La finestra nera va lasciata aperta finché si usa la dashboard.
-
-**Uscire:** Avanzate → Accesso → **Esci da questo dispositivo** revoca l'accesso di questo browser in HA.
-
-## Fase 2 — cosa è stato fatto
-
-**Scelte (con il perché):**
-- **Login di HA (OAuth, `getAuth`)**: nel codice non c'è nessun token. HA rilascia l'accesso dopo il login e il browser lo conserva (`localStorage`, chiave `ha-dashboard.accesso`); si rinnova da solo. Si accetta solo l'accesso emesso dall'HA scritto in `.env`.
-- **Solo lettura in questa fase**: i comandi non partono e lo dicono. Le regole di sicurezza delle prese vanno prima verificate sui nomi reali delle entità (fase 3).
-- **Regole di sicurezza riconosciute dal nome**, non da un `entity_id` preciso: «rack» → nessun comando, «friggit» → solo spegnere, «stampant / Core One / Prusa» → conferma prima di spegnere. Se una presa viene rinominata in HA la regola resta. Rack e UPS non si possono mettere nella Casa.
-- **Abbinamenti per dispositivo**: presa ↔ sensore di potenza, telecamera ↔ sensore di movimento si trovano perché stanno sullo stesso dispositivo di HA, non indovinando il nome.
-- **Aggiornamenti senza interrogazioni periodiche**: stati con `subscribeEntities`; aree, dispositivi ed entità riletti solo quando HA segnala una modifica. Se la connessione cade compare «Connessione a Home Assistant persa: riprovo…» e riparte da sola.
-- **Casa al primo avvio**: tutte le luci, prese, termostati e telecamere (senza infrastruttura e senza le entità nascoste o tecniche di HA). Con «+» si toglie o aggiunge; la scelta resta su quel dispositivo.
-- **Telecamere**: nei riquadri un fotogramma da HA ogni 10 secondi; a schermo intero il video continuo (MJPEG) attraverso HA, quindi funziona anche dal tunnel. L'orientamento verticale si ricava dall'immagine.
-- **Rinominare** (richiesta di Pietro, 21/10): si tocca il riquadro, poi il nome in alto nel foglio (icona della matita); in Clima la riga «Nome». Il nome si salva **in Home Assistant** (registro delle entità, scelta di Pietro): vale nella dashboard su ogni dispositivo, per l'altra persona e nell'app di HA. L'entity_id non cambia, quindi automazioni e regole di sicurezza restano agganciate. Campo vuoto = torna al nome originale. Serve un utente amministratore di HA. È l'unica scrittura verso HA della fase 2: cambia un nome, non comanda dispositivi. Provata sull'HA di prova: rinomina, aggiornamento del riquadro, ritorno al nome originale.
-- **UPS e stampante** riconosciuti dall'integrazione che li crea (NUT, PrusaLink) e dal nome interno della misura, non dall'entity_id: sull'HA di casa la scheda UPS non compariva con il primo metodo.
-- **Casa al primo avvio**: fra gli interruttori solo le prese vere (con sensore di potenza); restano fuori «Permit join» di Zigbee2MQTT e i comandi del distributore di crocchette.
-- **Cibo extra** (richiesta di Pietro, 21/10): riquadro nella Cucina che apre la scelta della quantità (10–50 g) e il pulsante «Eroga»; c'è anche «Annulla erogazione». Usa le entità reali di PetKit (`text.crocchette_alimentazione_manuale`, `button.crocchette_annulla_alimentazione_manuale`). Dopo l'invio il pulsante resta fermo qualche secondo, così un doppio tocco non eroga due porzioni. Attivo dalla fase 3; provato il 21/10 sull'HA di casa: scrivendo la quantità l'integrazione eroga.
-- **Crocchette nei Servizi**: livello cibo (`binary_sensor.crocchette_livello_cibo`, off = sufficiente), errore, grammi erogati oggi, giorni al cambio dell'essiccante. **Programma dei pasti** (`switch.cucina_crocchette_feeding_schedule`): conferma prima di spegnerlo.
-- **Grafici**: la cronologia arriva con la fase 3; per ora i grafici dicono «Cronologia non ancora collegata» invece di mostrare valori finti.
-
-**Prova eseguita (21/10):** Home Assistant **2026.2.3** di prova, avviato nell'ambiente di sviluppo con le entità dell'integrazione `demo` e `cors_allowed_origins: http://localhost:5173`. Esito, con un browser automatico (Chromium):
-- reindirizzamento alla pagina di login di HA, login, ritorno alla dashboard: **ok**;
-- stati reali e immagini delle telecamere: **ok**; dopo un ricaricamento entra senza login: **ok**;
-- un comando mostra l'avviso e non parte: **ok**; «Esci da questo dispositivo» riporta al login: **ok**;
-- trovato e corretto: con tre telecamere la riga della Casa usciva dallo schermo del telefono.
-
-Il mockup (senza `.env`) è stato ricontrollato e non è cambiato.
-
-## Fase 1 — cosa è stato fatto
-
-**Scelte (con il perché):**
-- **Stack: Vite + TypeScript + Svelte 5.** Svelte ridisegna solo il valore che cambia: i consumi delle prese arrivano ogni pochi secondi, e sul Raspberry Pi 4 del pannello conta. Il pacchetto finale è piccolo (circa 47 KB compressi di codice con la libreria di connessione).
-- **Direzione grafica:** scelta da Pietro il 21/10 fra tre schizzi (Maiolica, Linea, Standard): **lo standard di categoria, stile Apple Casa**. Riquadri arrotondati che diventano bianchi pieni quando il dispositivo è acceso, un colore per categoria (luci ambra, clima verde, energia blu, sicurezza viola, rack azzurro), sfondo sfumato. Gli schizzi scartati restano nel repository, `.impeccable\mocks\decision\`.
-- **Icone disegnate su misura** (griglia 24, tratto 1,75, riempimento tenue): casa, stanze, luci, lampada, striscia LED, termostato, prese, lavatrice, stampante 3D, friggitrice, rack, UPS, telecamera, Zigbee, crocchette, automazioni (riavvio, avviso, crocchette) e altre.
-- **Utenti:** Pietro e un'altra persona. La parte tecnica (UPS, rack, servizi, automazioni, accesso) sta in **Avanzate**, che si apre solo **facendo scorrere il cursore** «Scorri per Avanzate».
-- **Dispositivi:** iPhone, PC, tablet, pannello a muro (Pi 4, Chromium kiosk). Telefono: barra in basso. Tablet, PC e pannello: colonna laterale. Pannello: riquadri più alti, nessun effetto solo al passaggio del mouse.
-- **Tema:** automatico (segue il dispositivo), chiaro o scuro; si cambia dal pulsante in alto nella Casa o in Avanzate → Aspetto.
-
-**Pagine:** Casa, Luci, Clima (quadrante circolare), Energia, Telecamere, Avanzate. Fogli di dettaglio: luce (slider della luminosità, colore), presa (grafico, comando con conferma), telecamera a tutto schermo, **Aggiungi alla Casa** (cerca, filtra, aggiungi o togli per stanza).
-
-**Regole di sicurezza** (`src\lib\policy.ts`), prese dal [piano HA](<../Documenti rack/piano-home-assistant.md#prese-zigbee-sonoff-s60zbtpf-7-ottobre-2026>): presa del **rack** solo misura; **friggitrice** solo spegnere; **stampante 3D** avviso sul raffreddamento prima di spegnere; qualunque presa sopra 50 W chiede conferma prima di spegnersi; **UPS** solo in lettura.
-
-**Revisione:** la build della fase 1 è passata da una revisione indipendente (agente di revisione della skill impeccable), verdetto finale «ship».
+- **Su un HA 2026.2.3 di prova** avviato nell'ambiente di sviluppo (integrazione `demo`, con `recorder` e `history`), con un browser automatico: login OAuth e ritorno, stati e telecamere dal vivo, ricarica senza login, uscita, rinomina e ritorno al nome originale, luce accesa davvero, cronologia in streaming, pagina Allarme.
+- **Nel mockup:** doppio tocco sulle automazioni, Cibo extra, energia ora per ora, conferma sul programma dei pasti, termostato a riposo e durante il trascinamento (tema chiaro e scuro).
+- **Da Pietro sull'HA di casa (21/10):** login, stanze, UPS, Rack, stampante, crocchette, telecamere, termostato, friggitrice senza «Accendi», Rack senza comandi, energia simile al pannello Energia di HA, grafici, Cibo extra che eroga. Esito riferito da Pietro.
 
 ## Cosa NON è dimostrato
 
-- **Nessuna prova sull'HA di casa.** La fase 2 è provata su un HA 2026.2.3 di prova con dispositivi finti dell'integrazione `demo`. Da vedere con i dati veri: versione di HA, aree, nomi delle entità di **NUT (UPS), PrusaLink, PetKit, Zigbee2MQTT**, la presa del rack disattivata.
-- **Telecamere Frigate attraverso HA**: provate solo con le telecamere finte di HA. Non misurati il carico del video continuo su Frigate e HA, né la resa dal tunnel WireGuard.
-- **Nessuna prova su un dispositivo vero.** Catture di un browser (Chromium) a 390×844 (telefono) e 1280×800 (pannello). Non provati: iPhone/Safari, il Pi 4, i tablet.
-- **Leggibilità a distanza sul pannello** non misurata.
-- **Scelta di cosa sta nella Casa** salvata solo nel browser: non condivisa fra telefono, PC e pannello. Da decidere (dati utente di HA, ma ogni persona ha il suo utente).
-- **Fase 3 provata da Pietro sull'HA di casa** (termostato, friggitrice senza «Accendi», rack senza comandi, energia di oggi simile al pannello Energia di HA, grafici, cibo extra): esito riferito da Pietro, non misurato da me.
+- **Telecamere Frigate attraverso HA:** viste funzionare, ma non misurati il carico del video continuo su Frigate e HA né la resa dal tunnel WireGuard.
+- **Dispositivi:** provata solo sul PC (Windows) e in Chromium. Non provati iPhone/Safari, il tablet, il Pi 4 del pannello (fluidità, leggibilità a 2–3 m).
+- **`avvia.cmd`:** scritto e controllato nel formato, usato da Pietro, ma non provato da me su Windows.
+- **Scelta di cosa sta nella Casa:** salvata solo nel browser di ogni dispositivo; da decidere se condividerla.
+- **Allarme:** solo segnaposto.
 
 ## Prossimo passo
 
-**Fase 4: pubblicazione** (LXC con nginx su Proxmox, indirizzo fisso della dashboard in CORS, token del pannello kiosk) e, quando Pietro vorrà, la configurazione dell'**Allarme**.
+**Fase 4: pubblicazione.** Build statica servita da un LXC leggero con nginx su Proxmox; il suo indirizzo aggiunto alle origini CORS di HA; pannello a muro sul Pi 4 in Chromium kiosk con un **token a lunga durata** (lo genera HA, è già lungo e casuale, va trattato come una password forte, resta solo sul Pi, mai nel repository).
 
-Anticipato e **non ancora fatto**:
-- per far usare la dashboard all'altra persona serve un suo utente in HA (**Impostazioni → Persone → Aggiungi persona → Può effettuare l'accesso**). La password: HA non è esposto su internet (solo rete di casa e WireGuard), quindi basta una **frase facile da ricordare e da scrivere sul telefono**, purché non usata altrove; l'opzione «Può accedere solo dalla rete locale» la limita ancora. Utile dalla fase 4, quando la dashboard sarà pubblicata;
-- il **token a lunga durata** servirà solo al pannello kiosk (fase 4). Lo genera HA, quindi è già lungo e casuale; va trattato come una password forte e resta solo sul Pi, mai nel repository.
+Anticipato e **non ancora fatto**: per l'altra persona serve un suo utente in HA (**Impostazioni → Persone → Aggiungi persona**, con accesso consentito). Basta una password facile da ricordare e da scrivere sul telefono, purché non usata altrove, perché HA non è esposto su internet (rete di casa e WireGuard); l'opzione per limitare l'accesso alla rete locale la protegge ancora. I percorsi esatti si verificano sulla versione di HA del momento.
+
+Poi, quando Pietro vorrà: configurazione dell'**Allarme**.
 
 ## Errori di metodo
 
-- **Percorsi dell'interfaccia di HA dati per versioni vecchie** (21/10): `http:` in `configuration.yaml` (dalla 2026.8 si usa Impostazioni → Rete) e «Strumenti per sviluppatori» nella barra laterale (dalla 2026.2 sono in Impostazioni → Strumenti). La prova era su HA 2026.2.3, più vecchio di quello di casa. **Regola da qui in poi:** prima di dare un percorso dell'interfaccia di HA, verificarlo sulla documentazione della versione più recente.
-
+- **Percorsi dell'interfaccia di HA dati per versioni vecchie** (21/10): `http:` in `configuration.yaml` (dalla 2026.8 si usa Impostazioni → Rete) e «Strumenti per sviluppatori» nella barra laterale (dalla 2026.2 sono in Impostazioni → Strumenti). L'HA di prova era più vecchio di quello di casa. **Regola:** prima di dare un percorso dell'interfaccia di HA, verificarlo sulla documentazione della versione più recente.
+- **Nomi delle entità previsti invece che letti:** la scheda UPS e la riga delle crocchette non comparivano sull'HA di casa. Corretto riconoscendo UPS e stampante dall'integrazione e leggendo gli entity_id veri delle crocchette dalla pagina Stati.
+- **Primo HA di prova senza `history`:** la cronologia falliva per configurazione dell'HA di prova, non per il codice.
+- **Autonomia dell'UPS letta in secondi** mentre HA la mostra in minuti («0 min» invece di 9): corretto leggendo l'unità.
 - Il percorso indicato per i documenti di passaggio era `Rack\Handoff\`, che non esiste: si è seguito lo schema esistente (`Avvio sessione AI\HANDOFF.md` più un `LEGGIMI.md` per argomento).
-- Il primo schizzo del termostato mostrava un'umidità che il MOES non misura: tolta prima della build.
 - La skill «frontend design» citata da Pietro non è disponibile in questa sessione: usate `impeccable` e `karpathy-guidelines`.
-- Diversi caricamenti su Drive sono stati bloccati dal controllo automatico della modalità «Auto»; ripresi in «Accetta modifiche» con conferma manuale.
-- Fase 2: la prima prova automatica ha trascinato il quadrante del termostato invece del cursore di Avanzate (nessun effetto: i comandi sono spenti). Ripetuta aprendo Avanzate direttamente.
 
 ## Letti e non letti
 
