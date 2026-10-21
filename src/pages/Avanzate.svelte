@@ -165,9 +165,13 @@
   {#if !hass.demo}
     <section class="card">
       <h2>Accesso</h2>
-      <p class="sub2 acc">Collegato a Home Assistant{hass.user ? ` come ${hass.user}` : ''}.</p>
-      <button class="pill out" onclick={logout}><Icon name="chiudi" size={20} />Esci da questo dispositivo</button>
-      <p class="note">Per entrare di nuovo servono nome utente e password di Home Assistant.</p>
+      <p class="sub2 acc">Collegato a Home Assistant{hass.user ? ` come ${hass.user}` : ''}{hass.panel ? ', con il token del pannello a muro' : ''}.</p>
+      {#if hass.panel}
+        <p class="note">Il token si revoca da Home Assistant, nel profilo di quell'utente, scheda Sicurezza.</p>
+      {:else}
+        <button class="pill out" onclick={logout}><Icon name="chiudi" size={20} />Esci da questo dispositivo</button>
+        <p class="note">Per entrare di nuovo servono nome utente e password di Home Assistant.</p>
+      {/if}
     </section>
   {/if}
 </div>

@@ -1,11 +1,13 @@
 // Collegamento vero a Home Assistant con home-assistant-js-websocket.
 // Accesso: il login di HA (OAuth, getAuth). Nel codice non c'è nessun token:
 // HA rilascia i token dopo il login e restano solo nel browser di questo dispositivo.
+// Solo il pannello a muro entra con un token a lunga durata, che sta solo sul Pi (vedi panelToken).
 // Dati: stati in tempo reale (subscribeEntities) e registri di aree, dispositivi
 // ed entità, riletti quando cambiano in HA. Nessuna interrogazione periodica.
 
 import {
   createConnection,
+  createLongLivedTokenAuth,
   getAuth,
   getUser,
   subscribeEntities,
@@ -38,6 +40,23 @@ function saveTokens(d: AuthData | null) {
   } catch {}
 }
 
+// Pannello a muro. Il Pi apre la dashboard con #token=… in fondo all'indirizzo, scritto solo
+// nel suo avvio automatico: la pagina lo conserva nel browser del Pi e lo toglie subito
+// dall'indirizzo. Il frammento dopo # non arriva mai al server (nginx non lo vede né lo registra).
+// Per revocarlo si cancella il token in HA.
+const PANEL = 'ha-dashboard.token-pannello';
+
+function panelToken(): string | null {
+  const m = location.hash.match(/^#token=([\w.-]+)$/);
+  if (m) history.replaceState(null, '', location.pathname + location.search);
+  try {
+    if (m) localStorage.setItem(PANEL, m[1]);
+    return localStorage.getItem(PANEL);
+  } catch {
+    return m?.[1] ?? null;
+  }
+}
+
 let auth: Auth | undefined;
 let conn: Connection | undefined;
 
@@ -45,8 +64,12 @@ export async function start() {
   hass.status = 'connecting';
   hass.error = '';
   try {
+    const token = panelToken();
+    hass.panel = !!token;
     // Senza token salvati, getAuth porta alla pagina di login di HA e torna qui.
-    auth = await getAuth({ hassUrl: HA_URL, loadTokens: async () => loadTokens(), saveTokens, limitHassInstance: true });
+    auth = token
+      ? createLongLivedTokenAuth(HA_URL, token)
+      : await getAuth({ hassUrl: HA_URL, loadTokens: async () => loadTokens(), saveTokens, limitHassInstance: true });
     // Il ritorno dal login lascia ?auth_callback=1&code=… nell'indirizzo: si toglie.
     if (location.search.includes('auth_callback')) history.replaceState(null, '', location.pathname + location.hash);
     conn = await createConnection({ auth });
@@ -163,7 +186,10 @@ async function loadRegistries(c: Connection) {
 function fail(err: unknown) {
   hass.status = 'error';
   const here = location.origin;
-  if (err === ERR_INVALID_AUTH) {
+  if (err === ERR_INVALID_AUTH && hass.panel) {
+    forgetPanelToken();
+    hass.error = 'Home Assistant non accetta più il token di questo pannello (cancellato o revocato). Serve crearne uno nuovo e metterlo nell\'avvio automatico del Pi.';
+  } else if (err === ERR_INVALID_AUTH) {
     saveTokens(null);
     hass.error = "L'accesso è scaduto o è stato revocato in Home Assistant. Serve accedere di nuovo.";
   } else if (err === ERR_CANNOT_CONNECT) {
@@ -178,6 +204,12 @@ function fail(err: unknown) {
   } else {
     hass.error = `Errore imprevisto nel collegamento: ${String(err)}`;
   }
+}
+
+function forgetPanelToken() {
+  try {
+    localStorage.removeItem(PANEL);
+  } catch {}
 }
 
 /** Esce da HA su questo dispositivo: revoca il token e torna al login. */

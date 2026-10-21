@@ -4,15 +4,16 @@ Interfaccia web personalizzata che sostituisce la dashboard standard di Home Ass
 Home Assistant resta il motore (integrazioni, automazioni, configurazione): questa app
 mostra e comanda soltanto, attraverso la API WebSocket ufficiale (`home-assistant-js-websocket`).
 
-**Stato: fase 3, comandi veri e cronologia.** Login di HA, stanze, dispositivi e stati veri
-in tempo reale, comandi con le regole di sicurezza, grafici dalla cronologia di HA.
+**Stato: fase 4, pubblicazione (in corso).** Login di HA, stanze, dispositivi e stati veri
+in tempo reale, comandi con le regole di sicurezza, grafici dalla cronologia di HA; pronta la
+pubblicazione su un LXC con nginx e l'accesso con token per il pannello a muro.
 
 | Fase | Contenuto | Stato |
 |---|---|---|
 | 1. Mockup | Interfaccia completa con dati finti | fatta e confermata (21/10) |
 | 2. Collegamento | Login HA (OAuth), aree ed entità reali, stati in tempo reale | fatta e confermata (21/10) |
 | 3. Controlli | Comandi veri e grafici dalla cronologia di HA | fatta e confermata (21/10) |
-| 4. Pubblicazione | Build statica su LXC con nginx, `cors_allowed_origins` in HA | da fare |
+| 4. Pubblicazione | Build statica su LXC con nginx (`pubblica.cmd`), token per il pannello a muro | in corso |
 
 ## Provarla sul PC
 
@@ -42,13 +43,25 @@ passi dettagliati in `docs/LEGGIMI.md`). Con `npm.cmd run dev -- --host` la vedi
 sulla stessa rete, all'indirizzo che il comando stampa (`Network: http://…:5173`); per il login
 da lì va aggiunto anche quell'indirizzo a `cors_allowed_origins`.
 
+## Pubblicarla (fase 4)
+
+**Doppio clic su `pubblica.cmd`:** aggiorna il codice, fa la build e la copia via SSH sull'LXC
+indicato in `.env` alla riga `PUBBLICA_SU=root@…`; nginx la serve con `deploy/nginx-ha-dashboard.conf`.
+La versione precedente resta sull'LXC in `/var/www/ha-dashboard.old`. Passi completi, compresa la
+creazione dell'LXC, in `docs/LEGGIMI.md`.
+
+**Pannello a muro:** apre la dashboard con `#token=<token a lunga durata>` in fondo all'indirizzo,
+scritto solo nell'avvio automatico del Pi. La pagina conserva il token nel browser del Pi e lo
+toglie subito dall'indirizzo; il frammento dopo `#` non arriva al server. Conviene un utente HA
+dedicato, non amministratore.
+
 Meglio non lanciare `npm install` dentro `G:\Il mio Drive\…`: la cartella `node_modules`
 contiene migliaia di file che Google Drive proverebbe a sincronizzare.
 
 ## Com'è fatta
 
 - **Svelte 5 + TypeScript + Vite.** Svelte aggiorna solo il numero che cambia (i consumi
-  arrivano ogni pochi secondi) e produce un pacchetto piccolo (≈47 KB compressi, libreria di connessione compresa): conta sul
+  arrivano ogni pochi secondi) e produce un pacchetto piccolo (≈53 KB compressi, libreria di connessione compresa): conta sul
   Raspberry Pi 4 del pannello.
 - `src/lib/ha/` — modello dei dati uguale a quello di Home Assistant (stati, aree, registro
   entità e dispositivi). `live.ts` lo riempie dalla connessione vera (login di HA,
@@ -68,7 +81,8 @@ contiene migliaia di file che Google Drive proverebbe a sincronizzare.
 Nessuna password o token nel codice. `.env` è escluso da git (vedi `.gitignore`);
 `.env.example` mostra cosa contiene. Dopo il login, Home Assistant rilascia i token e questi
 restano solo nel browser del dispositivo («Esci da questo dispositivo» in Avanzate li revoca).
-Il token del pannello kiosk (fase 4) resterà solo sul Pi.
+Il token del pannello a muro sta solo sul Pi (nel suo avvio automatico e nel browser) e si revoca
+da HA. Sull'LXC non c'è nessun segreto: solo i file pubblici della build.
 
 ## Skill Claude Code
 

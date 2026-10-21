@@ -27,6 +27,8 @@ class Hass {
   connected = $state(true);
   /** Nome dell'utente di HA con cui si è entrati. */
   user = $state('');
+  /** true sul pannello a muro, che entra col token a lunga durata invece del login. */
+  panel = $state(false);
   /** Invio di un messaggio a HA: lo imposta live.ts quando la connessione è aperta. */
   ws: ((msg: { type: string; [key: string]: unknown }) => Promise<unknown>) | null = null;
   /** Avviso breve mostrato in basso (es. comando non inviato). */
