@@ -9,7 +9,11 @@ Il servizio chiede a HA chi è (WebSocket, auth/current_user): leggere e modific
 chiunque abbia un accesso valido a HA (scelta di Pietro, 22/10); ogni bolletta ricorda chi
 l'ha modificata per ultimo e lo storico conserva le versioni precedenti. Nessuna password qui.
 
-Ascolta solo su 127.0.0.1: da fuori ci si arriva attraverso nginx (/api/bollette).
+Dal 22/10 tiene anche la disposizione della Casa (/api/casa, file casa.json): quali riquadri
+e in che ordine, uguale per tutti gli utenti e i dispositivi (scelta di Pietro). Stesso controllo
+dell'accesso: chi entra in HA la legge e la cambia.
+
+Ascolta solo su 127.0.0.1: da fuori ci si arriva attraverso nginx (/api/bollette, /api/casa).
 Avviato da systemd (deploy/ha-bollette.service), con utente proprio e senza privilegi.
 """
 
@@ -30,6 +34,7 @@ HA_WS = os.environ.get("HA_WS", "ws://10.10.50.10:8123/api/websocket")
 DATA_DIR = os.environ.get("DATA_DIR", "/var/lib/ha-dashboard")
 PORT = int(os.environ.get("PORT", "8099"))
 FILE = os.path.join(DATA_DIR, "bollette.json")
+CASA = os.path.join(DATA_DIR, "casa.json")
 HISTORY = os.path.join(DATA_DIR, "storico")
 KEEP = 100
 MAX_BODY = 16 * 1024
@@ -74,6 +79,15 @@ def load() -> dict:
         return {"versione": 1, "bollette": []}
 
 
+def write(path: str, data: dict) -> None:
+    fd, tmp = tempfile.mkstemp(dir=DATA_DIR, suffix=".tmp")
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=1)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp, path)
+
+
 def save(data: dict) -> None:
     os.makedirs(HISTORY, exist_ok=True)
     if os.path.exists(FILE):
@@ -82,12 +96,29 @@ def save(data: dict) -> None:
         old = sorted(os.listdir(HISTORY))
         for name in old[:-KEEP]:
             os.remove(os.path.join(HISTORY, name))
-    fd, tmp = tempfile.mkstemp(dir=DATA_DIR, suffix=".tmp")
-    with os.fdopen(fd, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=1)
-        f.flush()
-        os.fsync(f.fileno())
-    os.replace(tmp, FILE)
+    write(FILE, data)
+
+
+# --- Disposizione della Casa: un elenco di entità, nell'ordine dei riquadri ---
+def casa_load() -> dict:
+    try:
+        with open(CASA, encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {"riquadri": None}
+
+
+def casa_clean(b) -> list[str]:
+    ids = b.get("riquadri") if isinstance(b, dict) else None
+    if not isinstance(ids, list) or len(ids) > 500:
+        raise ValueError("elenco dei riquadri non valido")
+    out: list[str] = []
+    for i in ids:
+        if not isinstance(i, str) or len(i) > 255 or not re.fullmatch(r"[a-z_]+\.[a-z0-9_]+", i):
+            raise ValueError("entità non valida")
+        if i not in out:
+            out.append(i)
+    return out
 
 
 # --- Controllo di una bolletta ---
@@ -174,7 +205,26 @@ class Handler(BaseHTTPRequestHandler):
             return None
         return m.group(1) or ""
 
+    def body(self):
+        size = int(self.headers.get("Content-Length") or 0)
+        if size <= 0 or size > MAX_BODY:
+            self.reply(413, {"errore": "dati mancanti o troppo grandi"})
+            return None
+        try:
+            return json.loads(self.rfile.read(size))
+        except json.JSONDecodeError as e:
+            self.reply(400, {"errore": str(e)})
+            return None
+
+    def casa(self) -> bool:
+        return self.path.split("?")[0] == "/api/casa"
+
     def do_GET(self):
+        if self.casa():
+            if self.user():
+                with lock:
+                    self.reply(200, casa_load())
+            return
         t = self.target()
         if t is None:
             return
@@ -185,6 +235,19 @@ class Handler(BaseHTTPRequestHandler):
                 self.reply(200, load())
 
     def do_PUT(self):
+        if self.casa():
+            u = self.user()
+            raw = self.body() if u else None
+            if raw is None:
+                return
+            try:
+                ids = casa_clean(raw)
+            except ValueError as e:
+                return self.reply(400, {"errore": str(e)})
+            data = {"riquadri": ids, "modificata": datetime.now(timezone.utc).isoformat(timespec="seconds"), "da": u["name"]}
+            with lock:
+                write(CASA, data)
+            return self.reply(200, data)
         bid = self.target()
         if not bid:
             if bid == "":
@@ -193,12 +256,12 @@ class Handler(BaseHTTPRequestHandler):
         u = self.user()
         if not u:
             return
-        size = int(self.headers.get("Content-Length") or 0)
-        if size <= 0 or size > MAX_BODY:
-            return self.reply(413, {"errore": "dati mancanti o troppo grandi"})
+        raw = self.body()
+        if raw is None:
+            return
         try:
-            b = clean(json.loads(self.rfile.read(size)))
-        except (ValueError, json.JSONDecodeError) as e:
+            b = clean(raw)
+        except ValueError as e:
             return self.reply(400, {"errore": str(e)})
         now = datetime.now(timezone.utc).isoformat(timespec="seconds")
         with lock:

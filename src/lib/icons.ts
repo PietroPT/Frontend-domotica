@@ -40,6 +40,7 @@ export const ICONS = {
   ha: "<path class=\"d\" d=\"M12 3.2 20.4 10v9.3a1.5 1.5 0 0 1-1.5 1.5H5.1a1.5 1.5 0 0 1-1.5-1.5V10z\"/><circle cx=\"12\" cy=\"13.4\" r=\"2.3\"/><path d=\"M12 15.7v5.1\"/>",
   calendario: "<rect class=\"d\" x=\"3.8\" y=\"5\" width=\"16.4\" height=\"15.4\" rx=\"2.6\"/><path d=\"M3.8 9.6h16.4M8.2 3v3.8M15.8 3v3.8M8 13.4h2M12 13.4h2M8 16.8h2\"/>",
   freccia: "<path d=\"M9 5.5 15.5 12 9 18.5\"/>",
+  frecciasx: "<path d=\"M15 5.5 8.5 12 15 18.5\"/>",
   frecciasu: "<path d=\"M6.5 15 12 9.5l5.5 5.5\"/>",
   frecciagiu: "<path d=\"M6.5 9 12 14.5 17.5 9\"/>",
   piu: "<path d=\"M12 5.5v13M5.5 12h13\"/>",

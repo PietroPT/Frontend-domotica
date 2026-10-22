@@ -1,13 +1,15 @@
-// Quali entità compaiono nella Casa. Salvato nel browser del dispositivo.
-// Finché non si sceglie nulla, con Home Assistant collegato si vedono tutte le
-// luci, prese, termostati e telecamere (tranne l'infrastruttura, vedi canPin).
+// Quali entità compaiono nella Casa e in che ordine. Dal 22/10 è una sola disposizione per tutti
+// (scelta di Pietro): sta nel CT 203 (/api/casa, deploy/bollette.py), così telefono, PC, pannello
+// e ogni utente vedono la stessa Casa. Il browser ne tiene una copia per partire subito.
+// Finché nessuno ha mai salvato, vale la scelta fatta prima su questo dispositivo; se non c'è
+// neanche quella, con Home Assistant collegato si vedono tutte le luci, prese, termostati e
+// telecamere (tranne l'infrastruttura, vedi canPin).
 // Fra gli interruttori solo le prese vere, cioè quelli con un sensore di potenza:
 // gli altri (es. «Permit join» di Zigbee2MQTT, i comandi del distributore di
 // crocchette) non sono dispositivi da accendere e spegnere dalla Casa.
-// Da valutare: il salvataggio nei dati utente di HA (frontend/set_user_data),
-// così telefono, PC e pannello vedono la stessa casa.
 
 import { hass } from './ha/hass.svelte';
+import { api } from './api';
 import { canPin, powerOf } from './view';
 
 // Chiave diversa per il mockup: le scelte fatte sui dati finti non toccano la casa vera.
@@ -32,13 +34,39 @@ function load(): string[] | null {
 }
 
 class Layout {
-  private saved = $state<string[] | null>(load());
+  private local = $state<string[] | null>(load());
+  /** Dal CT 203: undefined = non ancora letta, null = nessuno l'ha mai salvata. */
+  private shared = $state<string[] | null | undefined>(undefined);
+  /** Modalità «Modifica» della Casa: frecce sui riquadri, niente accensioni. */
+  editing = $state(false);
   pinned = $derived(
-    this.saved ??
+    this.shared ??
+      this.local ??
       (hass.demo
         ? DEMO_DEFAULT
         : Object.keys(hass.states).filter((id) => canPin(id) && !id.startsWith('sensor.') && (!id.startsWith('switch.') || !!powerOf(id)))),
   );
+
+  constructor() {
+    // Si rilegge all'avvio, ogni 5 minuti e quando la pagina torna in primo piano (pannello sempre acceso).
+    $effect.root(() => {
+      $effect(() => { if (hass.status === 'ready') this.sync(); });
+    });
+    setInterval(() => this.sync(), 5 * 60_000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) this.sync(); });
+  }
+
+  async sync() {
+    if (hass.demo || hass.status !== 'ready' || this.editing) return;
+    try {
+      const d = await api('GET', 'casa');
+      if (this.editing) return;
+      this.shared = d.riquadri ?? null;
+      if (d.riquadri) this.keep(d.riquadri);
+    } catch {
+      // Servizio non raggiungibile: resta la copia di questo dispositivo.
+    }
+  }
 
   has(id: string) {
     return this.pinned.includes(id);
@@ -49,9 +77,28 @@ class Layout {
   remove(id: string) {
     this.save(this.pinned.filter((p) => p !== id));
   }
-  private save(list: string[]) {
-    this.saved = list;
+  /** Scambia di posto due riquadri (le frecce della modalità Modifica). */
+  swap(a: string, b: string) {
+    const list = [...this.pinned];
+    const i = list.indexOf(a), j = list.indexOf(b);
+    if (i < 0 || j < 0) return;
+    [list[i], list[j]] = [list[j], list[i]];
+    this.save(list);
+  }
+
+  private keep(list: string[]) {
+    this.local = list;
     try { localStorage.setItem(KEY, JSON.stringify(list)); } catch {}
+  }
+  private async save(list: string[]) {
+    this.keep(list);
+    if (hass.demo) return;
+    this.shared = list;
+    try {
+      await api('PUT', 'casa', { riquadri: list });
+    } catch (e: any) {
+      hass.say(`Disposizione della Casa non salvata: ${e?.message ?? e}`);
+    }
   }
 }
 

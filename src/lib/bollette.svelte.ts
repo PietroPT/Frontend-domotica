@@ -4,6 +4,7 @@
 // Nel mockup: alcune bollette di esempio, solo in memoria.
 
 import { hass } from './ha/hass.svelte';
+import { api } from './api';
 import type { IconName } from './icons';
 
 export type Tipo = 'luce' | 'gas' | 'acqua' | 'tari';
@@ -165,18 +166,8 @@ class Archivio {
   status = $state<'idle' | 'loading' | 'ready' | 'error'>('idle');
   error = $state('');
 
-  private async call(method: string, path: string, body?: unknown): Promise<any> {
-    if (!hass.token) throw new Error('Home Assistant non è collegato');
-    const res = await fetch(`./api/bollette${path}`, {
-      method,
-      headers: { Authorization: `Bearer ${await hass.token()}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    let data: any = null;
-    try { data = await res.json(); } catch {}
-    if (!data) throw new Error("l'archivio delle bollette non risponde (servizio non installato nel CT 203? va pubblicata la dashboard)");
-    if (!res.ok) throw new Error(data.errore ?? `errore ${res.status}`);
-    return data;
+  private call(method: string, path: string, body?: unknown): Promise<any> {
+    return api(method, `bollette${path}`, body);
   }
 
   async load() {

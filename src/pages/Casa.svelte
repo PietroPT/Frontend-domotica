@@ -49,13 +49,21 @@
       <p class="when">{today(now)} · <span class="num">{clock(now)}</span></p>
     </div>
     <div class="actions">
-      <ThemeButton />
+      {#if layout.editing}
+        <button class="pill ok" onclick={() => { layout.editing = false; layout.sync(); }}>Fine</button>
+      {:else}
+        <ThemeButton />
+        {#if rooms.length}
+          <button class="round" onclick={() => (layout.editing = true)} aria-label="Cambia l'ordine dei riquadri"><Icon name="matita" size={20} /></button>
+        {/if}
+      {/if}
       <button class="round" onclick={() => app.open({ kind: 'aggiungi' })} aria-label="Aggiungi alla Casa"><Icon name="piu" size={22} /></button>
     </div>
   </header>
 
   {#if hass.demo}<p class="demo">Mockup con dati di esempio: nessun collegamento a Home Assistant.</p>{/if}
   {#if !rooms.length && !hass.demo}<p class="demo">Nessun dispositivo nella Casa: aggiungili con il pulsante +.</p>{/if}
+  {#if layout.editing}<p class="demo">Sposta i riquadri con le frecce. L'ordine vale per tutti: telefono, PC, pannello e ogni utente.</p>{/if}
 
   <nav class="chips" aria-label="Riepilogo">
     <button class="chip" onclick={() => app.go('clima')}>
@@ -82,9 +90,21 @@
         <section>
           <div class="rh"><h2>{hass.areaName(r.area)}</h2><span class="num">{summary(r.area)}</span></div>
           <div class="grid">
-            {#each r.tiles as t (t.id)}
-              <Tile icon={t.icon} title={t.title} detail={t.detail} on={t.on} color={t.color} locked={t.locked}
-                ontoggle={t.toggle} onopen={t.open} />
+            {#each r.tiles as t, i (t.id)}
+              {#if layout.editing}
+                {@const prev = r.tiles[i - 1]}
+                {@const next = r.tiles[i + 1]}
+                <div class="slot">
+                  <Tile icon={t.icon} title={t.title} detail={t.detail} on={t.on} color={t.color} locked={t.locked} />
+                  <div class="move">
+                    <button disabled={!prev} onclick={() => prev && layout.swap(t.id, prev.id)} aria-label="Sposta {t.title} prima"><Icon name="frecciasx" size={20} /></button>
+                    <button disabled={!next} onclick={() => next && layout.swap(t.id, next.id)} aria-label="Sposta {t.title} dopo"><Icon name="freccia" size={20} /></button>
+                  </div>
+                </div>
+              {:else}
+                <Tile icon={t.icon} title={t.title} detail={t.detail} on={t.on} color={t.color} locked={t.locked}
+                  ontoggle={t.toggle} onopen={t.open} />
+              {/if}
             {/each}
           </div>
         </section>
@@ -145,6 +165,22 @@
   .rh h2 { margin: 0; }
   .rh span { font-size: 14px; color: var(--ink-2); }
   .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .pill { min-height: 44px; padding: 0 20px; border-radius: 22px; border: 0; font-weight: 600; font-size: 15px; cursor: pointer; }
+  .pill.ok { background: var(--energia); color: #fff; }
+
+  /* Modalità Modifica: il riquadro resta visibile ma non si tocca; sopra, le frecce. */
+  .slot { position: relative; min-width: 0; }
+  .slot :global(.tile) { outline: 2px dashed var(--sep); outline-offset: -2px; }
+  .move {
+    position: absolute; inset: 0; border-radius: var(--r-tile);
+    display: flex; justify-content: space-between; align-items: center; padding: 0 4px;
+    background: color-mix(in srgb, var(--tile) 45%, transparent);
+  }
+  .move button {
+    width: 40px; height: 40px; border-radius: 50%; border: 0; display: grid; place-items: center;
+    background: var(--raised); color: var(--ink); box-shadow: var(--shadow); cursor: pointer;
+  }
+  .move button:disabled { visibility: hidden; }
 
   .side { display: grid; gap: 22px; align-content: start; }
   .clima { display: none; }
