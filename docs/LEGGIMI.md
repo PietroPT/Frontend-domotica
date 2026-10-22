@@ -102,7 +102,9 @@ Percorsi letti nelle traduzioni italiane dell'interfaccia di HA (2026.2, l'HA di
 
 **Provato il 21/10 sull'HA di prova** con un utente non amministratore creato come sopra e la build servita da nginx con la stessa configurazione: token preso dall'indirizzo e tolto subito, mai presente nelle richieste a nginx; dopo una ricarica senza token resta collegato; stanze, cronologia, energia e telecamere funzionano; luce accesa davvero; rinomina rifiutata con «Solo un amministratore di Home Assistant può rinominare.»; Avanzate senza «Esci»; token sbagliato → messaggio dedicato e token dimenticato. Login normale dall'indirizzo servito da nginx: riuscito. Pubblicazione simulata due volte (scambio delle cartelle, `.old` conservata), cache e compressione controllate.
 
-### Parte 2 — pannello sul Pi 4 (da preparare)
+### Parte 2 — pannello sul Pi 4 (rimandata)
+
+**Rimandata il 22/10:** Pietro non ha ancora lo schermo del pannello. Quando ci sarà, chiedere modello e dimensione dello schermo, se è touch, se sul Pi c'è già un sistema, cavo o Wi-Fi (e quale rete), acceso sempre o spento di notte. Il token resta intanto solo nel password manager («Token HA Pannello»).
 
 Chromium a schermo intero all'avvio, con `http://10.10.50.21/#token=…` nell'avvio automatico del Pi (il token sta solo lì e nel browser del Pi). Istruzioni da scrivere verificando la versione attuale di Raspberry Pi OS.
 
@@ -153,7 +155,7 @@ Effetto collaterale, prudente: una presa rinominata con «rack», «friggitrice�
 
 ## Prossimo passo
 
-**Fase 4:** utenti di HA («Pannello» e l'altra persona) e token del pannello ([sopra](#utenti-di-ha-da-fare)), poi **parte 2**: pannello a muro sul Pi 4 (Chromium a schermo intero con il token).
+**Fase 4:** utente «Pannello» e token fatti il 22/10; resta l'utente dell'altra persona ([sopra](#utenti-di-ha-da-fare)). La **parte 2** (pannello a muro sul Pi 4) è rimandata a quando Pietro avrà lo schermo.
 
 Poi, quando Pietro vorrà: configurazione dell'**Allarme**.
 
