@@ -96,6 +96,7 @@ Percorsi letti nelle traduzioni italiane dell'interfaccia di HA (2026.2, l'HA di
 **Fatto il 22/10 sull'HA di casa (screenshot di Pietro):**
 - Utente creato da **Impostazioni → Persone → Aggiungi persona**: nome visualizzato `Pannello`, nome utente `pannello`, password generata, **Solo accesso locale** acceso, **Amministratore** spento, nessun dispositivo. Nella versione di casa i campi dell'utente stanno nella stessa finestra «Aggiungi persona» e il pulsante finale è **Aggiungi**.
 - Token creato da Profilo → **Sicurezza** → **Token di accesso a lungo termine** → **Crea token**, nome in HA «Pannello a muro». Nel password manager la voce si chiama **«Token HA Pannello»** (nome utente `Pannello`).
+- Immagine della persona: `docs/icone/pannello.png` (512×512; sorgente `pannello.svg`), il pannello con le tessere della dashboard, stessi colori del tema scuro. Si carica dalla finestra della persona Pannello (Impostazioni → Persone → Pannello), riquadro dell'immagine sotto il nome, poi **Salva**.
 - Prima, HA non si apriva dal PC: il traffico verso `10.10.50.10` passava da NordVPN (`NordLynx`, visto con `Find-NetRoute`); spenta la VPN, funziona. Terza volta dopo il 01/10 e il 15/10.
 - Aggiornamenti automatici di sicurezza attivati nel CT 203 il 22/10 (`unattended-upgrades` 2.12, prossimo controllo il 23/10 alle 06:11); log tolto anche dalle regole REMOTO di HA e HA-Dashboard, come le altre.
 
