@@ -118,19 +118,20 @@ class Hass {
 
   /** Regole di sicurezza applicate a ogni comando, qualunque schermata lo mandi
    *  (le conferme prima di spegnere restano nelle schermate). Restituisce il motivo del blocco. */
-  private blocked(service: string, ids: string[]): string | null {
+  private blocked(service: string, ids: string[], confirmed: boolean): string | null {
     for (const id of ids) {
       const p = policyOf(id);
       if (p.readOnly) return p.readOnly;
-      if (p.noRemoteOn && (service === 'turn_on' || service === 'toggle')) return p.noRemoteOn;
+      if (p.confirmOn && !confirmed && (service === 'turn_on' || service === 'toggle')) return p.confirmOn;
     }
     return null;
   }
 
-  /** Stessa firma di callService di home-assistant-js-websocket; restituisce false se il comando non è partito. */
-  async callService(domain: string, service: string, data: Record<string, any>): Promise<boolean> {
+  /** Stessa firma di callService di home-assistant-js-websocket; restituisce false se il comando non è partito.
+   *  confirmed: la schermata ha già mostrato l'avviso di accensione e l'utente l'ha confermato. */
+  async callService(domain: string, service: string, data: Record<string, any>, confirmed = false): Promise<boolean> {
     const ids: string[] = [data.entity_id].flat().filter(Boolean);
-    const stop = this.blocked(service, ids);
+    const stop = this.blocked(service, ids, confirmed);
     if (stop) {
       this.say(stop);
       return false;

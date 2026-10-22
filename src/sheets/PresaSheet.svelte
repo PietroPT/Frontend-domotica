@@ -18,6 +18,7 @@
   const w = $derived(power ? +power.state : NaN);
   const name = $derived(((sw ?? power)?.attributes.friendly_name ?? id).replace(/ (Potenza|Power)$/i, ''));
   let confirming = $state(false);
+  let confirmingOn = $state(false);
 
   // Spegnere un carico attivo interrompe quello che sta facendo: si conferma sempre.
   const warning = $derived(p.confirmOff ?? (w > 50 ? `Sta assorbendo ${watt(w)}: spegnerla interrompe quello che sta facendo.` : null));
@@ -25,6 +26,12 @@
     if (warning && !confirming) { confirming = true; return; }
     if (sw) hass.callService('switch', 'turn_off', { entity_id: sw.entity_id });
     confirming = false;
+  }
+  // Accendere un apparecchio che scalda (friggitrice): prima l'avviso, poi la conferma.
+  function turnOn() {
+    if (p.confirmOn && !confirmingOn) { confirmingOn = true; return; }
+    if (sw) hass.callService('switch', 'turn_on', { entity_id: sw.entity_id }, confirmingOn);
+    confirmingOn = false;
   }
 </script>
 
@@ -50,10 +57,14 @@
       {:else}
         <button class="btn" onclick={off}><Icon name="power" size={22} />Spegni</button>
       {/if}
-    {:else if sw && p.noRemoteOn}
-      <p class="notice"><Icon name="lucchetto" size={20} />{p.noRemoteOn}</p>
+    {:else if sw && confirmingOn && p.confirmOn}
+      <p class="notice warn"><Icon name="avviso" size={20} />{p.confirmOn}</p>
+      <div class="row">
+        <button class="btn" onclick={() => (confirmingOn = false)}>Annulla</button>
+        <button class="btn primary" onclick={turnOn}>Ho controllato, accendi</button>
+      </div>
     {:else if sw}
-      <button class="btn primary" onclick={() => hass.callService('switch', 'turn_on', { entity_id: sw.entity_id })}><Icon name="power" size={22} />Accendi</button>
+      <button class="btn primary" onclick={turnOn}><Icon name="power" size={22} />Accendi</button>
     {/if}
   </div>
 </Sheet>

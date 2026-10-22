@@ -135,7 +135,7 @@ Chromium a schermo intero all'avvio, con `http://10.10.50.21/#token=…` nell'av
 Nel codice (`src\lib\policy.ts`) e ricontrollate in un punto unico prima di **ogni** comando (`hass.callService`), qualunque schermata lo mandi. Si riconoscono da entity_id, nome visibile e nome del dispositivo, quindi una rinomina non le toglie. Fonte: [piano HA](<../Documenti rack/piano-home-assistant.md#prese-zigbee-sonoff-s60zbtpf-7-ottobre-2026>).
 
 - **Rack:** nessun comando, solo misura.
-- **Friggitrice:** si può solo spegnere, mai accendere a distanza.
+- **Friggitrice:** si spegne subito; **per accenderla** la scheda mostra un avviso («Accendere la presa dà corrente alla friggitrice: secondo il modello può partire subito a scaldare. Prima controlla che il cestello sia inserito e che sopra e intorno non ci sia niente appoggiato.») e serve **«Ho controllato, accendi»**. Il controllo sta anche nel punto unico dei comandi: senza conferma l'accensione non parte. Fino al 22/10 la regola era «mai accenderla da remoto» (piano HA, 07/10); **cambiata da Pietro il 22/10** dopo la spiegazione dei rischi. Vale solo nella dashboard: nell'app di HA la presa si accende senza avviso. Consigliato anche *Power-on behavior* **off** sulla presa (oggi **previous**: dopo un blackout torna accesa se lo era), non ancora deciso.
 - **Stampante 3D:** conferma prima di spegnere (raffreddamento dell'estrusore).
 - **Programma dei pasti** (`switch.cucina_crocchette_feeding_schedule`): conferma prima di spegnerlo.
 - **Qualunque presa sopra 50 W:** conferma prima di spegnerla.
@@ -149,6 +149,7 @@ Effetto collaterale, prudente: una presa rinominata con «rack», «friggitrice�
 - **Fase 4 sull'HA di prova:** vedi [Utenti di HA](#utenti-di-ha-fatti-il-2210).
 - **Su un HA 2026.2.3 di prova** avviato nell'ambiente di sviluppo (integrazione `demo`, con `recorder` e `history`), con un browser automatico: login OAuth e ritorno, stati e telecamere dal vivo, ricarica senza login, uscita, rinomina e ritorno al nome originale, luce accesa davvero, cronologia in streaming, pagina Allarme.
 - **Nel mockup:** doppio tocco sulle automazioni, Cibo extra, energia ora per ora, conferma sul programma dei pasti, termostato a riposo e durante il trascinamento (tema chiaro e scuro).
+- **Friggitrice nel mockup (22/10):** «Accendi» mostra l'avviso e non accende; «Annulla» la lascia spenta; «Ho controllato, accendi» la accende; spegnere resta immediato.
 - **Stanze, sull'HA di prova (22/10):** da amministratore creata «Taverna» dalla scheda di una luce e la luce spostata lì (registro di HA riletto: area del dispositivo `taverna`); nome doppio «taverna» rifiutato; seconda stanza «Studio» e spostamento con un tocco; Casa e Luci raggruppate per la stanza nuova; rinomina «Taverna» → «Cantina» da Avanzate (in HA il nome cambia, l'area_id resta). Con l'utente non amministratore (token del test): stanza solo da leggere, scheda Stanze assente. Nel mockup: spostamento della lavatrice in Cucina, tema scuro.
 - **Da Pietro sull'HA di casa (21/10):** login, stanze, UPS, Rack, stampante, crocchette, telecamere, termostato, friggitrice senza «Accendi», Rack senza comandi, energia simile al pannello Energia di HA, grafici, Cibo extra che eroga. Esito riferito da Pietro.
 

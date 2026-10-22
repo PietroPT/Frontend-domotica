@@ -85,11 +85,10 @@ export function tileOf(id: string): TileView | null {
     const on = e.state === 'on';
     const w = hass.num(powerOf(id)?.entity_id ?? '');
     const p = policyOf(id);
-    const canToggle = !p.readOnly && !(p.noRemoteOn && !on);
+    const canToggle = !p.readOnly;
     return {
       ...base, on, color: 'var(--energia)',
       detail: on ? (Number.isFinite(w) ? watt(w) : 'Accesa') : 'Spenta',
-      locked: !!p.noRemoteOn && !on,
       toggle: canToggle ? () => app.open({ kind: 'presa', id }) : undefined,
       open: () => app.open({ kind: 'presa', id }),
     };

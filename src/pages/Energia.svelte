@@ -83,8 +83,8 @@
             <span class="ic" class:on={r.w > 1}><Icon name={iconOf(r.s)} /></span>
             <span class="what">
               <b>{nameOf(r.sw ?? r.s)}</b>
-              <small class:warn={r.p.readOnly || r.p.noRemoteOn}>
-                {#if r.p.readOnly}Sola lettura · {hass.areaName(hass.areaOf(r.s.entity_id))}{:else if r.p.noRemoteOn && r.sw?.state === 'off'}Spenta · non si accende a distanza{:else}{r.sw?.state === 'off' ? 'Spenta' : 'Accesa'} · {hass.areaName(hass.areaOf(r.s.entity_id))}{/if}
+              <small class:warn={r.p.readOnly}>
+                {#if r.p.readOnly}Sola lettura · {hass.areaName(hass.areaOf(r.s.entity_id))}{:else}{r.sw?.state === 'off' ? 'Spenta' : 'Accesa'} · {hass.areaName(hass.areaOf(r.s.entity_id))}{/if}
               </small>
               <span class="bar"><i style:width="{Math.min(100, (r.w / Math.max(total, 1)) * 100)}%"></i></span>
             </span>

@@ -32,7 +32,7 @@ A custom interface that replaces the standard Home Assistant dashboard. Home Ass
 - Live state by entity subscription, no polling. Entities are read from HA and grouped by area, never hard-coded.
 - Auth: HA OAuth login flow (`getAuth`), no token in code. Kiosk only: optional long-lived token stored on the device, never in the repository. No secrets in git.
 - Lights, climate, energy, cameras, rack/services, automations. An "add to dashboard" flow chooses which HA entities appear and where (pairing new devices stays in Zigbee2MQTT/HA).
-- **Safety rules from the Rack documentation:** the rack plug's switch is disabled in HA and must never be offered as a control; the air-fryer plug must never be switched on remotely; the 3D-printer plug must not cut power right after a print (extruder cooling). The UPS is read-only.
+- **Safety rules from the Rack documentation:** the rack plug's switch is disabled in HA and must never be offered as a control; the air-fryer plug is switched on only after a warning and an explicit confirmation (until 22/10 it could not be switched on remotely at all; changed by Pietro); the 3D-printer plug must not cut power right after a print (extruder cooling). The UPS is read-only.
 - Light and dark theme. Touch first: large targets, no hover-only feedback.
 
 ## Brand Commitments

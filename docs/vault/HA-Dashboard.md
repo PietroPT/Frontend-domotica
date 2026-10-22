@@ -24,7 +24,7 @@ Dashboard web personalizzata per Home Assistant, al posto della dashboard standa
 
 ## Regole di sicurezza
 
-Ricontrollate prima di ogni comando, riconosciute da entity_id, nome e dispositivo: presa del **rack** mai comandata (solo misura); **friggitrice** solo spegnere, mai accendere a distanza; **stampante 3D**, **programma dei pasti** e qualunque presa sopra 50 W chiedono conferma prima di spegnersi; disattivare un'**automazione** richiede un doppio tocco; **UPS** solo lettura.
+Ricontrollate prima di ogni comando, riconosciute da entity_id, nome e dispositivo: presa del **rack** mai comandata (solo misura); **friggitrice** accesa solo dopo un avviso e una conferma (fino al 22/10 non si accendeva a distanza: cambiato da Pietro); **stampante 3D**, **programma dei pasti** e qualunque presa sopra 50 W chiedono conferma prima di spegnersi; disattivare un'**automazione** richiede un doppio tocco; **UPS** solo lettura.
 
 ## Lezioni
 

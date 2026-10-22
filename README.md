@@ -69,7 +69,7 @@ contiene migliaia di file che Google Drive proverebbe a sincronizzare.
   con dati finti. Presa e sensore di potenza, telecamera e sensore di movimento si abbinano
   perché stanno sullo stesso dispositivo di HA, non dal nome.
 - `src/lib/policy.ts` — regole di sicurezza prese dalla documentazione del Rack: la presa del
-  rack non si comanda, la friggitrice non si accende a distanza, la stampante 3D chiede conferma.
+  rack non si comanda, la friggitrice si accende solo dopo un avviso e una conferma, la stampante 3D chiede conferma.
   Si riconoscono dal nome (entità, nome visibile o dispositivo), così sopravvivono a una
   rinomina in HA.
 - `src/lib/icons.ts` — set di icone disegnato su misura (griglia 24, tratto 1,75, duotono).
