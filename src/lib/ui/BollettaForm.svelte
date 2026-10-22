@@ -2,8 +2,6 @@
   // Inserimento e modifica di una bolletta, in un foglio. Campi nell'ordine della bolletta:
   // tipo, fornitore, periodo, consumo, importo, scadenza, pagata, note.
   import { bollette, costoUnitario, giorni, newId, ORDINE, TIPI, type Bolletta, type Tipo } from '../bollette.svelte';
-  import { hass } from '../ha/hass.svelte';
-  import { setPrice } from '../ha/energy';
   import { euro, perKwh } from '../format';
   import Sheet from './Sheet.svelte';
   import Icon from './Icon.svelte';
@@ -21,7 +19,6 @@
   let scadenza = $state(bolletta?.scadenza ?? '');
   let pagata = $state(bolletta?.pagata ?? false);
   let note = $state(bolletta?.note ?? '');
-  let usaPrezzo = $state(false);
   let busy = $state(false);
   let error = $state('');
   let confirmDelete = $state(false);
@@ -57,7 +54,6 @@
         id: bolletta?.id ?? newId(), tipo, fornitore: fornitore.trim(), dal, al, consumo: c, importo: i,
         scadenza: scadenza || null, pagata, note: note.trim(),
       });
-      if (usaPrezzo && anteprima && Number.isFinite(anteprima.unit)) await setPrice(Math.round(anteprima.unit * 10_000) / 10_000);
       onclose();
     } catch (err: any) {
       error = `Non salvata: ${err?.message ?? err}`;
@@ -113,10 +109,6 @@
       <p class="calc">
         {anteprima.n} giorni · circa {euro(anteprima.mese)} al mese{#if Number.isFinite(anteprima.unit)}{` · ${tipo === 'luce' ? perKwh(anteprima.unit) : `${euro(anteprima.unit)}/${u}`}`}{/if}
       </p>
-      <!-- Il prezzo della sezione Costi lo cambia solo un amministratore (come in Costi). -->
-      {#if tipo === 'luce' && Number.isFinite(anteprima.unit) && hass.admin}
-        <label class="check"><input type="checkbox" bind:checked={usaPrezzo} />Usa questo prezzo al kWh nella sezione Costi delle prese</label>
-      {/if}
     {/if}
 
     {#if error}<p class="err" role="alert">{error}</p>{/if}

@@ -94,7 +94,7 @@
         <button type="submit" class="ok" disabled={busy}>{busy ? 'Salvo…' : 'Salva'}</button>
       </div>
       <p class="hint" class:err={!!error} role={error ? 'alert' : undefined}>
-        {error || "Per un costo realistico usa il prezzo «tutto compreso»: il totale di una bolletta diviso i kWh consumati in quel periodo (energia, trasporto, oneri e IVA). Si salva in Home Assistant e vale per tutti i dispositivi."}
+        {error || "Usa quanto costa un kWh in più: dalla bolletta, la quota per consumi più le accise, più l'IVA, divisa per i kWh. Non il totale diviso i kWh: dentro ci sono quota fissa e quota potenza, che si pagano anche consumando zero. Si salva in Home Assistant e vale per tutti i dispositivi."}
       </p>
     </form>
   {:else}
