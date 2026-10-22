@@ -22,9 +22,16 @@ if not defined DEST (
 
 rem Da qui in poi un unico blocco: cmd lo legge tutto prima di eseguirlo, quindi git pull può
 rem aggiornare questo stesso file senza che cmd riprenda a leggerlo da un punto sbagliato.
+rem Però eseguirebbe ancora i passi vecchi: se il pull cambia questo file, si rilancia la versione nuova.
+for /f %%r in ('git rev-parse HEAD') do set "PRIMA=%%r"
 (
   echo == Aggiorno i sorgenti
   git pull --ff-only || goto errore
+  git diff --quiet %PRIMA% HEAD -- pubblica.cmd || (
+    echo == pubblica.cmd e' cambiato con l'aggiornamento: riparto con la versione nuova
+    call "%~f0"
+    exit /b
+  )
   echo == Installo le dipendenze
   call npm.cmd install --no-audit --no-fund || goto errore
   echo == Build
