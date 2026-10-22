@@ -77,7 +77,9 @@ export async function start() {
     hass.ws = (msg) => c.sendMessagePromise(msg);
     hass.watchHistory = (key) => watchHistory(c, key);
     await loadRegistries(conn);
-    hass.user = (await getUser(conn)).name ?? '';
+    const user = await getUser(conn);
+    hass.user = user.name ?? '';
+    hass.admin = !!user.is_admin;
   } catch (err) {
     fail(err);
     return;

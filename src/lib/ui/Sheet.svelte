@@ -2,10 +2,12 @@
   import type { Snippet } from 'svelte';
   import Icon from './Icon.svelte';
   import NomeModificabile from './NomeModificabile.svelte';
+  import StanzaModificabile from './StanzaModificabile.svelte';
 
   // renameId: se c'è, il titolo è il nome di quell'entità e si cambia toccandolo.
-  let { title, subtitle, onclose, children, wide = false, renameId }:
-    { title: string; subtitle?: string; onclose: () => void; children: Snippet; wide?: boolean; renameId?: string } = $props();
+  // roomId: sotto il titolo la stanza di quell'entità, che si cambia toccandola.
+  let { title, subtitle, onclose, children, wide = false, renameId, roomId }:
+    { title: string; subtitle?: string; onclose: () => void; children: Snippet; wide?: boolean; renameId?: string; roomId?: string } = $props();
 
   let panel: HTMLElement;
   $effect(() => {
@@ -27,6 +29,7 @@
     </div>
     <button class="x" onclick={onclose} aria-label="Chiudi"><Icon name="chiudi" size={20} /></button>
   </header>
+  {#if roomId}<div class="room"><StanzaModificabile id={roomId} /></div>{/if}
   <div class="content">{@render children()}</div>
 </div>
 
@@ -52,6 +55,7 @@
   header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
   h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
   .ti { min-width: 0; flex: 1; }
+  .room { margin: -6px 0 18px; }
   header p { color: var(--ink-2); font-size: 14.5px; margin-top: 2px; }
   .x { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--track); display: grid; place-items: center; cursor: pointer; color: var(--ink-2); flex: none; }
 

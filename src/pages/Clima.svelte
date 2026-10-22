@@ -6,6 +6,7 @@
   import Icon from '../lib/ui/Icon.svelte';
   import { thermostat } from '../lib/view';
   import NomeModificabile from '../lib/ui/NomeModificabile.svelte';
+  import StanzaModificabile from '../lib/ui/StanzaModificabile.svelte';
 
   const t = $derived(thermostat());
   const id = $derived(t?.entity_id ?? '');
@@ -46,6 +47,7 @@
         <div><dt>Ultimo cambio di stato</dt><dd>{since(t.last_changed)}</dd></div>
         <div><dt>Collegamento</dt><dd>Zigbee2MQTT · MOES ZHT-S03</dd></div>
       </dl>
+      <div class="room"><StanzaModificabile {id} /></div>
     </section>
   </div>
 {/if}
@@ -72,6 +74,7 @@
   dl { margin: 18px 0 0; display: grid; gap: 0; }
   dl div { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px solid var(--sep); font-size: 14.5px; }
   dt { color: var(--ink-2); }
+  .room { margin-top: 6px; }
   dd { margin: 0; font-weight: 500; text-align: right; }
   @media (min-width: 720px) { h1 { font-size: 40px; } }
   @media (min-width: 1000px) { .layout { grid-template-columns: minmax(380px, 1fr) 1.2fr; align-items: start; } }

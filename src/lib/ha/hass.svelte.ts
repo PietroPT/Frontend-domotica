@@ -27,6 +27,8 @@ class Hass {
   connected = $state(true);
   /** Nome dell'utente di HA con cui si è entrati. */
   user = $state('');
+  /** true se quell'utente è amministratore: solo allora si possono cambiare le stanze. */
+  admin = $state(DEMO);
   /** true sul pannello a muro, che entra col token a lunga durata invece del login. */
   panel = $state(false);
   /** Invio di un messaggio a HA: lo imposta live.ts quando la connessione è aperta. */
@@ -190,6 +192,59 @@ class Hass {
     }
     if (!this.ws) throw new Error('Home Assistant non è collegato');
     await this.ws({ type: 'config/entity_registry/update', entity_id, name: clean });
+  }
+
+  /** Sposta in un'altra stanza (area di HA; null = senza stanza). Si sposta il dispositivo intero,
+   *  come fa HA, così presa e sensore di potenza restano insieme; l'eventuale stanza propria
+   *  dell'entità si toglie, altrimenti avrebbe la precedenza su quella del dispositivo. */
+  async setArea(entity_id: string, area_id: string | null): Promise<void> {
+    const e = this.reg.get(entity_id);
+    if (!e) throw new Error('entità non trovata nel registro di Home Assistant');
+    if (!this.demo) {
+      if (!this.ws) throw new Error('Home Assistant non è collegato');
+      if (e.device_id) {
+        await this.ws({ type: 'config/device_registry/update', device_id: e.device_id, area_id });
+        if (e.area_id) await this.ws({ type: 'config/entity_registry/update', entity_id, area_id: null });
+      } else await this.ws({ type: 'config/entity_registry/update', entity_id, area_id });
+    }
+    // Subito anche qui: i registri si rileggono comunque quando HA segnala la modifica.
+    if (e.device_id) {
+      this.devices = this.devices.map((d) => (d.id === e.device_id ? { ...d, area_id } : d));
+      if (e.area_id) this.entityRegistry = this.entityRegistry.map((r) => (r.entity_id === entity_id ? { ...r, area_id: null } : r));
+    } else this.entityRegistry = this.entityRegistry.map((r) => (r.entity_id === entity_id ? { ...r, area_id } : r));
+  }
+
+  private areaNameFree(name: string, except?: string): string {
+    const clean = name.trim();
+    if (!clean) throw new Error('serve un nome per la stanza');
+    if (this.areas.some((a) => a.area_id !== except && a.name.toLowerCase() === clean.toLowerCase()))
+      throw new Error(`esiste già una stanza «${clean}»`);
+    return clean;
+  }
+
+  /** Crea una stanza (area di HA) e ne restituisce l'id. */
+  async createArea(name: string): Promise<string> {
+    const clean = this.areaNameFree(name);
+    let area: AreaEntry;
+    if (this.demo) {
+      area = { area_id: clean.toLowerCase().replace(/\W+/g, '_'), name: clean, icon: null };
+    } else {
+      if (!this.ws) throw new Error('Home Assistant non è collegato');
+      const a = (await this.ws({ type: 'config/area_registry/create', name: clean })) as AreaEntry;
+      area = { area_id: a.area_id, name: a.name, icon: a.icon ?? null };
+    }
+    if (!this.areas.some((a) => a.area_id === area.area_id)) this.areas = [...this.areas, area];
+    return area.area_id;
+  }
+
+  /** Rinomina una stanza in HA: l'area_id non cambia, quindi i dispositivi restano dove sono. */
+  async renameArea(area_id: string, name: string): Promise<void> {
+    const clean = this.areaNameFree(name, area_id);
+    if (!this.demo) {
+      if (!this.ws) throw new Error('Home Assistant non è collegato');
+      await this.ws({ type: 'config/area_registry/update', area_id, name: clean });
+    }
+    this.areas = this.areas.map((a) => (a.area_id === area_id ? { ...a, name: clean } : a));
   }
 
   private noticeTimer = 0;

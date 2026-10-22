@@ -2,10 +2,15 @@
   // Nome di un'entità che si cambia toccandolo. Il nome si salva in Home Assistant
   // (registro delle entità), quindi vale ovunque: dashboard, app di HA, altri dispositivi.
   // L'entity_id non cambia, quindi automazioni e regole di sicurezza restano agganciate.
+  // Con save e hint rinomina altro (es. una stanza) con lo stesso aspetto.
   import { hass } from '../ha/hass.svelte';
   import Icon from './Icon.svelte';
 
-  let { id, name, small = false }: { id: string; name: string; small?: boolean } = $props();
+  let {
+    id, name, small = false,
+    save: store = (v: string) => hass.rename(id, v),
+    hint = 'Il nome cambia anche in Home Assistant. Lascia vuoto per tornare al nome originale.',
+  }: { id: string; name: string; small?: boolean; save?: (name: string) => Promise<void>; hint?: string } = $props();
 
   let editing = $state(false);
   let value = $state('');
@@ -26,7 +31,7 @@
     busy = true;
     error = '';
     try {
-      await hass.rename(id, value);
+      await store(value);
       editing = false;
     } catch (err: any) {
       error = err?.code === 'unauthorized'
@@ -47,7 +52,7 @@
       <button type="submit" class="ok" disabled={busy}>{busy ? 'Salvo…' : 'Salva'}</button>
     </div>
     <p class="hint" class:err={!!error} role={error ? 'alert' : undefined}>
-      {error || 'Il nome cambia anche in Home Assistant. Lascia vuoto per tornare al nome originale.'}
+      {error || hint}
     </p>
   </form>
 {:else}

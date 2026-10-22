@@ -6,6 +6,8 @@
   import { logout } from '../lib/ha/live';
   import type { HassEntity } from '../lib/ha/types';
   import Icon from '../lib/ui/Icon.svelte';
+  import NomeModificabile from '../lib/ui/NomeModificabile.svelte';
+  import NuovaStanza from '../lib/ui/NuovaStanza.svelte';
   import type { IconName } from '../lib/icons';
 
   const n = (id: string) => hass.num(id);
@@ -152,6 +154,27 @@
     <p class="note">Le automazioni si scrivono in Home Assistant; qui si attivano e disattivano.</p>
   </section>
 
+  {#if hass.admin}
+    <section class="card">
+      <h2>Stanze</h2>
+      <ul class="list">
+        {#each hass.areas as a (a.area_id)}
+          {@const count = hass.devices.filter((d) => d.area_id === a.area_id).length}
+          <li>
+            <span class="ic small"><Icon name="casa" size={22} /></span>
+            <div class="what">
+              <NomeModificabile small id={a.area_id} name={a.name} save={(v) => hass.renameArea(a.area_id, v)}
+                hint="Il nome della stanza cambia anche in Home Assistant; i dispositivi restano dove sono." />
+              <small>{count === 1 ? '1 dispositivo' : `${count} dispositivi`}</small>
+            </div>
+          </li>
+        {/each}
+      </ul>
+      <div class="newroom"><NuovaStanza /></div>
+      <p class="note">Le stanze sono le aree di Home Assistant. Per spostare un dispositivo apri la sua scheda e tocca «Stanza».</p>
+    </section>
+  {/if}
+
   <section class="card">
     <h2>Aspetto</h2>
     <div class="seg" role="radiogroup" aria-label="Tema">
@@ -213,6 +236,7 @@
   .sw.on { background: var(--ok); }
   .sw.on::after { transform: translateX(22px); }
   .acc { margin: 6px 0 12px; }
+  .newroom { margin-top: 10px; }
   .out { background: var(--track); }
   .seg { display: flex; background: var(--track); border-radius: 14px; padding: 4px; margin-top: 12px; }
   .seg button { flex: 1; min-height: 44px; border: 0; border-radius: 10px; background: none; font-weight: 600; cursor: pointer; color: var(--ink-2); }

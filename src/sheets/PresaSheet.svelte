@@ -28,7 +28,7 @@
   }
 </script>
 
-<Sheet renameId={(sw ?? power)?.entity_id} title={name} subtitle="{hass.areaName(hass.areaOf(sw?.entity_id ?? power?.entity_id ?? ''))} · {sw ? (on ? `Accesa ${since(sw.last_changed)}` : 'Spenta') : 'Solo misura'}" onclose={() => app.close()}>
+<Sheet renameId={(sw ?? power)?.entity_id} roomId={(sw ?? power)?.entity_id} title={name} subtitle={sw ? (on ? `Accesa ${since(sw.last_changed)}` : 'Spenta') : 'Solo misura'} onclose={() => app.close()}>
   <div class="body">
     <div class="now">
       <p class="val num">{watt(w)}</p>

@@ -29,7 +29,7 @@
 </script>
 
 {#if hass.states[id]}
-  <Sheet title="Cibo extra" subtitle="Distributore crocchette · {hass.areaName(hass.areaOf(id))}" onclose={() => app.close()}>
+  <Sheet title="Cibo extra" subtitle="Distributore crocchette" roomId={id} onclose={() => app.close()}>
     <div class="body">
       <dl class="rows">
         <div><dt>Livello cibo</dt><dd class:warn={low}>{low ? 'In esaurimento' : st('binary_sensor.crocchette_livello_cibo') === 'off' ? 'Sufficiente' : '—'}</dd></div>

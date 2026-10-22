@@ -18,7 +18,7 @@
 </script>
 
 {#if e}
-  <Sheet renameId={id} title={e.attributes.friendly_name ?? id} subtitle="{hass.areaName(hass.areaOf(id))} · {on ? 'Accesa' : 'Spenta'}" onclose={() => app.close()}>
+  <Sheet renameId={id} roomId={id} title={e.attributes.friendly_name ?? id} subtitle={on ? 'Accesa' : 'Spenta'} onclose={() => app.close()}>
     <div class="body">
       {#if dimmable}<BrightnessSlider value={pct} off={!on} onchange={set} label="Luminosità {e.attributes.friendly_name}" />{/if}
       {#if ct}
