@@ -1,8 +1,8 @@
 # HA-Dashboard
 
-Dashboard web personalizzata per Home Assistant, al posto della dashboard standard. Avviata il 21/10/2026; fasi 1–3 fatte e confermate da Pietro lo stesso giorno. Fase 4 (pubblicazione) in corso: la dashboard è pubblicata su `http://10.10.50.21`.
+Dashboard web personalizzata per Home Assistant, al posto della dashboard standard. Avviata il 21/10/2026; fasi 1–3 fatte e confermate da Pietro lo stesso giorno. Fase 4 (pubblicazione) in corso: la dashboard è pubblicata su `http://10.10.50.21`; il 22/10 creati gli utenti di HA «Pannello» (con il suo token) e «Filippo»; il pannello sul Pi è rimandato perché manca ancora lo schermo.
 
-**Dettagli operativi** (uso, istruzioni, prove, regole complete): `G:\Il mio Drive\AI\Rack\HA-Dashboard\LEGGIMI.md`. **Codice**: GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31`; copia sul PC in `C:\HA-Dashboard`, avvio con doppio clic su `avvia.cmd`.
+**Dettagli operativi** (uso, istruzioni, prove, regole complete): `G:\Il mio Drive\AI\Rack\HA-Dashboard\LEGGIMI.md`. **Codice**: GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31`; copia sul PC in `C:\HA-Dashboard`. Per l'uso di tutti i giorni basta aprire `http://10.10.50.21` (sempre accesa nel CT 203); `avvia.cmd` serve solo a provare le modifiche prima di pubblicarle con `pubblica.cmd`.
 
 ## Cos'è
 
@@ -34,6 +34,6 @@ Ricontrollate prima di ogni comando, riconosciute da entity_id, nome e dispositi
 
 ## Aperto
 
-- Fase 4, parte 1 fatta il 21/10: CT 203 `ha-dashboard` su pve1 con solo nginx (`http://10.10.50.21`, SERVERS), build fatta sul PC e copiata via SSH con chiave (`pubblica.cmd`), aperta anche da fuori casa col tunnel. Da fare: utente HA «Pannello» non amministratore e solo locale (il suo token starà solo sul Pi), utente non amministratore per l'altra persona, poi il pannello sul Pi.
+- Fase 4, parte 1 fatta il 21/10: CT 203 `ha-dashboard` su pve1 con solo nginx (`http://10.10.50.21`, SERVERS), build fatta sul PC e copiata via SSH con chiave (`pubblica.cmd`), aperta anche da fuori casa col tunnel. Il 22/10: utente HA «Pannello» non amministratore e solo locale, con il token a lunga durata (nel password manager, voce «Token HA Pannello»; starà solo sul Pi) e un'immagine della persona disegnata nello stile delle icone; utente non amministratore «Filippo» per l'altra persona. Da fare: provare l'accesso di Filippo dal tunnel; il pannello sul Pi quando ci sarà lo schermo; eventualmente installare la dashboard come app sul PC e sugli iPhone.
 - Non provati: tablet, Pi 4 (fluidità, leggibilità a 2–3 m); carico del video delle telecamere su Frigate e HA e resa dal tunnel WireGuard. Sull'iPhone la dashboard si apre, anche dal tunnel (riferito da Pietro), ma non è stata provata funzione per funzione.
 - Allarme da progettare.

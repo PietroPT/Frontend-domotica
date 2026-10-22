@@ -1,6 +1,6 @@
 # HA-Dashboard — interfaccia personalizzata per Home Assistant
 
-**Aggiornato il 21 ottobre 2026, sera.** Fasi 1, 2 e 3 **fatte e confermate da Pietro**, la 2 e la 3 provate sul suo Home Assistant («va tutto bene», 21/10). **Fase 4 in corso:** parte 1 **fatta da Pietro il 21/10 sera** ([sotto](#pubblicazione--fase-4)): CT 203 creato, dashboard pubblicata su `http://10.10.50.21`, aperta dal PC e dall'iPhone anche da fuori casa col tunnel. Sessione chiusa qui: restano gli utenti di HA e il token, poi il pannello sul Pi.
+**Aggiornato il 22 ottobre 2026.** Fasi 1, 2 e 3 **fatte e confermate da Pietro**, la 2 e la 3 provate sul suo Home Assistant («va tutto bene», 21/10). **Fase 4:** parte 1 **fatta da Pietro il 21/10 sera** ([sotto](#pubblicazione--fase-4)): CT 203 creato, dashboard pubblicata su `http://10.10.50.21`, aperta dal PC e dall'iPhone anche da fuori casa col tunnel. **Il 22/10** creati gli utenti «Pannello» (con il suo token) e «Filippo» ([sotto](#utenti-di-ha-fatti-il-2210)). Il pannello sul Pi è **rimandato**: Pietro non ha ancora lo schermo.
 
 Home Assistant resta il motore (integrazioni, automazioni, configurazione). La dashboard è solo l'interfaccia e parla con HA attraverso la API WebSocket ufficiale (`home-assistant-js-websocket`).
 
@@ -11,7 +11,7 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La d
 | Codice, copia principale con la cronologia | GitHub `PietroPT/Frontend-domotica`, branch `claude/ecstatic-archimedes-kwey31` (fase 3 chiusa al commit `006b57b`) |
 | Copia sul PC di Pietro, da cui gira | `C:\HA-Dashboard` (si aggiorna da sola a ogni avvio con `avvia.cmd`) |
 | Versione pubblicata (fase 4) | CT 203 `ha-dashboard` su pve1, `http://10.10.50.21`, nginx; si aggiorna con `C:\HA-Dashboard\pubblica.cmd` |
-| Copia dei sorgenti su Drive | questa cartella (`HA-Dashboard\`), **aggiornata alla chiusura del 21/10 sera** (stessa versione del branch su GitHub a quell'ora): stessa struttura del repository, senza `node_modules`, senza le skill `.claude\` e senza `package-lock.json` (lo rigenera `npm install`); questo file è `docs\LEGGIMI.md` del repository, la bozza di nota per Obsidian è in `vault\`. I file `.cmd` da usare sono quelli nella copia sul PC. Versioni sostituite in `ARCHIVIO_FILE_VECCHI\2026-10-21\ha-dashboard-fase-3\`, `…\ha-dashboard-fase-4\` e `…\chiusura-fase-4-parte-1\HA-Dashboard\` |
+| Copia dei sorgenti su Drive | questa cartella (`HA-Dashboard\`), **aggiornata alla chiusura del 22/10** (stessa versione del branch su GitHub a quell'ora; l'immagine della persona Pannello è in `icone\`): stessa struttura del repository, senza `node_modules`, senza le skill `.claude\` e senza `package-lock.json` (lo rigenera `npm install`); questo file è `docs\LEGGIMI.md` del repository, la bozza di nota per Obsidian è in `vault\`. I file `.cmd` da usare sono quelli nella copia sul PC. Versioni sostituite in `ARCHIVIO_FILE_VECCHI\2026-10-21\ha-dashboard-fase-3\`, `…\ha-dashboard-fase-4\`, `…\chiusura-fase-4-parte-1\HA-Dashboard\` e `2026-10-22\chiusura-utenti-ha\HA-Dashboard\` |
 | Profilo del prodotto (utenti, vincoli, regole) | `HA-Dashboard\PRODUCT.md` |
 | Sistema grafico (colori, caratteri, componenti) | `HA-Dashboard\DESIGN.md` (scritto alla fase 1) |
 | Mockup da aprire sul telefono, senza installare nulla | https://claude.ai/artifact/Svq8v6PsfBhMorj3WG1y6o (privato, dati finti della fase 1) |
@@ -25,11 +25,17 @@ Home Assistant resta il motore (integrazioni, automazioni, configurazione). La d
 | 1. Mockup | Interfaccia completa con dati finti | **fatta e confermata** il 21/10 |
 | 2. Collegamento | Login di HA (OAuth), aree ed entità, stati reali in tempo reale | **fatta e confermata** il 21/10, provata sull'HA di casa |
 | 3. Controlli | Comandi veri, grafici dalla cronologia, energia di oggi | **fatta e confermata** il 21/10, provata sull'HA di casa |
-| 4. Pubblicazione | Build statica su un LXC con nginx su Proxmox, pannello kiosk sul Pi | **in corso**: LXC e pubblicazione fatti e provati il 21/10; utenti, token e Pi da fare |
+| 4. Pubblicazione | Build statica su un LXC con nginx su Proxmox, pannello kiosk sul Pi | **in corso**: LXC e pubblicazione fatti e provati il 21/10; utenti e token fatti il 22/10; Pi rimandato (manca lo schermo) |
 
 ## Come si usa sul PC
 
-**Ogni volta:** doppio clic su `C:\HA-Dashboard\avvia.cmd`. Aggiorna il codice da GitHub, installa i pacchetti che mancano, avvia la dashboard e apre il browser su `http://localhost:5173`. La finestra nera va lasciata aperta; chiudendola la dashboard si ferma. Collegamento sul desktop: tasto destro su `avvia.cmd` → **Mostra altre opzioni** → **Invia a** → **Desktop (crea collegamento)**.
+**Per usarla tutti i giorni non serve `avvia.cmd`:** la dashboard è sempre accesa nel CT 203 (riparte con pve1) all'indirizzo **`http://10.10.50.21`**, da casa e dal tunnel. Per non scrivere l'indirizzo si installa come app (proposto il 22/10, non ancora fatto né provato; voci dei menu prese dalle guide ufficiali in inglese, quelle italiane non lette):
+- **Edge:** menu ⋯ → App → «Install this site as an app»; avvio all'accesso a Windows da `edge://apps` → Dettagli → «Auto-start on device login».
+- **Chrome:** menu ⋮ → «Cast, save, and share» → «Install page as app»; avvio all'accesso da `chrome://apps`, clic destro sull'app.
+- **iPhone (Safari):** Condividi → Aggiungi alla schermata Home (su iOS 26 Condividi sta nel menu ⋯).
+Il login si fa una volta per dispositivo. Oggi la dashboard ha solo `favicon.svg`: sull'iPhone l'icona sarebbe una miniatura o una lettera. Proposta a Pietro: un'icona dell'app nello stile del set (da decidere).
+
+**`avvia.cmd` serve solo per provare una modifica sul PC** prima di pubblicarla. Ogni volta: doppio clic su `C:\HA-Dashboard\avvia.cmd`. Aggiorna il codice da GitHub, installa i pacchetti che mancano, avvia la dashboard e apre il browser su `http://localhost:5173`. La finestra nera va lasciata aperta; chiudendola la dashboard si ferma. Collegamento sul desktop: tasto destro su `avvia.cmd` → **Mostra altre opzioni** → **Invia a** → **Desktop (crea collegamento)**.
 
 **Prima installazione (fatta il 21/10):** Node.js LTS e Git (`winget install OpenJS.NodeJS.LTS`, `winget install Git.Git`), poi in PowerShell `git clone https://github.com/PietroPT/Frontend-domotica.git C:\HA-Dashboard`, `cd C:\HA-Dashboard`, `git checkout claude/ecstatic-archimedes-kwey31`, `Copy-Item .env.example .env`, `npm.cmd install`, `npm.cmd run dev`. In PowerShell si usa `npm.cmd` e non `npm`, perché Windows blocca gli script `.ps1`: così non si cambiano le impostazioni di sicurezza.
 
@@ -85,12 +91,12 @@ Per gli aggiornamenti successivi basta il passo 8. Se una pubblicazione va male,
 
 **Per la «fase B» della scheda rete** (regole TRUSTED precise al posto di «TRUSTED → SERVERS»): la dashboard ha bisogno di `10.10.50.21` TCP 80 e di `10.10.50.10` TCP 8123.
 
-### Utenti di HA (da fare)
+### Utenti di HA (fatti il 22/10)
 
 Percorsi letti nelle traduzioni italiane dell'interfaccia di HA (2026.2, l'HA di prova): **Impostazioni → Persone → Aggiungi persona**, interruttore **Consenti l'accesso**, poi la finestra **Aggiungi utente** con nome, **Nome utente**, **Password**, **Conferma la password**, gli interruttori della rete locale («Solo locale» / «Solo accesso locale», *Può accedere solo dalla rete locale*) e **Amministratore**, pulsante **Crea**. Sull'HA di casa (più recente) le parole potrebbero differire di poco.
 
 - **Utente «Pannello»** (solo per il pannello a muro): nome utente `pannello`, **solo locale acceso, amministratore spento**. Password **forte e generata** dal password manager (voce «HA pannello»): nessuno deve ricordarla, serve solo per creare il token. Non amministratore perché il token vale quanto il suo utente: se qualcuno lo prendesse dal Pi, potrebbe comandare la casa ma non cambiare la configurazione, gli utenti o le integrazioni. HA crea anche una persona «Pannello» senza dispositivi: è normale.
-- **Token del pannello:** in una finestra anonima del browser del PC (**Ctrl+Maiusc+N**) aprire `http://10.10.50.10:8123`, entrare come `pannello`, cliccare il nome in basso a sinistra (Profilo) → scheda **Sicurezza** → **Token di accesso a lungo termine** → **Crea token** → nome «Pannello a muro» → copiare. HA lo mostra **una volta sola**: salvarlo subito nel password manager (voce «HA token pannello»), poi chiudere la finestra anonima. Vale 10 anni; si revoca dalla stessa schermata. Non va mai in chat, screenshot, Drive o repository.
+- **Token del pannello:** in una finestra anonima del browser del PC (**Ctrl+Maiusc+N**) aprire `http://10.10.50.10:8123`, entrare come `pannello`, cliccare il nome in basso a sinistra (Profilo) → scheda **Sicurezza** → **Token di accesso a lungo termine** → **Crea token** → nome «Pannello a muro» → copiare. HA lo mostra **una volta sola**: salvarlo subito nel password manager (nome effettivo della voce: sotto, «Fatto il 22/10»), poi chiudere la finestra anonima. Vale 10 anni; si revoca dalla stessa schermata. Non va mai in chat, screenshot, Drive o repository.
 - **Utente dell'altra persona:** il suo nome, **amministratore spento**, solo locale acceso. Password facile da ricordare e da scrivere sul telefono, purché non usata altrove: HA non è esposto su internet. Gli indirizzi del tunnel (`10.10.80.x`) sono di rete privata, quindi per HA dovrebbero contare come locali: da provare dal tunnel. Da non amministratore può usare tutta la dashboard, ma non rinominare (la dashboard lo dice).
 
 **Fatto il 22/10 sull'HA di casa (screenshot di Pietro):**
@@ -99,7 +105,7 @@ Percorsi letti nelle traduzioni italiane dell'interfaccia di HA (2026.2, l'HA di
 - Immagine della persona: `docs/icone/pannello.png` (256×256, 7 KB; sorgente `pannello.svg`), il pannello con le tessere della dashboard, stessi colori del tema scuro. Si carica dalla finestra della persona Pannello (Impostazioni → Persone → Pannello), riquadro dell'immagine sotto il nome, poi **Salva**.
 - Utente dell'altra persona creato da Pietro: **Filippo** (riferito, senza screenshot). Accesso dal tunnel con «Solo accesso locale» ancora da provare.
 - Prima, HA non si apriva dal PC: il traffico verso `10.10.50.10` passava da NordVPN (`NordLynx`, visto con `Find-NetRoute`); spenta la VPN, funziona. Terza volta dopo il 01/10 e il 15/10.
-- Aggiornamenti automatici di sicurezza attivati nel CT 203 il 22/10 (`unattended-upgrades` 2.12, prossimo controllo il 23/10 alle 06:11); log tolto anche dalle regole REMOTO di HA e HA-Dashboard, come le altre.
+- Aggiornamenti automatici di sicurezza attivati nel CT 203 il 22/10 (`unattended-upgrades` 2.12, prossimo controllo il 23/10 alle 06:11); log tolto anche dalle regole REMOTO di HA e HA-Dashboard, come le altre (screenshot dell'elenco con tutte le campanelle barrate; **Apply** non riferito).
 
 **Provato il 21/10 sull'HA di prova** con un utente non amministratore creato come sopra e la build servita da nginx con la stessa configurazione: token preso dall'indirizzo e tolto subito, mai presente nelle richieste a nginx; dopo una ricarica senza token resta collegato; stanze, cronologia, energia e telecamere funzionano; luce accesa davvero; rinomina rifiutata con «Solo un amministratore di Home Assistant può rinominare.»; Avanzate senza «Esci»; token sbagliato → messaggio dedicato e token dimenticato. Login normale dall'indirizzo servito da nginx: riuscito. Pubblicazione simulata due volte (scambio delle cartelle, `.old` conservata), cache e compressione controllate.
 
@@ -139,7 +145,7 @@ Effetto collaterale, prudente: una presa rinominata con «rack», «friggitrice�
 
 ## Prove eseguite
 
-- **Fase 4 sull'HA di prova:** vedi [Utenti di HA](#utenti-di-ha-da-fare).
+- **Fase 4 sull'HA di prova:** vedi [Utenti di HA](#utenti-di-ha-fatti-il-2210).
 - **Su un HA 2026.2.3 di prova** avviato nell'ambiente di sviluppo (integrazione `demo`, con `recorder` e `history`), con un browser automatico: login OAuth e ritorno, stati e telecamere dal vivo, ricarica senza login, uscita, rinomina e ritorno al nome originale, luce accesa davvero, cronologia in streaming, pagina Allarme.
 - **Nel mockup:** doppio tocco sulle automazioni, Cibo extra, energia ora per ora, conferma sul programma dei pasti, termostato a riposo e durante il trascinamento (tema chiaro e scuro).
 - **Da Pietro sull'HA di casa (21/10):** login, stanze, UPS, Rack, stampante, crocchette, telecamere, termostato, friggitrice senza «Accendi», Rack senza comandi, energia simile al pannello Energia di HA, grafici, Cibo extra che eroga. Esito riferito da Pietro.
@@ -150,13 +156,15 @@ Effetto collaterale, prudente: una presa rinominata con «rack», «friggitrice�
 - **Dispositivi:** provata a fondo solo sul PC (Windows, Chromium). Sull'iPhone (Safari) la dashboard si apre, anche dal tunnel (riferito da Pietro il 21/10), ma non è stata provata funzione per funzione. Non provati il tablet e il Pi 4 del pannello (fluidità, leggibilità a 2–3 m).
 - **`avvia.cmd`:** scritto e controllato nel formato, usato da Pietro, ma non provato da me su Windows.
 - **`pubblica.cmd`:** usato da Pietro con successo il 21/10. La versione con il blocco unico dopo `git pull` e il controllo di `.git` non è stata provata da me su Windows.
-- **CT 203:** inclusione nel backup notturno non verificata.
+- **CT 203:** inclusione nel backup notturno non verificata. Aggiornamenti automatici attivati (22/10), primo giro del 23/10 non controllato.
+- **Utenti del 22/10:** «Pannello» e token visti negli screenshot; utente di **Filippo** riferito da Pietro, non visto. Accesso di un utente «solo locale» dal tunnel (`10.10.80.x`) non provato. Il token non è ancora stato usato sull'HA di casa (manca il Pi).
+- **App installata dal browser** (Edge, Chrome, iPhone): solo proposta, voci italiane dei menu non verificate.
 - **Scelta di cosa sta nella Casa:** salvata solo nel browser di ogni dispositivo; da decidere se condividerla.
 - **Allarme:** solo segnaposto.
 
 ## Prossimo passo
 
-**Fase 4:** utente «Pannello» e token fatti il 22/10, utente di Filippo creato (da provare dal tunnel). La **parte 2** (pannello a muro sul Pi 4) è rimandata a quando Pietro avrà lo schermo.
+**Fase 4:** utente «Pannello» e token fatti il 22/10, utente di Filippo creato (da provare dal tunnel). La **parte 2** (pannello a muro sul Pi 4) è rimandata a quando Pietro avrà lo schermo. Intanto, se Pietro vuole: installare la dashboard come app sul PC e sugli iPhone (sopra, [Come si usa sul PC](#come-si-usa-sul-pc)) ed eventualmente l'icona dell'app.
 
 Poi, quando Pietro vorrà: configurazione dell'**Allarme**.
 
@@ -172,4 +180,4 @@ Poi, quando Pietro vorrà: configurazione dell'**Allarme**.
 
 ## Letti e non letti
 
-**Letti:** livello 1 (`00-INIZIA-DA-QUI`, `REGOLE`, `HANDOFF`), `FINE-SESSIONE` (riletto alla chiusura), `MAPPA-PROGETTO`, `piano-home-assistant.md`; per la fase 4 `scheda-rete.md` (VLAN, indirizzi, regole TRUSTED e REMOTO; aggiornata alla chiusura) e il `LEGGIMI.md` di Frigate (modello del CT). **Non letti:** scheda UPS, `STATO-ATTUALE.md`, scheda rack, archivio. **Vault Obsidian:** non accessibile da questa sessione → **allineamento parziale**, vedi l'handoff.
+**Letti:** livello 1 (`00-INIZIA-DA-QUI`, `REGOLE`, `HANDOFF`), `FINE-SESSIONE` (riletto alla chiusura), `MAPPA-PROGETTO`, `piano-home-assistant.md`; per la fase 4 `scheda-rete.md` (VLAN, indirizzi, regole TRUSTED e REMOTO; aggiornata alla chiusura) e il `LEGGIMI.md` di Frigate (modello del CT). **Non letti:** scheda UPS, `STATO-ATTUALE.md`, scheda rack, archivio. **22/10:** `FINE-SESSIONE` riletto alla chiusura, scheda rete (sezione CT 203); traduzioni inglesi dell'interfaccia di HA (finestra della persona, caricamento immagine) e guide ufficiali di Edge e Chrome (solo dai risultati di ricerca: le pagine non si aprivano). **Vault Obsidian:** non accessibile da questa sessione → **allineamento parziale**, vedi l'handoff.
