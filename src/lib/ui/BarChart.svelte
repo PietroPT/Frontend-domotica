@@ -1,7 +1,8 @@
 <script lang="ts">
   // Barre orarie (es. kWh per ora di oggi). L'ora in corso è evidenziata.
-  let { bars, color = 'var(--energia)', height = 160, label, format = (v: number) => v.toFixed(1) }:
-    { bars: { label: string; v: number; now?: boolean }[]; color?: string; height?: number; label: string; format?: (v: number) => string } = $props();
+  // every: un'etichetta ogni quante barre, contando dall'ultima (senza: una ogni 3, 4 sul telefono, dalla prima).
+  let { bars, color = 'var(--energia)', height = 160, label, format = (v: number) => v.toFixed(1), every }:
+    { bars: { label: string; v: number; now?: boolean }[]; color?: string; height?: number; label: string; format?: (v: number) => string; every?: number } = $props();
 
   let W = $state(600);
   const PADB = 22, PADT = 8, PADL = 36;
@@ -18,8 +19,8 @@
   {/each}
   {#each bars as b, i}
     {@const h = (b.v / hi) * (height - PADT - PADB)}
-    <rect x={PADL + i * bw + bw * 0.18} y={height - PADB - h} width={bw * 0.64} height={Math.max(h, 1.5)} rx={Math.min(4, bw * 0.3)} class:now={b.now} />
-    {#if i % (W < 500 ? 4 : 3) === 0}<text x={PADL + i * bw + bw / 2} y={height - 5} class="ax" text-anchor="middle">{b.label}</text>{/if}
+    <rect x={PADL + i * bw + bw * 0.18} y={height - PADB - h} width={bw * 0.64} height={Math.max(h, 1.5)} rx={Math.min(4, bw * 0.3)} class:now={b.now}><title>{b.label}: {format(b.v)}</title></rect>
+    {#if every ? (bars.length - 1 - i) % every === 0 : i % (W < 500 ? 4 : 3) === 0}<text x={PADL + i * bw + bw / 2} y={height - 5} class="ax" text-anchor="middle">{b.label}</text>{/if}
   {/each}
 </svg>
 </div>

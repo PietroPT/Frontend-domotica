@@ -17,6 +17,16 @@ export function kwh(v: number): string {
   return Number.isFinite(v) ? `${nf(v < 10 ? 2 : 1).format(v)} kWh` : '—';
 }
 
+const eur = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
+export function euro(v: number): string {
+  return Number.isFinite(v) ? eur.format(v) : '—';
+}
+
+/** Prezzo al kWh: da 2 a 4 decimali, come in bolletta. */
+export function perKwh(v: number): string {
+  return Number.isFinite(v) ? `${new Intl.NumberFormat('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(v)} €/kWh` : '—';
+}
+
 export function since(isoDate: string): string {
   const m = Math.round((Date.now() - new Date(isoDate).getTime()) / 60000);
   if (m < 1) return 'adesso';

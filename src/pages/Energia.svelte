@@ -9,6 +9,8 @@
   import LineChart from '../lib/ui/LineChart.svelte';
   import BarChart from '../lib/ui/BarChart.svelte';
   import Icon from '../lib/ui/Icon.svelte';
+  import CostiEnergia from '../lib/ui/CostiEnergia.svelte';
+  import AndamentoEnergia from '../lib/ui/AndamentoEnergia.svelte';
 
   const sensors = $derived(Object.values(hass.states).filter((s) => s.attributes.device_class === 'power'));
   const total = $derived(sensors.reduce((a, s) => a + (+s.state || 0), 0));
@@ -104,6 +106,9 @@
       <p class="empty">{energy ? 'Nessun consumo registrato oggi.' : 'Statistiche di Home Assistant non disponibili.'}</p>
     {/if}
   </section>
+
+  <CostiEnergia ids={sensors.map((s) => s.entity_id)} today={todayTotal} />
+  <AndamentoEnergia ids={sensors.map((s) => s.entity_id)} />
 </div>
 
 <style>
