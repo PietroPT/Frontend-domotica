@@ -1,6 +1,6 @@
 // Bollette di luce, gas, acqua e TARI, inserite a mano.
 // Stanno nell'archivio del CT 203 (deploy/bollette.py, /api/bollette): uguali su tutti i dispositivi,
-// conservate per anni. Leggere può chiunque sia entrato in HA, modificare solo un amministratore.
+// conservate per anni. Leggere e modificare può chiunque sia entrato in HA (scelta di Pietro, 22/10).
 // Nel mockup: alcune bollette di esempio, solo in memoria.
 
 import { hass } from './ha/hass.svelte';
@@ -121,8 +121,6 @@ const esempio = (): Bolletta[] => {
 
 class Archivio {
   list = $state<Bolletta[]>([]);
-  /** Chi è entrato può modificare (amministratore di HA). */
-  admin = $state(false);
   status = $state<'idle' | 'loading' | 'ready' | 'error'>('idle');
   error = $state('');
 
@@ -147,11 +145,9 @@ class Archivio {
     try {
       if (hass.demo) {
         if (!this.list.length) this.list = esempio();
-        this.admin = true;
       } else {
         const d = await this.call('GET', '');
         this.list = d.bollette ?? [];
-        this.admin = !!d.admin;
       }
       this.status = 'ready';
     } catch (e: any) {

@@ -13,7 +13,6 @@
   });
 
   let editing = $state<Bolletta | null | undefined>(undefined); // undefined = chiuso, null = nuova
-  const can = $derived(bollette.admin);
 
   const day = (d: string) => new Date(`${d}T12:00:00`).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
   const monthLabel = (k: string, year = true) =>
@@ -87,7 +86,7 @@
       <h2>Bollette</h2>
       <p class="sub2">Luce, gas, acqua e TARI, inserite a mano. Restano nel CT 203 per anni, uguali su tutti i dispositivi.</p>
     </div>
-    {#if can}<button class="add" onclick={() => (editing = null)}><Icon name="piu" size={20} />Aggiungi</button>{/if}
+    <button class="add" onclick={() => (editing = null)}><Icon name="piu" size={20} />Aggiungi</button>
   </header>
 
   {#if bollette.status === 'error'}
@@ -99,8 +98,7 @@
       <Icon name="bolletta" size={34} />
       <p><b>Nessuna bolletta ancora.</b></p>
       <p class="sub2">Per ognuna servono il periodo, il consumo (kWh per la luce, Smc per il gas, m³ per l'acqua) e l'importo totale: li trovi nella prima pagina della bolletta. Con due anni di bollette vedi anche il confronto con l'anno prima.</p>
-      {#if can}<button class="add" onclick={() => (editing = null)}><Icon name="piu" size={20} />Aggiungi la prima</button>
-      {:else}<p class="sub2">Le inserisce un amministratore di Home Assistant.</p>{/if}
+      <button class="add" onclick={() => (editing = null)}><Icon name="piu" size={20} />Aggiungi la prima</button>
     </section>
   {:else}
     {#if daPagare.length}
@@ -116,7 +114,7 @@
                   {#if !b.scadenza}Senza scadenza{:else if n < 0}Scaduta da {-n} {-n === 1 ? 'giorno' : 'giorni'} ({day(b.scadenza)}){:else if n === 0}Scade oggi{:else}Scade tra {n} {n === 1 ? 'giorno' : 'giorni'} ({day(b.scadenza)}){/if}
                 </small></span>
               <span class="right"><span class="amt num">{euro(b.importo)}</span>
-                {#if can}<button class="pay" disabled={paying === b.id} onclick={() => segnaPagata(b)}>Pagata</button>{/if}</span>
+                <button class="pay" disabled={paying === b.id} onclick={() => segnaPagata(b)}>Pagata</button></span>
             </li>
           {/each}
         </ul>
@@ -176,7 +174,7 @@
                 <small>{day(b.dal)} – {day(b.al)}{b.consumo ? ` · ${qty(b.consumo, b.tipo)}` : ''}{Number.isFinite(cu) ? ` · ${unitPrice(cu, b.tipo)}` : ''}{b.pagata ? '' : ' · da pagare'}</small>
                 {#if b.note}<small class="note">{b.note}</small>{/if}</span>
               <span class="amt num">{euro(b.importo)}</span>
-              {#if can}<button class="edit" onclick={() => (editing = b)} aria-label="Modifica la bolletta {TIPI[b.tipo].nome} {day(b.dal)} – {day(b.al)}"><Icon name="matita" size={18} /></button>{/if}
+              <button class="edit" onclick={() => (editing = b)} aria-label="Modifica la bolletta {TIPI[b.tipo].nome} {day(b.dal)} – {day(b.al)}"><Icon name="matita" size={18} /></button>
             </li>
           {/each}
         </ul>

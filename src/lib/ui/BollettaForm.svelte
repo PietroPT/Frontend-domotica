@@ -2,6 +2,7 @@
   // Inserimento e modifica di una bolletta, in un foglio. Campi nell'ordine della bolletta:
   // tipo, fornitore, periodo, consumo, importo, scadenza, pagata, note.
   import { bollette, costoUnitario, giorni, newId, ORDINE, TIPI, type Bolletta, type Tipo } from '../bollette.svelte';
+  import { hass } from '../ha/hass.svelte';
   import { setPrice } from '../ha/energy';
   import { euro, perKwh } from '../format';
   import Sheet from './Sheet.svelte';
@@ -112,7 +113,8 @@
       <p class="calc">
         {anteprima.n} giorni · circa {euro(anteprima.mese)} al mese{#if Number.isFinite(anteprima.unit)}{` · ${tipo === 'luce' ? perKwh(anteprima.unit) : `${euro(anteprima.unit)}/${u}`}`}{/if}
       </p>
-      {#if tipo === 'luce' && Number.isFinite(anteprima.unit)}
+      <!-- Il prezzo della sezione Costi lo cambia solo un amministratore (come in Costi). -->
+      {#if tipo === 'luce' && Number.isFinite(anteprima.unit) && hass.admin}
         <label class="check"><input type="checkbox" bind:checked={usaPrezzo} />Usa questo prezzo al kWh nella sezione Costi delle prese</label>
       {/if}
     {/if}

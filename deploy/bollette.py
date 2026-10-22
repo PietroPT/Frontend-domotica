@@ -5,8 +5,9 @@ Un file JSON in /var/lib/ha-dashboard/bollette.json; a ogni modifica la versione
 resta in /var/lib/ha-dashboard/storico/ (le ultime 100).
 
 Accesso: ogni richiesta porta il token di Home Assistant con cui la dashboard è entrata.
-Il servizio chiede a HA chi è (WebSocket, auth/current_user): leggere può chiunque abbia
-un accesso valido a HA; modificare solo un amministratore. Nessuna password qui.
+Il servizio chiede a HA chi è (WebSocket, auth/current_user): leggere e modificare può
+chiunque abbia un accesso valido a HA (scelta di Pietro, 22/10); ogni bolletta ricorda chi
+l'ha modificata per ultimo e lo storico conserva le versioni precedenti. Nessuna password qui.
 
 Ascolta solo su 127.0.0.1: da fuori ci si arriva attraverso nginx (/api/bollette).
 Avviato da systemd (deploy/ha-bollette.service), con utente proprio e senza privilegi.
@@ -55,7 +56,7 @@ def who(token: str) -> dict | None:
                 r = json.loads(ws.recv(timeout=5))
                 if r.get("success"):
                     u = r["result"]
-                    user = {"name": u.get("name") or "", "admin": bool(u.get("is_admin"))}
+                    user = {"name": u.get("name") or ""}
     except Exception as e:  # HA spento o non raggiungibile: nessun accesso, e lo si dice nel registro
         print(f"controllo dell'accesso non riuscito: {e}", file=sys.stderr, flush=True)
         return None
@@ -158,14 +159,11 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(raw)
         print(f"{self.command} {self.path.split('?')[0]} {code}", file=sys.stderr, flush=True)
 
-    def user(self, admin: bool) -> dict | None:
+    def user(self) -> dict | None:
         m = re.fullmatch(r"Bearer ([\w.\-]+)", self.headers.get("Authorization", ""))
         u = who(m.group(1)) if m else None
         if not u:
             self.reply(401, {"errore": "Accesso a Home Assistant non valido: entra di nuovo nella dashboard."})
-            return None
-        if admin and not u["admin"]:
-            self.reply(403, {"errore": "Solo un amministratore di Home Assistant può modificare le bollette."})
             return None
         return u
 
@@ -182,10 +180,9 @@ class Handler(BaseHTTPRequestHandler):
             return
         if t:
             return self.reply(405, {"errore": "si legge solo l'elenco completo"})
-        u = self.user(admin=False)
-        if u:
+        if self.user():
             with lock:
-                self.reply(200, {**load(), "admin": u["admin"]})
+                self.reply(200, load())
 
     def do_PUT(self):
         bid = self.target()
@@ -193,7 +190,7 @@ class Handler(BaseHTTPRequestHandler):
             if bid == "":
                 self.reply(405, {"errore": "serve l'id della bolletta"})
             return
-        u = self.user(admin=True)
+        u = self.user()
         if not u:
             return
         size = int(self.headers.get("Content-Length") or 0)
@@ -218,7 +215,7 @@ class Handler(BaseHTTPRequestHandler):
             if bid == "":
                 self.reply(405, {"errore": "serve l'id della bolletta"})
             return
-        if not self.user(admin=True):
+        if not self.user():
             return
         with lock:
             data = load()
