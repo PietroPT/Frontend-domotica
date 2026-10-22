@@ -9,6 +9,8 @@ export const ICONS = {
   termometro: "<path class=\"d\" d=\"M9.8 13.6V5.3a2.2 2.2 0 0 1 4.4 0v8.3a4.2 4.2 0 1 1-4.4 0z\"/><path d=\"M12 9.2v7\"/>",
   fiamma: "<path class=\"d\" d=\"M12 21c-3.6 0-6.3-2.6-6.3-6 0-2.7 1.7-4.6 3.2-6.2.2 1.5.9 2.6 2 3.1.2-3.4 1.8-6.4 4.4-8.4.4 3 2.1 4.9 3 6.8.5 1 .8 2.1.8 3.3C19.1 17.8 16 21 12 21z\"/><path d=\"M12 21c-1.5 0-2.6-1.1-2.6-2.6 0-1.6 1.3-2.6 2.6-4 1.3 1.4 2.6 2.4 2.6 4 0 1.5-1.1 2.6-2.6 2.6z\"/>",
   goccia: "<path class=\"d\" d=\"M12 3.5c3.1 3.7 5.6 6.7 5.6 10.1a5.6 5.6 0 0 1-11.2 0c0-3.4 2.5-6.4 5.6-10.1z\"/><path d=\"M9.3 14.2a2.8 2.8 0 0 0 2.4 2.6\" opacity=\".6\"/>",
+  rifiuti: "<path class=\"d\" d=\"M6 7.5h12l-.95 11.3a2 2 0 0 1-2 1.7h-6.1a2 2 0 0 1-2-1.7z\"/><path d=\"M4 7.5h16M9.5 7.5V5.3a1.3 1.3 0 0 1 1.3-1.3h2.4a1.3 1.3 0 0 1 1.3 1.3v2.2M10.2 11v6M13.8 11v6\"/>",
+  bolletta: "<path class=\"d\" d=\"M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4z\"/><path d=\"M9 8h6M9 11.5h6M9 15h3.5\"/>",
   energia: "<path class=\"d\" d=\"M13.4 2.8 5 13.6h6l-1 7.6 8.4-10.8h-6z\"/>",
   presa: "<rect class=\"d\" x=\"3.8\" y=\"3.8\" width=\"16.4\" height=\"16.4\" rx=\"4.2\"/><circle cx=\"12\" cy=\"12\" r=\"5.2\"/><circle cx=\"9.9\" cy=\"12\" r=\".9\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"14.1\" cy=\"12\" r=\".9\" fill=\"currentColor\" stroke=\"none\"/>",
   lavatrice: "<rect class=\"d\" x=\"4\" y=\"2.8\" width=\"16\" height=\"18.4\" rx=\"2.6\"/><path d=\"M4 7.3h16\"/><circle cx=\"7.2\" cy=\"5.1\" r=\".55\" fill=\"currentColor\"/><circle cx=\"9.5\" cy=\"5.1\" r=\".55\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"14\" r=\"4.4\"/><path d=\"M9.3 14.6c.9-.8 1.8-.8 2.7 0s1.8.8 2.7 0\"/>",

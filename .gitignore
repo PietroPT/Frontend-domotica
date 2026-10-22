@@ -31,3 +31,4 @@ dist-ssr
 # Prove e catture locali di impeccable
 .impeccable/review/
 .impeccable/build/
+__pycache__/

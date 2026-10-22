@@ -5,8 +5,10 @@
     { bars: { label: string; v: number; now?: boolean }[]; color?: string; height?: number; label: string; format?: (v: number) => string; every?: number } = $props();
 
   let W = $state(600);
-  const PADB = 22, PADT = 8, PADL = 36;
+  const PADB = 22, PADT = 8;
   const hi = $derived(Math.max(...bars.map((b) => b.v), 0.1) * 1.1);
+  // Spazio a sinistra quanto basta per l'etichetta più lunga dell'asse (es. «144 €»).
+  const PADL = $derived(Math.max(36, Math.max(...[0, hi / 2, hi].map((g) => format(g).length)) * 7 + 8));
   const bw = $derived((W - PADL) / bars.length);
 </script>
 

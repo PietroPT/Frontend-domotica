@@ -47,7 +47,9 @@ da lì va aggiunto anche quell'indirizzo a `cors_allowed_origins`.
 
 **Doppio clic su `pubblica.cmd`:** aggiorna il codice, fa la build e la copia via SSH sull'LXC
 indicato in `.env` alla riga `PUBBLICA_SU=root@…`; nginx la serve con `deploy/nginx-ha-dashboard.conf`.
-La versione precedente resta sull'LXC in `/var/www/ha-dashboard.old`. Passi completi, compresa la
+La versione precedente resta sull'LXC in `/var/www/ha-dashboard.old`. Nello stesso LXC gira
+l'archivio delle bollette (`deploy/bollette.py`, solo su 127.0.0.1, dietro nginx su `/api/`),
+installato e aggiornato da `deploy/installa.sh`: verifica ogni richiesta chiedendo a HA chi è. Passi completi, compresa la
 creazione dell'LXC, in `docs/LEGGIMI.md`.
 
 **Pannello a muro:** apre la dashboard con `#token=<token a lunga durata>` in fondo all'indirizzo,
@@ -61,7 +63,7 @@ contiene migliaia di file che Google Drive proverebbe a sincronizzare.
 ## Com'è fatta
 
 - **Svelte 5 + TypeScript + Vite.** Svelte aggiorna solo il numero che cambia (i consumi
-  arrivano ogni pochi secondi) e produce un pacchetto piccolo (≈53 KB compressi, libreria di connessione compresa): conta sul
+  arrivano ogni pochi secondi) e produce un pacchetto piccolo (≈67 KB compressi, libreria di connessione compresa): conta sul
   Raspberry Pi 4 del pannello.
 - `src/lib/ha/` — modello dei dati uguale a quello di Home Assistant (stati, aree, registro
   entità e dispositivi). `live.ts` lo riempie dalla connessione vera (login di HA,

@@ -11,6 +11,10 @@
   import Icon from '../lib/ui/Icon.svelte';
   import CostiEnergia from '../lib/ui/CostiEnergia.svelte';
   import AndamentoEnergia from '../lib/ui/AndamentoEnergia.svelte';
+  import Bollette from '../lib/ui/Bollette.svelte';
+
+  // Prese (misure dal vivo) o bollette (inserite a mano).
+  let vista = $state<'prese' | 'bollette'>('prese');
 
   const sensors = $derived(Object.values(hass.states).filter((s) => s.attributes.device_class === 'power'));
   const total = $derived(sensors.reduce((a, s) => a + (+s.state || 0), 0));
@@ -62,9 +66,19 @@
 </script>
 
 <header class="top">
-  <h1>Energia</h1>
-  <p class="sub">Prese con misura dei consumi</p>
+  <div>
+    <h1>Energia</h1>
+    <p class="sub">{vista === 'prese' ? 'Prese con misura dei consumi' : 'Luce, gas, acqua e TARI'}</p>
+  </div>
+  <div class="seg" role="tablist" aria-label="Vista">
+    <button role="tab" aria-selected={vista === 'prese'} class:sel={vista === 'prese'} onclick={() => (vista = 'prese')}>Prese</button>
+    <button role="tab" aria-selected={vista === 'bollette'} class:sel={vista === 'bollette'} onclick={() => (vista = 'bollette')}>Bollette</button>
+  </div>
 </header>
+
+{#if vista === 'bollette'}
+  <Bollette />
+{:else}
 
 <div class="layout">
   <section class="card now">
@@ -110,9 +124,13 @@
   <CostiEnergia ids={sensors.map((s) => s.entity_id)} today={todayTotal} />
   <AndamentoEnergia ids={sensors.map((s) => s.entity_id)} />
 </div>
+{/if}
 
 <style>
-  .top { margin-bottom: 20px; }
+  .top { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .seg { display: flex; background: var(--track); border-radius: 14px; padding: 4px; }
+  .seg button { min-height: 40px; padding: 0 16px; border: 0; border-radius: 10px; background: none; font-weight: 600; font-size: 15px; cursor: pointer; color: var(--ink-2); }
+  .seg button.sel { background: var(--raised); color: var(--ink); box-shadow: var(--shadow); }
   h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; }
   .sub { color: var(--ink-2); margin-top: 4px; font-size: 15px; }
   .sub2 { color: var(--ink-2); font-size: 13.5px; margin: 2px 0 12px; }

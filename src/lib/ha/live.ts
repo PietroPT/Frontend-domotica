@@ -75,6 +75,12 @@ export async function start() {
     conn = await createConnection({ auth });
     const c = conn;
     hass.ws = (msg) => c.sendMessagePromise(msg);
+    // Token per l'archivio delle bollette nel CT 203, che lo fa verificare a HA.
+    const a = auth;
+    hass.token = async () => {
+      if (a.expired) await a.refreshAccessToken();
+      return a.accessToken;
+    };
     hass.watchHistory = (key) => watchHistory(c, key);
     await loadRegistries(conn);
     const user = await getUser(conn);

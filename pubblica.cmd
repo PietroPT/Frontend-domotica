@@ -31,11 +31,11 @@ rem aggiornare questo stesso file senza che cmd riprenda a leggerlo da un punto 
   call npm.cmd run build || goto errore
 
   echo == Copio su %DEST%
-  ssh %DEST% "rm -rf /var/www/ha-dashboard.new" || goto errore
+  ssh %DEST% "rm -rf /var/www/ha-dashboard.new /root/ha-deploy && mkdir -p /root/ha-deploy" || goto errore
   scp -q -r dist %DEST%:/var/www/ha-dashboard.new || goto errore
-  scp -q deploy\nginx-ha-dashboard.conf %DEST%:/etc/nginx/sites-available/ha-dashboard || goto errore
-  rem Scambio della cartella solo se la configurazione di nginx e' valida; la versione precedente resta in ha-dashboard.old
-  ssh %DEST% "ln -sf ../sites-available/ha-dashboard /etc/nginx/sites-enabled/ha-dashboard && rm -f /etc/nginx/sites-enabled/default && nginx -t -q && rm -rf /var/www/ha-dashboard.old && { mv /var/www/ha-dashboard /var/www/ha-dashboard.old 2>/dev/null; mv /var/www/ha-dashboard.new /var/www/ha-dashboard; } && systemctl reload nginx" || goto errore
+  scp -q deploy\nginx-ha-dashboard.conf deploy\bollette.py deploy\ha-bollette.service deploy\installa.sh %DEST%:/root/ha-deploy/ || goto errore
+  rem installa.sh: archivio delle bollette, poi nginx; scambia la cartella solo se la configurazione e' valida (la precedente resta in ha-dashboard.old)
+  ssh %DEST% "bash /root/ha-deploy/installa.sh" || goto errore
 
   echo.
   echo Pubblicata. Ricarica la pagina della dashboard.

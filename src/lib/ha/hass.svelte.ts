@@ -33,6 +33,8 @@ class Hass {
   panel = $state(false);
   /** Invio di un messaggio a HA: lo imposta live.ts quando la connessione è aperta. */
   ws: ((msg: { type: string; [key: string]: unknown }) => Promise<unknown>) | null = null;
+  /** Token di accesso attuale (rinnovato se scaduto), per servizi che lo fanno verificare a HA. */
+  token: (() => Promise<string>) | null = null;
   /** Avviso breve mostrato in basso (es. comando non inviato). */
   notice = $state('');
   /** Telecamere con l'immagine più alta che larga (la misura arriva col primo fotogramma). */

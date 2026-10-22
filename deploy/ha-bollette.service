@@ -1,0 +1,25 @@
+# Archivio delle bollette della HA-Dashboard (deploy/bollette.py), nel CT 203.
+# Lo installa deploy/installa.sh a ogni pubblicazione.
+[Unit]
+Description=HA-Dashboard, archivio delle bollette
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=bollette
+Group=bollette
+ExecStart=/usr/bin/python3 /opt/ha-bollette/bollette.py
+Environment=HA_WS=ws://10.10.50.10:8123/api/websocket
+# /var/lib/ha-dashboard, di proprietà dell'utente bollette: l'unico posto dove può scrivere.
+StateDirectory=ha-dashboard
+StateDirectoryMode=0700
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+MemoryMax=64M
+
+[Install]
+WantedBy=multi-user.target
