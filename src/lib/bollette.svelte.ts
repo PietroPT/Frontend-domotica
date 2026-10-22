@@ -93,6 +93,47 @@ export function sposta(mese: string, n: number): string {
   return meseDi(new Date(y, m - 1 + n, 1).getTime());
 }
 
+/** La stessa bolletta: stesso tipo, stesso periodo, stesso importo al centesimo. */
+export const chiave = (b: Pick<Bolletta, 'tipo' | 'dal' | 'al' | 'importo'>) => `${b.tipo}|${b.dal}|${b.al}|${Math.round(b.importo * 100)}`;
+
+export interface DaImportare { b: Bolletta; stato: 'nuova' | 'presente' | 'errata'; motivo: string }
+
+const DATA = /^\d{4}-\d{2}-\d{2}$/;
+const numero = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0;
+function errore(x: any): string {
+  if (!x || typeof x !== 'object') return 'non è una bolletta';
+  if (!ORDINE.includes(x.tipo)) return 'tipo sconosciuto';
+  if (!DATA.test(x.dal ?? '') || !DATA.test(x.al ?? '')) return 'manca il periodo';
+  if (x.al < x.dal) return "la fine viene prima dell'inizio";
+  if (!numero(x.importo)) return "manca l'importo";
+  if (x.consumo != null && !numero(x.consumo)) return 'consumo non valido';
+  if (x.scadenza && !DATA.test(x.scadenza)) return 'scadenza non valida';
+  return '';
+}
+
+/** Legge un file di bollette: lo stesso formato dell'archivio ({ bollette: [...] }) o solo l'elenco.
+ *  Per ognuna dice se è nuova, già presente (nell'archivio o prima nel file) o non valida.
+ *  Gli id del file non contano: ogni bolletta nuova ne riceve uno. */
+export function leggiImport(testo: string, presenti: Bolletta[]): DaImportare[] {
+  let dati: any;
+  try { dati = JSON.parse(testo); } catch { throw new Error('il file non è un elenco di bollette (serve un file .json)'); }
+  const elenco = Array.isArray(dati) ? dati : dati?.bollette;
+  if (!Array.isArray(elenco)) throw new Error('nel file non c\'è un elenco di bollette');
+  const viste = new Set(presenti.map(chiave));
+  return elenco.map((x: any) => {
+    const motivo = errore(x);
+    const b: Bolletta = motivo ? x : {
+      id: newId(), tipo: x.tipo, fornitore: String(x.fornitore ?? '').trim().slice(0, 80), dal: x.dal, al: x.al,
+      consumo: x.tipo === 'tari' ? null : x.consumo ?? null, importo: x.importo, scadenza: x.scadenza || null,
+      pagata: !!x.pagata, note: String(x.note ?? '').trim().slice(0, 500),
+    };
+    if (motivo) return { b, stato: 'errata', motivo };
+    if (viste.has(chiave(b))) return { b, stato: 'presente', motivo: 'già presente' };
+    viste.add(chiave(b));
+    return { b, stato: 'nuova', motivo: '' };
+  });
+}
+
 const esempio = (): Bolletta[] => {
   const out: Bolletta[] = [];
   const y = new Date().getFullYear();

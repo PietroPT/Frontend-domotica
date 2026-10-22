@@ -44,6 +44,7 @@ export const ICONS = {
   frecciagiu: "<path d=\"M6.5 9 12 14.5 17.5 9\"/>",
   piu: "<path d=\"M12 5.5v13M5.5 12h13\"/>",
   meno: "<path d=\"M5.5 12h13\"/>",
+  importa: "<path class=\"d\" d=\"M3.8 14.2h4.4l1.6 2.4h4.4l1.6-2.4h4.4v4.6a1.6 1.6 0 0 1-1.6 1.6H5.4a1.6 1.6 0 0 1-1.6-1.6z\"/><path d=\"M12 3.6v9.2M8.4 9.4 12 13l3.6-3.6\"/>",
   cerca: "<circle class=\"d\" cx=\"10.6\" cy=\"10.6\" r=\"6.2\"/><path d=\"M15.2 15.2l5 5\"/>",
   orologio: "<circle class=\"d\" cx=\"12\" cy=\"12\" r=\"8.6\"/><path d=\"M12 7.4V12l3.2 2\"/>",
   stella: "<path class=\"d\" d=\"M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.5l-5.1 2.7 1-5.6-4.1-4 5.7-.8z\"/>",

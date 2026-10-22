@@ -7,12 +7,19 @@
   import BarChart from './BarChart.svelte';
   import BollettaForm from './BollettaForm.svelte';
   import Icon from './Icon.svelte';
+  import ImportaBollette from './ImportaBollette.svelte';
 
   $effect(() => {
     if (hass.status === 'ready' && bollette.status === 'idle') bollette.load();
   });
 
   let editing = $state<Bolletta | null | undefined>(undefined); // undefined = chiuso, null = nuova
+  let fileInput = $state<HTMLInputElement>();
+  let importing = $state<File | null>(null);
+  function scelto(e: Event & { currentTarget: HTMLInputElement }) {
+    importing = e.currentTarget.files?.[0] ?? null;
+    e.currentTarget.value = ''; // così lo stesso file si può scegliere di nuovo
+  }
 
   const day = (d: string) => new Date(`${d}T12:00:00`).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
   const monthLabel = (k: string, year = true) =>
@@ -84,9 +91,13 @@
   <header class="bh">
     <div>
       <h2>Bollette</h2>
-      <p class="sub2">Luce, gas, acqua e TARI, inserite a mano. Restano nel CT 203 per anni, uguali su tutti i dispositivi.</p>
+      <p class="sub2">Luce, gas, acqua e TARI, inserite a mano o importate da un file. Restano nel CT 203 per anni, uguali su tutti i dispositivi.</p>
     </div>
-    <button class="add" onclick={() => (editing = null)}><Icon name="piu" size={20} />Aggiungi</button>
+    <div class="acts">
+      <button class="imp" disabled={bollette.status !== 'ready'} onclick={() => fileInput?.click()}><Icon name="importa" size={20} />Importa</button>
+      <button class="add" onclick={() => (editing = null)}><Icon name="piu" size={20} />Aggiungi</button>
+    </div>
+    <input type="file" accept=".json,application/json" hidden bind:this={fileInput} onchange={scelto} />
   </header>
 
   {#if bollette.status === 'error'}
@@ -98,7 +109,10 @@
       <Icon name="bolletta" size={34} />
       <p><b>Nessuna bolletta ancora.</b></p>
       <p class="sub2">Per ognuna servono il periodo, il consumo (kWh per la luce, Smc per il gas, m³ per l'acqua) e l'importo totale: li trovi nella prima pagina della bolletta. Con due anni di bollette vedi anche il confronto con l'anno prima.</p>
-      <button class="add" onclick={() => (editing = null)}><Icon name="piu" size={20} />Aggiungi la prima</button>
+      <div class="acts">
+        <button class="add" onclick={() => (editing = null)}><Icon name="piu" size={20} />Aggiungi la prima</button>
+        <button class="imp" onclick={() => fileInput?.click()}><Icon name="importa" size={20} />Importa un file</button>
+      </div>
     </section>
   {:else}
     {#if daPagare.length}
@@ -184,10 +198,14 @@
 </div>
 
 {#if editing !== undefined}<BollettaForm bolletta={editing} onclose={() => (editing = undefined)} />{/if}
+{#if importing}<ImportaBollette file={importing} onclose={() => (importing = null)} />{/if}
 
 <style>
   .bollette { display: grid; gap: 16px; }
-  .bh { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .bh { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .acts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .imp { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px 0 12px; border: 0; border-radius: 22px; background: var(--track); color: var(--ink); font-weight: 600; font-size: 15px; cursor: pointer; }
+  .imp:disabled { opacity: 0.5; cursor: default; }
   h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
   h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
   .sub2 { color: var(--ink-2); font-size: 13.5px; margin-top: 3px; line-height: 1.45; }
