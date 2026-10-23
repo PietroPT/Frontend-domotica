@@ -58,7 +58,7 @@ export const ICONS = {
   automatico: "<circle cx=\"12\" cy=\"12\" r=\"8.6\"/><path d=\"M12 3.4a8.6 8.6 0 0 1 0 17.2z\" fill=\"currentColor\" stroke=\"none\"/>",
   riavvio: "<circle class=\"d\" cx=\"12\" cy=\"12\" r=\"3.2\"/><path d=\"M19.6 12a7.6 7.6 0 1 1-2.25-5.4\"/><path d=\"M17.8 3.2v3.6h-3.6\"/>",
   // Spese in comune: due monete, quella davanti con l'euro.
-  spese: "<path d=\"M8.47 8.47A6.2 6.2 0 1 1 15.53 15.53\"/><circle class=\"d\" cx=\"9.4\" cy=\"14.6\" r=\"6.2\"/><path d=\"M11.5 12.4a2.9 2.9 0 1 0 0 4.4M6.6 13.9h3.4M6.6 15.4h3.4\"/>",
+  spese: "<path d=\"M8.47 8.47A6.2 6.2 0 1 1 15.53 15.53\"/><circle class=\"d\" cx=\"9.4\" cy=\"14.6\" r=\"6.2\"/><path d=\"M11.7 12.3a2.8 2.8 0 1 0 0 4.6M6 13.9h4.2M6 15.3h4.2\"/>",
   scambia: "<path d=\"M4.5 8.5h13.5M14.6 5.1 18 8.5l-3.4 3.4M19.5 15.5H6M9.4 12.1 6 15.5l3.4 3.4\"/>",
   esporta: "<path class=\"d\" d=\"M3.8 14.2h4.4l1.6 2.4h4.4l1.6-2.4h4.4v4.6a1.6 1.6 0 0 1-1.6 1.6H5.4a1.6 1.6 0 0 1-1.6-1.6z\"/><path d=\"M12 12.8V3.6M8.4 7.2 12 3.6l3.6 3.6\"/>",
   carrello: "<path class=\"d\" d=\"M6.4 7.2h13.8l-1.5 6.9a1.6 1.6 0 0 1-1.56 1.26H9.05a1.6 1.6 0 0 1-1.57-1.3z\"/><path d=\"M3.4 4.4h2.1l2 10.9\"/><circle cx=\"9.6\" cy=\"19.2\" r=\"1.3\"/><circle cx=\"16.6\" cy=\"19.2\" r=\"1.3\"/>",

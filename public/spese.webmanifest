@@ -1,0 +1,18 @@
+{
+  "id": "./?app=spese",
+  "name": "Spese",
+  "short_name": "Spese",
+  "description": "Spese in comune fra Pietro e Filippo",
+  "lang": "it",
+  "start_url": "./#/spese",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#100d1f",
+  "theme_color": "#100d1f",
+  "icons": [
+    { "src": "icone/spese-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icone/spese-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icone/spese-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icone/spese.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

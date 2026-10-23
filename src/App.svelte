@@ -36,6 +36,18 @@
   // Avanzate senza sblocco (es. indirizzo digitato a mano) torna alla Casa.
   $effect(() => { if (app.page === 'avanzate' && !app.unlocked) app.go('casa'); });
   $effect(() => { app.page; scrollTo({ top: 0 }); });
+
+  // Sulla pagina Spese: icona, nome e manifest delle Spese, così salvandola sulla schermata Home
+  // (iPhone: Condividi → Aggiungi alla schermata Home; Chrome/Edge: Installa) nasce l'app «Spese».
+  $effect(() => {
+    const spese = app.page === 'spese';
+    const set = (id: string, attr: string, v: string) => document.getElementById(id)?.setAttribute(attr, v);
+    set('ico', 'href', spese ? './icone/spese.svg' : './favicon.svg');
+    set('ico-apple', 'href', spese ? './icone/spese-180.png' : './icone/casa-180.png');
+    set('manifest', 'href', spese ? './spese.webmanifest' : './manifest.webmanifest');
+    set('titolo-app', 'content', spese ? 'Spese' : 'Casa');
+    document.title = spese ? 'Spese' : 'Casa';
+  });
 </script>
 
 {#if hass.status !== 'ready'}

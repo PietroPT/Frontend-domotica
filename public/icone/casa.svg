@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Icona dell'app «Casa» (scelta di Pietro, 23/10, proposta A «stanza accesa»): la casetta del set
+       di icone, di vetro sul fondo del tema scuro, con la porta illuminata d'ambra. Griglia 24 ×13.
+       A tutto quadrato e con il disegno dentro l'80% centrale: va bene anche come icona «maskable». -->
+  <defs>
+    <radialGradient id="muro" cx="0" cy="0" r="1.3">
+      <stop offset="0" stop-color="#3a2d6b"/>
+      <stop offset=".6" stop-color="#1c1838"/>
+      <stop offset="1" stop-color="#10243f"/>
+    </radialGradient>
+    <radialGradient id="luce" cx="256" cy="340" r="170" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffaa1f" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#ffaa1f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#muro)"/>
+  <circle cx="256" cy="340" r="170" fill="url(#luce)"/>
+  <g transform="translate(100 103) scale(13)" stroke="#f5f5f7" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M4 10.4 12 4l8 6.4V19a1.5 1.5 0 0 1-1.5 1.5H15v-5.2a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5.2H5.5A1.5 1.5 0 0 1 4 19z" fill="#f5f5f7" fill-opacity=".12"/>
+    <rect x="10" y="14.3" width="4" height="6.2" rx="1" fill="#ffaa1f" stroke="none"/>
+  </g>
+</svg>

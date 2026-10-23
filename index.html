@@ -2,12 +2,18 @@
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Icone dell'app (23/10). Sulla pagina Spese App.svelte le cambia con quelle delle Spese,
+         così «Aggiungi alla schermata Home» da lì crea un'icona «Spese» che apre direttamente le spese. -->
+    <link id="ico" rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link id="ico-apple" rel="apple-touch-icon" href="./icone/casa-180.png" />
+    <link id="manifest" rel="manifest" href="./manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Casa</title>
     <meta name="theme-color" content="#100d1f" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#eef0f6" media="(prefers-color-scheme: light)" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta id="titolo-app" name="apple-mobile-web-app-title" content="Casa" />
   </head>
   <body>
     <div id="app"></div>
