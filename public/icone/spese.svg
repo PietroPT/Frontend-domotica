@@ -1,23 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <!-- Icona della sezione Spese salvata sulla schermata Home (23/10): gemella di casa.svg, stesso fondo,
-       le due monete del set di icone con quella davanti nell'indaco delle Spese. Griglia 24 ×13. -->
+  <!-- Icona della sezione Spese salvata sulla schermata Home (scelta di Pietro, 23/10, «moneta sola»):
+       gemella di casa.svg, stesso fondo, una moneta indaco con l'euro al centro. Griglia 24 ×13. -->
   <defs>
     <radialGradient id="muro" cx="0" cy="0" r="1.3">
       <stop offset="0" stop-color="#3a2d6b"/>
       <stop offset=".6" stop-color="#1c1838"/>
       <stop offset="1" stop-color="#10243f"/>
     </radialGradient>
-    <radialGradient id="luce" cx="236" cy="300" r="190" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#7d7aff" stop-opacity=".55"/>
+    <radialGradient id="luce" cx="256" cy="270" r="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7d7aff" stop-opacity=".5"/>
       <stop offset="1" stop-color="#7d7aff" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="512" height="512" fill="url(#muro)"/>
-  <circle cx="236" cy="300" r="190" fill="url(#luce)"/>
-  <g transform="translate(100 100) scale(13)" stroke="#f5f5f7" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" fill="none">
-    <circle cx="14.6" cy="9.4" r="6.2" fill="#f5f5f7" fill-opacity=".12" stroke="none"/>
-    <path d="M8.47 8.47A6.2 6.2 0 1 1 15.53 15.53"/>
-    <circle cx="9.4" cy="14.6" r="6.2" fill="#7d7aff"/>
-    <path d="M11.7 12.3a2.8 2.8 0 1 0 0 4.6M6 13.9h4.2M6 15.3h4.2" stroke="#fff" stroke-width="1.3"/>
+  <circle cx="256" cy="270" r="200" fill="url(#luce)"/>
+  <circle cx="256" cy="256" r="146" fill="#7d7aff" stroke="#f5f5f7" stroke-width="19"/>
+  <g transform="translate(111 100) scale(13)" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round">
+    <path d="M15.7 8.3a4.8 4.8 0 1 0 0 7.4M6.6 10.8h6M6.6 13.2h6"/>
   </g>
 </svg>
