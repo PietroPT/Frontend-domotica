@@ -9,6 +9,7 @@
   import Telecamere from './pages/Telecamere.svelte';
   import Avanzate from './pages/Avanzate.svelte';
   import Allarme from './pages/Allarme.svelte';
+  import Spese from './pages/Spese.svelte';
   import LuceSheet from './sheets/LuceSheet.svelte';
   import PresaSheet from './sheets/PresaSheet.svelte';
   import TelecameraSheet from './sheets/TelecameraSheet.svelte';
@@ -20,6 +21,7 @@
   const tabs: [Page, string, IconName][] = [
     ['casa', 'Casa', 'casa'], ['luci', 'Luci', 'luce'], ['clima', 'Clima', 'termostato'],
     ['energia', 'Energia', 'energia'], ['telecamere', 'Telecamere', 'telecamera'], ['allarme', 'Allarme', 'allarme'],
+    ['spese', 'Spese', 'spese'],
   ];
 
   // Tema: automatico segue il sistema; chiaro e scuro lo forzano.
@@ -42,7 +44,7 @@
 <div class="shell">
   <nav class="tabs" aria-label="Sezioni">
     {#each tabs as [page, label, icon]}
-      <a href="#/{page}" class:on={app.page === page} aria-current={app.page === page ? 'page' : undefined}>
+      <a href="#/{page}" class:on={app.page === page} class:spese={page === 'spese'} aria-current={app.page === page ? 'page' : undefined}>
         <Icon name={icon} size={26} /><span>{label}</span>
       </a>
     {/each}
@@ -60,6 +62,7 @@
     {:else if app.page === 'energia'}<Energia />
     {:else if app.page === 'telecamere'}<Telecamere />
     {:else if app.page === 'allarme'}<Allarme />
+    {:else if app.page === 'spese'}<Spese />
     {:else if app.page === 'avanzate'}<Avanzate />{/if}
   </main>
 </div>
@@ -100,6 +103,12 @@
   .tabs a.on { color: var(--energia); }
   .tabs a.on :global(.d) { fill-opacity: 0.3; }
   .tabs a.adv.on { color: var(--rack); }
+  .tabs a.spese.on { color: var(--spese); }
+  /* Sette voci su un telefono stretto: etichette un filo più piccole, così «Telecamere» non tocca la vicina. */
+  @media (max-width: 440px) {
+    .tabs { padding-left: 0; padding-right: 0; }
+    .tabs a { min-width: 0; font-size: 10.5px; letter-spacing: -0.02em; }
+  }
 
   .toast { position: fixed; z-index: 60; left: 0; right: 0; bottom: calc(88px + env(safe-area-inset-bottom)); display: grid; justify-items: center; padding: 0 16px; pointer-events: none; }
   .toast p { max-width: 480px; padding: 12px 18px; border-radius: 16px; background: var(--ink); color: var(--bg); font-size: 14.5px; font-weight: 600; box-shadow: var(--shadow); }

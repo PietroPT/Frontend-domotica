@@ -48,7 +48,7 @@ da lì va aggiunto anche quell'indirizzo a `cors_allowed_origins`.
 **Doppio clic su `pubblica.cmd`:** aggiorna il codice, fa la build e la copia via SSH sull'LXC
 indicato in `.env` alla riga `PUBBLICA_SU=root@…`; nginx la serve con `deploy/nginx-ha-dashboard.conf`.
 La versione precedente resta sull'LXC in `/var/www/ha-dashboard.old`. Nello stesso LXC gira
-l'archivio delle bollette (`deploy/bollette.py`, solo su 127.0.0.1, dietro nginx su `/api/`),
+l'archivio delle bollette e delle spese (`deploy/bollette.py`, solo su 127.0.0.1, dietro nginx su `/api/`),
 installato e aggiornato da `deploy/installa.sh`: verifica ogni richiesta chiedendo a HA chi è. Passi completi, compresa la
 creazione dell'LXC, in `docs/LEGGIMI.md`.
 
@@ -75,6 +75,7 @@ contiene migliaia di file che Google Drive proverebbe a sincronizzare.
   Si riconoscono dal nome (entità, nome visibile o dispositivo), così sopravvivono a una
   rinomina in HA.
 - `src/lib/icons.ts` — set di icone disegnato su misura (griglia 24, tratto 1,75, duotono).
+- `src/lib/spese.svelte.ts` — spese in comune fra Pietro e Filippo (come Splitwise): divisione in centesimi, saldo, archivio nel CT 203 (`/api/spese`).
 - `src/pages/` le sezioni, `src/sheets/` i fogli di dettaglio, `src/lib/ui/` i controlli
   (slider luminosità, quadrante termostato, scorri-per-sbloccare, grafici).
 

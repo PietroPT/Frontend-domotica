@@ -8,6 +8,7 @@ colors:
   energia-blue: "#0a7cff"
   sicurezza-violet: "#a64fe0"
   rack-teal: "#1ba3b8"
+  spese-indigo: "#5e5ce6"
   pericolo-red: "#ff3b30"
   ok-green: "#2fb35a"
   luci-amber-dark: "#ffaa1f"
@@ -15,6 +16,7 @@ colors:
   energia-blue-dark: "#2e8fff"
   sicurezza-violet-dark: "#bf6cf5"
   rack-teal-dark: "#2cc0d6"
+  spese-indigo-dark: "#7d7aff"
   ground-day: "#eef0f6"
   ground-night: "#100d1f"
   tile-day: "rgba(255, 255, 255, 0.62)"
@@ -208,6 +210,7 @@ A neutral glass world where saturated colour means "this category is active".
 - **Lamp Amber** (luci-amber / luci-amber-dark): lights. Fills the icon disc of a lit light tile (its glyph is the dark `--on-luci` #3b2600, because white on amber stays under 3:1; every other category disc carries a white glyph), the brightness pill gradient, the selected colour-temperature ring, and warning notices (tinted 16% into the raised surface).
 - **Leaf Green** (clima-green / clima-green-dark): climate. Thermostat tiles, the Clima summary chip, and the dial arc when the target is reached.
 - **Signal Violet** (sicurezza-violet / sicurezza-violet-dark): security. The Sicurezza chip and the camera "Movimento" badge.
+- **Ledger Indigo** (spese-indigo / spese-indigo-dark, `--spese`): shared expenses (Spese, added 23/10). The active Spese tab, the balance readout and disc, expense category discs (tinted 16% at rest), the add-expense button and selected category chip. Money owed is Ember Orange text and money lent is OK Green text, always with the words «devi» / «hai prestato».
 
 ### Tertiary
 - **Rack Teal** (rack-teal / rack-teal-dark): infrastructure. Avanzate only: the rack and UPS icon discs, the active Avanzate rail item, and the slide-to-unlock knob and fill.

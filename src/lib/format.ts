@@ -22,6 +22,13 @@ export function euro(v: number): string {
   return Number.isFinite(v) ? eur.format(v) : '—';
 }
 
+/** Numero scritto all'italiana: «1.234,56» e «148,30»; anche «148.30» se manca la virgola. Vuoto = null. */
+export function parseNum(s: string): number | null {
+  const t = s.replace(/[€%\s]/g, '');
+  if (!t) return null;
+  return Number(t.includes(',') ? t.replace(/\./g, '').replace(',', '.') : t);
+}
+
 /** Prezzo al kWh: da 2 a 4 decimali, come in bolletta. */
 export function perKwh(v: number): string {
   return Number.isFinite(v) ? `${new Intl.NumberFormat('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(v)} €/kWh` : '—';

@@ -26,6 +26,7 @@
   --energia: #0a7cff;
   --sicurezza: #a64fe0;
   --rack: #1ba3b8;
+  --spese: #5e5ce6;
   --pericolo: #ff3b30;
   --ok: #2fb35a;
 
@@ -57,6 +58,7 @@
   --energia: #2e8fff;
   --sicurezza: #bf6cf5;
   --rack: #2cc0d6;
+  --spese: #7d7aff;
   --shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 10px 24px -12px rgba(0, 0, 0, 0.7);
   --shadow-lift: 0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 50px -18px rgba(0, 0, 0, 0.8);
   color-scheme: dark;

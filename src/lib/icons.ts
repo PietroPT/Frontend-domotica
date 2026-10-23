@@ -57,7 +57,20 @@ export const ICONS = {
   batteria: "<rect class=\"d\" x=\"2.8\" y=\"6.8\" width=\"16.4\" height=\"10.4\" rx=\"2.6\"/><path d=\"M21.2 10.3v3.4\"/><rect x=\"5.4\" y=\"9.4\" width=\"10\" height=\"5.2\" rx=\"1\" fill=\"currentColor\" stroke=\"none\" opacity=\".85\"/>",
   automatico: "<circle cx=\"12\" cy=\"12\" r=\"8.6\"/><path d=\"M12 3.4a8.6 8.6 0 0 1 0 17.2z\" fill=\"currentColor\" stroke=\"none\"/>",
   riavvio: "<circle class=\"d\" cx=\"12\" cy=\"12\" r=\"3.2\"/><path d=\"M19.6 12a7.6 7.6 0 1 1-2.25-5.4\"/><path d=\"M17.8 3.2v3.6h-3.6\"/>",
-  notifica: "<path class=\"d\" d=\"M5.8 16.6V11a6.2 6.2 0 0 1 12.4 0v5.6l1.6 2.1H4.2z\"/><path d=\"M10 20.6a2.1 2.1 0 0 0 4 0\"/><path d=\"M12 2.8v1.4\"/>",
+  // Spese in comune: due monete, quella davanti con l'euro.
+  spese: "<path d=\"M8.47 8.47A6.2 6.2 0 1 1 15.53 15.53\"/><circle class=\"d\" cx=\"9.4\" cy=\"14.6\" r=\"6.2\"/><path d=\"M11.5 12.4a2.9 2.9 0 1 0 0 4.4M6.6 13.9h3.4M6.6 15.4h3.4\"/>",
+  scambia: "<path d=\"M4.5 8.5h13.5M14.6 5.1 18 8.5l-3.4 3.4M19.5 15.5H6M9.4 12.1 6 15.5l3.4 3.4\"/>",
+  esporta: "<path class=\"d\" d=\"M3.8 14.2h4.4l1.6 2.4h4.4l1.6-2.4h4.4v4.6a1.6 1.6 0 0 1-1.6 1.6H5.4a1.6 1.6 0 0 1-1.6-1.6z\"/><path d=\"M12 12.8V3.6M8.4 7.2 12 3.6l3.6 3.6\"/>",
+  carrello: "<path class=\"d\" d=\"M6.4 7.2h13.8l-1.5 6.9a1.6 1.6 0 0 1-1.56 1.26H9.05a1.6 1.6 0 0 1-1.57-1.3z\"/><path d=\"M3.4 4.4h2.1l2 10.9\"/><circle cx=\"9.6\" cy=\"19.2\" r=\"1.3\"/><circle cx=\"16.6\" cy=\"19.2\" r=\"1.3\"/>",
+  ristorante: "<path d=\"M7.4 3.5v5.2a2 2 0 0 0 4 0V3.5M9.4 3.5v17\"/><path class=\"d\" d=\"M16.6 13.5h-3v-3.3c0-3.2 1-5.7 3-6.6z\"/><path d=\"M16.6 3.6v16.9\"/>",
+  auto: "<path class=\"d\" d=\"M4 15.6v-3.2l1.7-4.5a2 2 0 0 1 1.9-1.3h8.8a2 2 0 0 1 1.9 1.3L20 12.4v3.2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z\"/><path d=\"M4.4 12.2h15.2M6.5 16.6v2M17.5 16.6v2\"/><circle cx=\"7.6\" cy=\"14.3\" r=\".9\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"16.4\" cy=\"14.3\" r=\".9\" fill=\"currentColor\" stroke=\"none\"/>",
+  valigia: "<rect class=\"d\" x=\"4\" y=\"7.5\" width=\"16\" height=\"12\" rx=\"2.4\"/><path d=\"M9 7.5V5.4A1.4 1.4 0 0 1 10.4 4h3.2A1.4 1.4 0 0 1 15 5.4v2.1M8.5 7.5v12M15.5 7.5v12\"/>",
+  biglietto: "<path class=\"d\" d=\"M3.8 7.4A1.4 1.4 0 0 1 5.2 6h13.6a1.4 1.4 0 0 1 1.4 1.4v2.4a2.2 2.2 0 0 0 0 4.4v2.4a1.4 1.4 0 0 1-1.4 1.4H5.2a1.4 1.4 0 0 1-1.4-1.4v-2.4a2.2 2.2 0 0 0 0-4.4z\"/><path d=\"M14.5 6.6v1.6M14.5 11.2v1.6M14.5 15.8v1.6\"/>",
+  borsa: "<path class=\"d\" d=\"M5.4 8h13.2l-.9 11a1.6 1.6 0 0 1-1.6 1.5H7.9A1.6 1.6 0 0 1 6.3 19z\"/><path d=\"M9 10.5V7a3 3 0 0 1 6 0v3.5\"/>",
+  salute: "<path class=\"d\" d=\"M12 20s-7.6-4.6-7.6-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.6 2.6C19.6 15.4 12 20 12 20z\"/><path d=\"M12 10.4v4.6M9.7 12.7h4.6\"/>",
+  zampa: "<path class=\"d\" d=\"M12 12.4c-2.6 0-4.8 2.6-4.8 4.8 0 1.6 1.2 2.6 2.6 2.6.9 0 1.4-.4 2.2-.4s1.3.4 2.2.4c1.4 0 2.6-1 2.6-2.6 0-2.2-2.2-4.8-4.8-4.8z\"/><circle cx=\"6\" cy=\"10.8\" r=\"1.7\"/><circle cx=\"9.5\" cy=\"6.6\" r=\"1.8\"/><circle cx=\"14.5\" cy=\"6.6\" r=\"1.8\"/><circle cx=\"18\" cy=\"10.8\" r=\"1.7\"/>",
+  etichetta: "<path class=\"d\" d=\"M3.8 12.6V5.2a1.4 1.4 0 0 1 1.4-1.4h7.4l7.6 7.6a1.6 1.6 0 0 1 0 2.3l-6.1 6.1a1.6 1.6 0 0 1-2.3 0z\"/><circle cx=\"8.2\" cy=\"8.2\" r=\"1.4\"/>",
+  notifica:"<path class=\"d\" d=\"M5.8 16.6V11a6.2 6.2 0 0 1 12.4 0v5.6l1.6 2.1H4.2z\"/><path d=\"M10 20.6a2.1 2.1 0 0 0 4 0\"/><path d=\"M12 2.8v1.4\"/>",
 } as const;
 
 export type IconName = keyof typeof ICONS;
