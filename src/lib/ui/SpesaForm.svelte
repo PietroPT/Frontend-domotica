@@ -230,7 +230,13 @@
   .grow { flex: 1; }
   .ic { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--spese); color: #fff; flex: none; }
   .ic :global(.d) { fill-opacity: 0.32; }
-  .cats { display: flex; gap: 6px; overflow-x: auto; margin: 0 -20px; padding: 2px 20px 4px; scrollbar-width: none; }
+  /* Telefono: una riga che scorre col dito, sfumata a destra per far capire che continua.
+     Col mouse o su schermo largo: tutte le categorie su più righe, niente da trascinare. */
+  .cats {
+    display: flex; gap: 6px; overflow-x: auto; margin: 0 -20px; padding: 2px 20px 4px; scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+  }
   .cats::-webkit-scrollbar { display: none; }
   .cats button {
     flex: none; display: grid; justify-items: center; gap: 4px; width: 76px; min-height: 64px; padding: 8px 4px;
@@ -265,5 +271,11 @@
   .row .ok:disabled { opacity: 0.6; }
   .del { min-height: 44px; border: 0; border-radius: 14px; background: none; color: var(--pericolo); font-weight: 600; cursor: pointer; }
   .del.ask { background: var(--pericolo); color: #fff; }
-  @media (min-width: 720px) { .cats { margin: 0 -24px; padding: 2px 24px 4px; } }
+  @media (min-width: 720px), (hover: hover) and (pointer: fine) {
+    .cats {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); overflow: visible;
+      margin: 0; padding: 0; -webkit-mask-image: none; mask-image: none;
+    }
+    .cats button { width: auto; }
+  }
 </style>
