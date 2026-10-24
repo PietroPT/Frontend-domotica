@@ -20,7 +20,7 @@
 
   const tabs: [Page, string, IconName][] = [
     ['casa', 'Casa', 'casa'], ['luci', 'Luci', 'luce'], ['clima', 'Clima', 'termostato'],
-    ['energia', 'Energia', 'energia'], ['telecamere', 'Telecamere', 'telecamera'], ['allarme', 'Allarme', 'allarme'],
+    ['energia', 'Energia', 'energia'], ['telecamere', 'Telecamere', 'telecamera'], ['allarme', 'Sicurezza', 'allarme'],
     ['spese', 'Spese', 'spese'],
   ];
 

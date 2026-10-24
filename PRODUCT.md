@@ -50,6 +50,7 @@ Real entity names and behaviours in the Rack Drive documentation (`AI/Rack/Docum
 2. Never offer a control that the documentation says is dangerous; show it as read-only with the reason.
 3. Live means live: every value shown is subscribed, with visible staleness when HA is unreachable.
 4. One glance from across the room on the wall panel; one thumb on the phone.
+5. Riutilizzare i comportamenti e i componenti di Casa nelle altre pagine: matita, frecce e Fine per ordinare, scheda e nome modificabile per rinominare. Non introdurre editor o procedure differenti per pagina (richiesta esplicita di Pietro, 23/10/2026). In Sicurezza le modifiche sono riservate agli amministratori.
 
 ## Accessibility & Inclusion
 

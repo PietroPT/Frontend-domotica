@@ -10,6 +10,8 @@
   import ThermostatDial from '../lib/ui/ThermostatDial.svelte';
   import SlideToUnlock from '../lib/ui/SlideToUnlock.svelte';
   import ThemeButton from '../lib/ui/ThemeButton.svelte';
+  import OrderModeButton from '../lib/ui/OrderModeButton.svelte';
+  import OrderControls from '../lib/ui/OrderControls.svelte';
 
   let now = $state(new Date());
   $effect(() => { const i = setInterval(() => (now = new Date()), 30_000); return () => clearInterval(i); });
@@ -50,11 +52,11 @@
     </div>
     <div class="actions">
       {#if layout.editing}
-        <button class="pill ok" onclick={() => { layout.editing = false; layout.sync(); }}>Fine</button>
+        <OrderModeButton editing={true} onchange={() => { layout.editing = false; layout.sync(); }} />
       {:else}
         <ThemeButton />
         {#if rooms.length}
-          <button class="round" onclick={() => (layout.editing = true)} aria-label="Cambia l'ordine dei riquadri"><Icon name="matita" size={20} /></button>
+          <OrderModeButton editing={false} onchange={() => (layout.editing = true)} />
         {/if}
       {/if}
       <button class="round" onclick={() => app.open({ kind: 'aggiungi' })} aria-label="Aggiungi alla Casa"><Icon name="piu" size={22} /></button>
@@ -78,7 +80,7 @@
       <span class="c" style:background="var(--energia)"><Icon name="energia" size={18} /></span>
       <span><b>Energia</b><small class="num">{kw(totalW)}</small></span>
     </button>
-    <button class="chip" onclick={() => app.go('telecamere')}>
+    <button class="chip" onclick={() => app.go('allarme')}>
       <span class="c" style:background="var(--sicurezza)"><Icon name="telecamera" size={18} /></span>
       <span><b>Sicurezza</b><small>{motion.length ? `Movimento: ${motion.map((m) => hass.areaName(hass.areaOf(m.entity_id))).join(', ')}` : 'Tranquillo'}</small></span>
     </button>
@@ -96,10 +98,7 @@
                 {@const next = r.tiles[i + 1]}
                 <div class="slot">
                   <Tile icon={t.icon} title={t.title} detail={t.detail} on={t.on} color={t.color} locked={t.locked} />
-                  <div class="move">
-                    <button disabled={!prev} onclick={() => prev && layout.swap(t.id, prev.id)} aria-label="Sposta {t.title} prima"><Icon name="frecciasx" size={20} /></button>
-                    <button disabled={!next} onclick={() => next && layout.swap(t.id, next.id)} aria-label="Sposta {t.title} dopo"><Icon name="freccia" size={20} /></button>
-                  </div>
+                  <OrderControls name={t.title} first={!prev} last={!next} onmove={(d) => { const target = d < 0 ? prev : next; if (target) layout.swap(t.id, target.id); }} />
                 </div>
               {:else}
                 <Tile icon={t.icon} title={t.title} detail={t.detail} on={t.on} color={t.color} locked={t.locked}
@@ -165,22 +164,10 @@
   .rh h2 { margin: 0; }
   .rh span { font-size: 14px; color: var(--ink-2); }
   .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .pill { min-height: 44px; padding: 0 20px; border-radius: 22px; border: 0; font-weight: 600; font-size: 15px; cursor: pointer; }
-  .pill.ok { background: var(--energia); color: #fff; }
 
   /* Modalità Modifica: il riquadro resta visibile ma non si tocca; sopra, le frecce. */
   .slot { position: relative; min-width: 0; }
   .slot :global(.tile) { outline: 2px dashed var(--sep); outline-offset: -2px; }
-  .move {
-    position: absolute; inset: 0; border-radius: var(--r-tile);
-    display: flex; justify-content: space-between; align-items: center; padding: 0 4px;
-    background: color-mix(in srgb, var(--tile) 45%, transparent);
-  }
-  .move button {
-    width: 40px; height: 40px; border-radius: 50%; border: 0; display: grid; place-items: center;
-    background: var(--raised); color: var(--ink); box-shadow: var(--shadow); cursor: pointer;
-  }
-  .move button:disabled { visibility: hidden; }
 
   .side { display: grid; gap: 22px; align-content: start; }
   .clima { display: none; }

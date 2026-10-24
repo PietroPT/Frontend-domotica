@@ -76,6 +76,10 @@ const defs: Def[] = [
   ['sensor.ups_input_voltage', '229', { friendly_name: 'Ups Tensione di ingresso', unit_of_measurement: 'V', device_class: 'voltage' }, 'd_ups'],
 
   // Frigate
+  ['automation.frigate_soggiorno_persona_rilevata', 'on', { friendly_name: 'Frigate - Soggiorno persona rilevata' }, null],
+  ['automation.frigate_ufficio_persona_rilevata', 'on', { friendly_name: 'Frigate - Ufficio persona rilevata' }, null],
+  ['automation.frigate_soggiorno_registrazione_ferma', 'on', { friendly_name: 'Frigate - Soggiorno registrazione ferma' }, null],
+  ['automation.frigate_ufficio_registrazione_ferma', 'on', { friendly_name: 'Frigate - Ufficio registrazione ferma' }, null],
   ['camera.soggiorno', 'streaming', { friendly_name: 'Soggiorno', orientation: 'portrait' }, 'd_cam_soggiorno'],
   ['camera.ufficio', 'streaming', { friendly_name: 'Ufficio' }, 'd_cam_ufficio'],
   ['binary_sensor.soggiorno_motion', 'off', { friendly_name: 'Soggiorno Movimento', device_class: 'motion' }, 'd_cam_soggiorno', 35],

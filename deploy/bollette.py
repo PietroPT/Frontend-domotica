@@ -17,7 +17,11 @@ Dal 23/10 tiene anche le spese in comune fra Pietro e Filippo, come Splitwise (/
 spese.json, storico come le bollette). Le spese che si ripetono le aggiunge il servizio stesso,
 quando arriva la data, a ogni lettura: così non le crea due volte un secondo dispositivo.
 
-Ascolta solo su 127.0.0.1: da fuori ci si arriva attraverso nginx (/api/bollette, /api/casa, /api/spese).
+La personalizzazione di Sicurezza (/api/sicurezza, sicurezza.json) è leggibile dagli utenti
+autenticati; la scrittura richiede il ruolo amministratore verificato ogni volta presso HA.
+Conserva nomi di visualizzazione e ordine, senza modificare entità o automazioni di HA.
+
+Ascolta solo su 127.0.0.1: da fuori ci si arriva attraverso nginx (/api/...).
 Avviato da systemd (deploy/ha-bollette.service), con utente proprio e senza privilegi.
 """
 
@@ -41,6 +45,7 @@ DATA_DIR = os.environ.get("DATA_DIR", "/var/lib/ha-dashboard")
 PORT = int(os.environ.get("PORT", "8099"))
 FILE = os.path.join(DATA_DIR, "bollette.json")
 CASA = os.path.join(DATA_DIR, "casa.json")
+SICUREZZA = os.path.join(DATA_DIR, "sicurezza.json")
 SPESE = os.path.join(DATA_DIR, "spese.json")
 HISTORY = os.path.join(DATA_DIR, "storico")
 KEEP = 100
@@ -53,10 +58,10 @@ lock = threading.Lock()
 _users: dict[str, tuple[float, dict | None]] = {}
 
 
-def who(token: str) -> dict | None:
+def who(token: str, fresh: bool = False) -> dict | None:
     key = hashlib.sha256(token.encode()).hexdigest()
     hit = _users.get(key)
-    if hit and hit[0] > time.time():
+    if not fresh and hit and hit[0] > time.time():
         return hit[1]
     user = None
     try:
@@ -68,7 +73,7 @@ def who(token: str) -> dict | None:
                 r = json.loads(ws.recv(timeout=5))
                 if r.get("success"):
                     u = r["result"]
-                    user = {"name": u.get("name") or ""}
+                    user = {"name": u.get("name") or "", "is_admin": u.get("is_admin") is True}
     except Exception as e:  # HA spento o non raggiungibile: nessun accesso, e lo si dice nel registro
         print(f"controllo dell'accesso non riuscito: {e}", file=sys.stderr, flush=True)
         return None
@@ -126,6 +131,61 @@ def casa_clean(b) -> list[str]:
         if i not in out:
             out.append(i)
     return out
+
+
+# --- Nomi e disposizione della pagina Sicurezza: solo presentazione ---
+SEC_SECTIONS = ["notifiche", "sensori", "allarme"]
+SEC_NOTIFICATIONS = {
+    f"Frigate - {camera} {kind}"
+    for camera in ("Soggiorno", "Ufficio")
+    for kind in ("registrazione ferma", "persona rilevata")
+}
+
+
+def sicurezza_load() -> dict:
+    try:
+        with open(SICUREZZA, encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {"revision": 0, "sections": SEC_SECTIONS[:], "titles": {},
+                "sensors": [], "sensorNames": {}, "notifications": [], "notificationNames": {}}
+
+
+def sicurezza_clean(b) -> dict:
+    if not isinstance(b, dict) or type(b.get("revision")) is not int or b["revision"] < 0:
+        raise ValueError("revisione non valida")
+    def valid_key(key, kind):
+        if not isinstance(key, str) or len(key) > 255:
+            return False
+        return (key in SEC_SECTIONS if kind == "section" else
+                key in SEC_NOTIFICATIONS if kind == "notification" else
+                bool(re.fullmatch(r"binary_sensor\.[a-z0-9_]+", key)))
+    def ids(field, kind):
+        values = b.get(field)
+        if (not isinstance(values, list) or len(values) > 500
+                or not all(valid_key(v, kind) for v in values)
+                or len(set(values)) != len(values)):
+            raise ValueError("ordine non valido: " + field)
+        return values[:]
+    def names(field, kind):
+        values = b.get(field)
+        if not isinstance(values, dict) or len(values) > 500:
+            raise ValueError("nomi non validi: " + field)
+        out = {}
+        for key, name in values.items():
+            if (not valid_key(key, kind) or not isinstance(name, str) or len(name) > 60
+                    or any(ord(c) < 32 for c in name)):
+                raise ValueError("nome non valido: " + field)
+            if name.strip():
+                out[key] = name.strip()
+        return out
+    sections = ids("sections", "section")
+    if set(sections) != set(SEC_SECTIONS):
+        raise ValueError("servono tutte le sezioni")
+    return {"revision": b["revision"], "sections": sections, "titles": names("titles", "section"),
+            "sensors": ids("sensors", "sensor"), "sensorNames": names("sensorNames", "sensor"),
+            "notifications": ids("notifications", "notification"),
+            "notificationNames": names("notificationNames", "notification")}
 
 
 # --- Spese in comune fra Pietro e Filippo (come Splitwise) ---
@@ -296,11 +356,14 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(raw)
         print(f"{self.command} {self.path.split('?')[0]} {code}", file=sys.stderr, flush=True)
 
-    def user(self) -> dict | None:
+    def user(self, require_admin: bool = False) -> dict | None:
         m = re.fullmatch(r"Bearer ([\w.\-]+)", self.headers.get("Authorization", ""))
-        u = who(m.group(1)) if m else None
+        u = who(m.group(1), fresh=require_admin) if m else None
         if not u:
             self.reply(401, {"errore": "Accesso a Home Assistant non valido: entra di nuovo nella dashboard."})
+            return None
+        if require_admin and not u.get("is_admin"):
+            self.reply(403, {"errore": "Solo un amministratore può modificare la pagina Sicurezza."})
             return None
         return u
 
@@ -380,6 +443,11 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(200, {"cancellata": sid})
 
     def do_GET(self):
+        if self.path.split("?")[0] == "/api/sicurezza":
+            if self.user():
+                with lock:
+                    self.reply(200, sicurezza_load())
+            return
         if (sid := self.spese()) is not None:
             return self.spese_get(sid)
         if self.casa():
@@ -397,6 +465,29 @@ class Handler(BaseHTTPRequestHandler):
                 self.reply(200, load())
 
     def do_PUT(self):
+        if self.path.split("?")[0] == "/api/sicurezza":
+            u = self.user(require_admin=True)
+            raw = self.body() if u else None
+            if raw is None:
+                return
+            try:
+                data = sicurezza_clean(raw)
+            except ValueError as e:
+                return self.reply(400, {"errore": str(e)})
+            with lock:
+                current = sicurezza_load()
+                if data["revision"] != current["revision"]:
+                    return self.reply(409, {"errore": "Pagina modificata da un altro dispositivo. Chiudi la scheda o premi Fine, poi riprova sulla versione aggiornata."})
+                data["revision"] += 1
+                data["modificata"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+                data["da"] = u["name"]
+                # Conserva l'originale senza rimuoverlo prima della scrittura atomica.
+                os.makedirs(HISTORY, exist_ok=True)
+                stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+                if os.path.exists(SICUREZZA):
+                    write(os.path.join(HISTORY, f"sicurezza-{stamp}.json"), current)
+                write(SICUREZZA, data)
+            return self.reply(200, data)
         if (sid := self.spese()) is not None:
             return self.spese_put(sid)
         if self.casa():

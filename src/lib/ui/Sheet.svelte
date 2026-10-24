@@ -6,8 +6,8 @@
 
   // renameId: se c'è, il titolo è il nome di quell'entità e si cambia toccandolo.
   // roomId: sotto il titolo la stanza di quell'entità, che si cambia toccandola.
-  let { title, subtitle, onclose, children, wide = false, renameId, roomId }:
-    { title: string; subtitle?: string; onclose: () => void; children: Snippet; wide?: boolean; renameId?: string; roomId?: string } = $props();
+  let { title, subtitle, onclose, children, wide = false, renameId, roomId, rename, renameHint }:
+    { title: string; subtitle?: string; onclose: () => void; children: Snippet; wide?: boolean; renameId?: string; roomId?: string; rename?: (name: string) => Promise<void>; renameHint?: string } = $props();
 
   let panel: HTMLElement;
   $effect(() => {
@@ -24,7 +24,7 @@
   <div class="grab" aria-hidden="true"></div>
   <header>
     <div class="ti">
-      {#if renameId}<NomeModificabile id={renameId} name={title} />{:else}<h2>{title}</h2>{/if}
+      {#if renameId || rename}<NomeModificabile id={renameId ?? ''} name={title} save={rename} hint={renameHint} />{:else}<h2>{title}</h2>{/if}
       {#if subtitle}<p>{subtitle}</p>{/if}
     </div>
     <button class="x" onclick={onclose} aria-label="Chiudi"><Icon name="chiudi" size={20} /></button>

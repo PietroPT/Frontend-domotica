@@ -2,7 +2,7 @@
 // così il tasto Indietro del telefono e il pannello kiosk si comportano bene.
 
 export type Page = 'casa' | 'luci' | 'clima' | 'energia' | 'telecamere' | 'allarme' | 'spese' | 'avanzate';
-export type Sheet = null | { kind: 'luce' | 'presa' | 'telecamera' | 'crocchette'; id: string } | { kind: 'aggiungi' };
+export type Sheet = null | { kind: 'luce' | 'presa' | 'telecamera' | 'crocchette' | 'sicurezza'; id: string } | { kind: 'aggiungi' };
 export type Theme = 'auto' | 'chiaro' | 'scuro';
 
 const PAGES: Page[] = ['casa', 'luci', 'clima', 'energia', 'telecamere', 'allarme', 'spese', 'avanzate'];
@@ -14,8 +14,9 @@ function readHash(): { page: Page; sheet: Sheet } {
   let sheet: Sheet = null;
   if (sp === 'aggiungi') sheet = { kind: 'aggiungi' };
   else if (sp) {
-    const [kind, id] = sp.split(':');
-    if (kind === 'luce' || kind === 'presa' || kind === 'telecamera' || kind === 'crocchette') sheet = { kind, id };
+    const [kind, ...parts] = sp.split(':');
+    const id = parts.join(':');
+    if (kind === 'luce' || kind === 'presa' || kind === 'telecamera' || kind === 'crocchette' || (kind === 'sicurezza' && page === 'allarme')) sheet = { kind, id };
   }
   return { page, sheet };
 }
@@ -41,7 +42,7 @@ class AppState {
   }
 
   private push(page: Page, sheet: Sheet) {
-    const q = sheet ? `?foglio=${sheet.kind === 'aggiungi' ? 'aggiungi' : `${sheet.kind}:${sheet.id}`}` : '';
+    const q = sheet ? `?foglio=${sheet.kind === 'aggiungi' ? 'aggiungi' : encodeURIComponent(`${sheet.kind}:${sheet.id}`)}` : '';
     location.hash = `#/${page}${q}`;
   }
   go(page: Page) {
